@@ -38,7 +38,7 @@ export function Logo2A({ className, size = 'md', showTagline = true }: Logo2APro
             strokeWidth="18"
             strokeLinecap="round"
           />
-          <path d="M260 85 L292 95 L272 125 Z" fill="#F9E27D" />
+          <path d="M260 85 L292 95 L272 125 Z" fill="#A8914E" />
           <defs>
             <linearGradient
               id="goldGradientText"
@@ -48,9 +48,9 @@ export function Logo2A({ className, size = 'md', showTagline = true }: Logo2APro
               y2="168"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#D4AF37" />
+              <stop offset="0%" stopColor="#A8914E" />
               <stop offset="50%" stopColor="#F9E27D" />
-              <stop offset="100%" stopColor="#C59B27" />
+              <stop offset="100%" stopColor="#A8914E" />
             </linearGradient>
             <linearGradient
               id="goldGradientArrow"
@@ -60,10 +60,10 @@ export function Logo2A({ className, size = 'md', showTagline = true }: Logo2APro
               y2="100"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#004e6e" />
-              <stop offset="30%" stopColor="#D4AF37" />
+              <stop offset="0%" stopColor="#002C45" />
+              <stop offset="30%" stopColor="#A8914E" />
               <stop offset="70%" stopColor="#F9E27D" />
-              <stop offset="100%" stopColor="#D4AF37" />
+              <stop offset="100%" stopColor="#A8914E" />
             </linearGradient>
           </defs>
         </svg>
@@ -73,10 +73,13 @@ export function Logo2A({ className, size = 'md', showTagline = true }: Logo2APro
         <div className="w-full flex justify-end pr-2 -mt-2 sm:-mt-4">
           <span
             className={cn(
-              'font-serif italic text-white tracking-wider font-light text-right drop-shadow-sm',
+              'font-serif italic tracking-wider font-light text-right drop-shadow-sm',
               currentSize.subFont,
             )}
-            style={{ fontFamily: "'Playfair Display', Garamond, 'Times New Roman', serif" }}
+            style={{
+              fontFamily: "'Playfair Display', Garamond, 'Times New Roman', serif",
+              color: '#A8914E',
+            }}
           >
             Rural
           </span>

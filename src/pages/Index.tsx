@@ -22,13 +22,17 @@ export default function Index() {
         <button
           onClick={handleEntrar}
           type="button"
-          className="w-[80%] h-14 bg-gold-gradient rounded-2xl text-[#002C45] font-sans font-bold text-xl tracking-wide shadow-lg hover:brightness-105 active:scale-95 transition-all duration-150 flex items-center justify-center"
+          style={{ backgroundColor: '#FFFFFF', color: '#002C45' }}
+          className="w-[80%] h-14 bg-[#FFFFFF] rounded-2xl text-[#002C45] font-sans font-bold text-xl tracking-wide shadow-lg hover:bg-white/95 active:scale-95 transition-all duration-150 flex items-center justify-center"
         >
           ENTRAR
         </button>
 
-        <span className="text-white/40 text-xs font-light tracking-wider">
-          Emissão Digital de Nota Fiscal Produtor Rural
+        <span className="text-white/60 text-xs font-light tracking-wider text-center">
+          Emissão Digital de Nota Fiscal Produtor{' '}
+          <span style={{ color: '#A8914E' }} className="text-[#A8914E] font-semibold">
+            Rural
+          </span>
         </span>
       </div>
     </div>
