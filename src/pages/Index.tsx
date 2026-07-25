@@ -1,4 +1,4 @@
-import { useNavigate } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Logo2A } from '@/components/Logo2A'
 
 export default function Index() {
