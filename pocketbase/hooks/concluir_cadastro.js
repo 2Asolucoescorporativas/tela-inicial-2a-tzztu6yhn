@@ -197,12 +197,12 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   var dateStr = y + '-' + (mo < 10 ? '0' + mo : '' + mo) + '-' + (da < 10 ? '0' + da : '' + da)
 
   try {
-    $app.dao().runInTransaction(function (dao) {
-      var usersCol = dao.findCollectionByNameOrId('_pb_users_auth_')
+    $app.runInTransaction(function (txApp) {
+      var usersCol = txApp.findCollectionByNameOrId('_pb_users_auth_')
       var userRecord
 
       if (existingUser) {
-        userRecord = dao.findRecordById('_pb_users_auth_', existingUser.id)
+        userRecord = txApp.findRecordById('_pb_users_auth_', existingUser.id)
       } else {
         userRecord = new Record(usersCol)
       }
@@ -217,9 +217,9 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
       userRecord.set('data_cadastro_concluido', dateStr)
       userRecord.set('data_criacao_senha', dateStr)
       userRecord.set('data_ultima_alteracao_senha', dateStr)
-      dao.saveRecord(userRecord)
+      txApp.save(userRecord)
 
-      var propCol = dao.findCollectionByNameOrId('propriedades')
+      var propCol = txApp.findCollectionByNameOrId('propriedades')
       for (var i = 0; i < propDataList.length; i++) {
         var pd = propDataList[i]
         var propRecord = new Record(propCol)
@@ -236,20 +236,39 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
         propRecord.set('cnae', pd.cnae)
         propRecord.set('tipo_produtor', pd.tipo_produtor)
         propRecord.set('ativo', true)
-        dao.saveRecord(propRecord)
+        txApp.save(propRecord)
       }
 
-      var consultaRecord = dao.findRecordById('consultas', consulta.id)
+      var consultaRecord = txApp.findRecordById('consultas', consulta.id)
       consultaRecord.set('utilizada', true)
-      dao.saveRecord(consultaRecord)
+      txApp.save(consultaRecord)
     })
   } catch (err) {
+    var errMsg = String((err && err.message) || err || '')
+    if (errMsg.indexOf('UNIQUE') !== -1 || errMsg.indexOf('unique') !== -1) {
+      if (errMsg.indexOf('cpf') !== -1 || errMsg.indexOf('email') !== -1) {
+        return e.json(400, { success: false, error: 'Este CPF já possui cadastro no 2A Rural.' })
+      }
+      if (errMsg.indexOf('nome_normalizado') !== -1) {
+        return e.json(400, {
+          success: false,
+          error: 'Já existe uma propriedade com esse nome. Escolha outro nome.',
+        })
+      }
+      if (errMsg.indexOf('inscricao_estadual') !== -1) {
+        return e.json(400, {
+          success: false,
+          error: 'Já existe uma propriedade com esta inscrição estadual.',
+        })
+      }
+      return e.json(400, { success: false, error: 'Já existe um cadastro com esses dados.' })
+    }
     return e.json(500, { success: false, error: 'Erro ao concluir cadastro. Tente novamente.' })
   }
 
   return e.json(200, {
     success: true,
-    message: 'Cadastro concluído com sucesso.',
+    message: 'Cadastro concluído com sucesso! Faça seu login.',
     quantidade_propriedades: propriedades.length,
   })
 })

@@ -42,6 +42,7 @@ export default function RegisterRevisao() {
   }
 
   const handleConfirm = async () => {
+    if (submitting) return
     setSubmitting(true)
     setErrorMsg('')
 
@@ -56,6 +57,7 @@ export default function RegisterRevisao() {
 
       if (result.success) {
         setDialogOpen(false)
+        toast.success('Cadastro concluído com sucesso! Faça seu login.')
         navigate('/login', { state: { registrationSuccess: true } })
         return
       }
