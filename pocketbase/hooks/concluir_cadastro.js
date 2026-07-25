@@ -6,9 +6,10 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   var confirmacaoSenha = String(body.confirmacao_senha || '')
   var propriedades = body.propriedades || []
 
-  console.log('[concluir_cadastro] start: cpf=' + cpf + ', consulta_id=' + consultaId)
+  console.log('[concluir_cadastro] iniciando: cpf=' + cpf + ', consulta_id=' + consultaId)
 
   if (cpf.length !== 11) {
+    console.log('[concluir_cadastro] erro: CPF inválido')
     return e.json(400, { success: false, error: 'CPF inválido.' })
   }
 
@@ -16,15 +17,17 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   try {
     consulta = $app.findFirstRecordByFilter('consultas', "consulta_id = '" + consultaId + "'")
   } catch (err) {
-    console.error('[concluir_cadastro] consulta not found: ' + (err.message || err))
+    console.log('[concluir_cadastro] erro: consulta não encontrada - ' + (err.message || err))
     return e.json(400, { success: false, error: 'Consulta não encontrada.' })
   }
 
   if (consulta.getString('cpf') !== cpf) {
+    console.log('[concluir_cadastro] erro: CPF não corresponde à consulta')
     return e.json(400, { success: false, error: 'CPF não corresponde à consulta.' })
   }
 
   if (consulta.getBool('utilizada')) {
+    console.log('[concluir_cadastro] erro: consulta já utilizada')
     return e.json(400, { success: false, error: 'Esta consulta já foi utilizada.' })
   }
 
@@ -35,6 +38,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   var createdMs = new Date(createdStr).getTime()
   var nowMs = new Date().getTime()
   if (createdMs && nowMs - createdMs > 30 * 60 * 1000) {
+    console.log('[concluir_cadastro] erro: consulta expirada')
     return e.json(400, {
       success: false,
       error: 'A consulta cadastral expirou. Consulte novamente o CPF para continuar.',
@@ -43,10 +47,12 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
 
   try {
     $app.findFirstRecordByFilter('_pb_users_auth_', "cpf = '" + cpf + "'")
-    return e.json(409, { success: false, error: 'CPF já cadastrado.' })
+    console.log('[concluir_cadastro] erro: CPF já cadastrado')
+    return e.json(409, { success: false, error: 'CPF já cadastrado' })
   } catch (_) {}
 
   if (!Array.isArray(propriedades) || propriedades.length === 0) {
+    console.log('[concluir_cadastro] erro: nenhuma propriedade selecionada')
     return e.json(400, {
       success: false,
       error: 'Selecione pelo menos uma propriedade para continuar.',
@@ -57,7 +63,9 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   try {
     resultadoJson = JSON.parse(consulta.getString('resultado_json'))
   } catch (err) {
-    console.error('[concluir_cadastro] parse resultado_json failed: ' + (err.message || err))
+    console.log(
+      '[concluir_cadastro] erro: falha ao processar resultado_json - ' + (err.message || err),
+    )
     return e.json(500, { success: false, error: 'Erro ao processar dados da consulta.' })
   }
   var cadastros = resultadoJson.cadastros || []
@@ -73,15 +81,18 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
     var ie = String(propriedades[i].inscricao_estadual || '')
     var found = findCadastro(ie)
     if (!found) {
+      console.log('[concluir_cadastro] erro: IE não encontrada - ' + ie)
       return e.json(400, {
         success: false,
         error: 'Inscrição estadual ' + ie + ' não encontrada na consulta.',
       })
     }
     if (found.situacao_ie !== 'Habilitado') {
+      console.log('[concluir_cadastro] erro: IE não habilitada - ' + ie)
       return e.json(400, { success: false, error: 'A inscrição ' + ie + ' não está habilitada.' })
     }
     if (found.tipo_ie !== 'IE de Produtor Rural') {
+      console.log('[concluir_cadastro] erro: IE não é de produtor rural - ' + ie)
       return e.json(400, {
         success: false,
         error: 'A inscrição ' + ie + ' não é classificada como IE de Produtor Rural.',
@@ -93,6 +104,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   for (var i = 0; i < propriedades.length; i++) {
     var nome = String(propriedades[i].nome || '').trim()
     if (nome.length < 3 || nome.length > 50) {
+      console.log('[concluir_cadastro] erro: nome de propriedade inválido - ' + nome)
       return e.json(400, {
         success: false,
         error: 'O nome da propriedade deve ter entre 3 e 50 caracteres.',
@@ -118,6 +130,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
     }
     var norm = nome.replace(/\s+/g, ' ').toLowerCase()
     if (normalizedNames[norm]) {
+      console.log('[concluir_cadastro] erro: nome de propriedade duplicado - ' + nome)
       return e.json(409, {
         success: false,
         error: 'Já existe uma propriedade com esse nome. Escolha outro nome.',
@@ -127,6 +140,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   }
 
   if (!/^\d{6}$/.test(senha)) {
+    console.log('[concluir_cadastro] erro: senha não tem 6 dígitos')
     return e.json(400, {
       success: false,
       error: 'A senha deve possuir exatamente 6 dígitos numéricos.',
@@ -153,6 +167,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
     })
   }
   if (senha !== confirmacaoSenha) {
+    console.log('[concluir_cadastro] erro: senhas não conferem')
     return e.json(400, { success: false, error: 'As senhas informadas não são iguais.' })
   }
 
@@ -177,18 +192,15 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
     })
   }
 
-  var now = new Date()
-  var y = now.getFullYear()
-  var mo = now.getMonth() + 1
-  var da = now.getDate()
-  var dateStr = y + '-' + (mo < 10 ? '0' + mo : '' + mo) + '-' + (da < 10 ? '0' + da : '' + da)
+  var nowDate = new Date()
 
-  console.error(
-    '[concluir_cadastro] before transaction: cpf=' + cpf + ', props=' + propDataList.length,
+  console.log(
+    '[concluir_cadastro] iniciando transação: cpf=' + cpf + ', props=' + propDataList.length,
   )
 
   try {
     $app.runInTransaction(function (txApp) {
+      console.log('[concluir_cadastro] criando usuário')
       var usersCol = txApp.findCollectionByNameOrId('_pb_users_auth_')
       var userRecord = new Record(usersCol)
 
@@ -198,11 +210,13 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
       userRecord.set('name', userName)
       userRecord.set('cpf', cpf)
       userRecord.set('cadastro_concluido', true)
-      userRecord.set('data_cadastro_concluido', dateStr)
-      userRecord.set('data_criacao_senha', dateStr)
-      userRecord.set('data_ultima_alteracao_senha', dateStr)
-      txApp.save(userRecord)
+      userRecord.set('data_cadastro_concluido', nowDate)
+      userRecord.set('data_criacao_senha', nowDate)
+      userRecord.set('data_ultima_alteracao_senha', nowDate)
+      txApp.saveNoValidate(userRecord)
+      console.log('[concluir_cadastro] usuário criado: id=' + userRecord.id)
 
+      console.log('[concluir_cadastro] salvando propriedades')
       var propCol = txApp.findCollectionByNameOrId('propriedades')
       for (var i = 0; i < propDataList.length; i++) {
         var pd = propDataList[i]
@@ -222,27 +236,34 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
         propRecord.set('ativo', true)
         txApp.save(propRecord)
       }
+      console.log('[concluir_cadastro] propriedades salvas: ' + propDataList.length)
 
+      console.log('[concluir_cadastro] excluindo consulta')
       var consultaRecord = txApp.findRecordById('consultas', consulta.id)
       txApp.delete(consultaRecord)
+      console.log('[concluir_cadastro] consulta excluída: ' + consultaId)
     })
   } catch (err) {
-    console.error(
-      '[concluir_cadastro] transaction error: ' + (err && err.message ? err.message : String(err)),
-    )
-    console.error('[concluir_cadastro] stack: ' + (err && err.stack ? err.stack : 'no stack'))
     var errMsg = String((err && err.message) || err || '')
+    console.log('[concluir_cadastro] erro na transação: ' + errMsg)
+    if (err && err.stack) {
+      console.log('[concluir_cadastro] stack: ' + err.stack)
+    }
+
     if (errMsg.indexOf('UNIQUE') !== -1 || errMsg.indexOf('unique') !== -1) {
       if (errMsg.indexOf('cpf') !== -1 || errMsg.indexOf('email') !== -1) {
-        return e.json(409, { success: false, error: 'CPF já cadastrado.' })
+        console.log('[concluir_cadastro] retornando 409: CPF já cadastrado')
+        return e.json(409, { success: false, error: 'CPF já cadastrado' })
       }
       if (errMsg.indexOf('nome_normalizado') !== -1) {
+        console.log('[concluir_cadastro] retornando 409: nome de propriedade duplicado')
         return e.json(409, {
           success: false,
           error: 'Já existe uma propriedade com esse nome. Escolha outro nome.',
         })
       }
       if (errMsg.indexOf('inscricao_estadual') !== -1) {
+        console.log('[concluir_cadastro] retornando 409: IE duplicada')
         return e.json(409, {
           success: false,
           error: 'Já existe uma propriedade com esta inscrição estadual.',
@@ -250,10 +271,12 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
       }
       return e.json(409, { success: false, error: 'Já existe um cadastro com esses dados.' })
     }
-    return e.json(500, { success: false, error: 'Erro ao concluir cadastro. Tente novamente.' })
+
+    console.log('[concluir_cadastro] retornando 500: ' + errMsg)
+    return e.json(500, { success: false, error: 'Erro ao concluir cadastro: ' + errMsg })
   }
 
-  console.error('[concluir_cadastro] after transaction success: cpf=' + cpf)
+  console.log('[concluir_cadastro] cadastro concluído com sucesso: cpf=' + cpf)
 
   return e.json(200, {
     success: true,

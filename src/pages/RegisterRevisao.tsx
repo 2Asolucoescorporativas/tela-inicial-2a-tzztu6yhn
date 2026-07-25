@@ -71,7 +71,9 @@ export default function RegisterRevisao() {
         message?: string
       }
       const specificError = error?.response?.error || error?.response?.message || error?.message
-      const displayMsg = specificError || 'Erro ao concluir cadastro. Tente novamente.'
+      const displayMsg =
+        specificError ||
+        'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.'
       setErrorMsg(displayMsg)
       toast.error(displayMsg)
     } finally {
