@@ -11,6 +11,7 @@ import {
 import { unmaskCpf } from '@/lib/cpf-utils'
 import { maskCpfPartial, type RegistrationFlowState } from '@/lib/registration-utils'
 import { concluirCadastro } from '@/services/cadastro'
+import { toast } from 'sonner'
 
 export default function RegisterRevisao() {
   const navigate = useNavigate()
@@ -58,15 +59,19 @@ export default function RegisterRevisao() {
         navigate('/login', { state: { registrationSuccess: true } })
         return
       }
-      setErrorMsg(result.error || result.message || 'Erro ao concluir cadastro.')
+      const errMsg = result.error || result.message || 'Erro ao concluir cadastro.'
+      setErrorMsg(errMsg)
+      toast.error(errMsg)
     } catch (err) {
-      const error = err as { response?: { error?: string; message?: string }; message?: string }
-      setErrorMsg(
-        error?.response?.error ||
-          error?.response?.message ||
-          error?.message ||
-          'Erro ao concluir cadastro. Tente novamente.',
-      )
+      const error = err as {
+        status?: number
+        response?: { error?: string; message?: string }
+        message?: string
+      }
+      const specificError = error?.response?.error || error?.response?.message
+      const displayMsg = specificError || 'Erro ao concluir cadastro. Tente novamente.'
+      setErrorMsg(displayMsg)
+      toast.error(displayMsg)
     } finally {
       setSubmitting(false)
     }

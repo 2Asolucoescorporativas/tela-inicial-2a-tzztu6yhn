@@ -197,12 +197,12 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
   var dateStr = y + '-' + (mo < 10 ? '0' + mo : '' + mo) + '-' + (da < 10 ? '0' + da : '' + da)
 
   try {
-    $app.runInTransaction(function (txApp) {
-      var usersCol = txApp.findCollectionByNameOrId('_pb_users_auth_')
+    $app.dao().runInTransaction(function (dao) {
+      var usersCol = dao.findCollectionByNameOrId('_pb_users_auth_')
       var userRecord
 
       if (existingUser) {
-        userRecord = txApp.findRecordById('_pb_users_auth_', existingUser.id)
+        userRecord = dao.findRecordById('_pb_users_auth_', existingUser.id)
       } else {
         userRecord = new Record(usersCol)
       }
@@ -217,9 +217,9 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
       userRecord.set('data_cadastro_concluido', dateStr)
       userRecord.set('data_criacao_senha', dateStr)
       userRecord.set('data_ultima_alteracao_senha', dateStr)
-      txApp.save(userRecord)
+      dao.saveRecord(userRecord)
 
-      var propCol = txApp.findCollectionByNameOrId('propriedades')
+      var propCol = dao.findCollectionByNameOrId('propriedades')
       for (var i = 0; i < propDataList.length; i++) {
         var pd = propDataList[i]
         var propRecord = new Record(propCol)
@@ -236,12 +236,12 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
         propRecord.set('cnae', pd.cnae)
         propRecord.set('tipo_produtor', pd.tipo_produtor)
         propRecord.set('ativo', true)
-        txApp.save(propRecord)
+        dao.saveRecord(propRecord)
       }
 
-      var consultaRecord = txApp.findRecordById('consultas', consulta.id)
+      var consultaRecord = dao.findRecordById('consultas', consulta.id)
       consultaRecord.set('utilizada', true)
-      txApp.save(consultaRecord)
+      dao.saveRecord(consultaRecord)
     })
   } catch (err) {
     return e.json(500, { success: false, error: 'Erro ao concluir cadastro. Tente novamente.' })
