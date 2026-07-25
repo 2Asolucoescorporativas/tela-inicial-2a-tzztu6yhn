@@ -11,6 +11,7 @@ import InvoiceHistory from './pages/InvoiceHistory'
 import ProducerProfile from './pages/ProducerProfile'
 import ForgotPassword from './pages/ForgotPassword'
 import Register from './pages/Register'
+import RegisterResultados from './pages/RegisterResultados'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/register/resultados" element={<RegisterResultados />} />
 
             <Route
               path="/dashboard"

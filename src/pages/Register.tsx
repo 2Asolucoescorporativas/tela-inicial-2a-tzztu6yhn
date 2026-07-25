@@ -1,32 +1,98 @@
-import { Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Loader2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { maskCpf, unmaskCpf, isValidCpf } from '@/lib/cpf-utils'
+import { consultarCpf } from '@/services/cadastro'
 
 export default function Register() {
+  const navigate = useNavigate()
+  const [cpf, setCpf] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+
+  const isCpfValid = isValidCpf(cpf)
+
+  const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCpf(maskCpf(e.target.value))
+    setErrorMsg('')
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const unmasked = unmaskCpf(cpf)
+    if (!isValidCpf(unmasked)) return
+
+    setLoading(true)
+    setErrorMsg('')
+
+    try {
+      const result = await consultarCpf(unmasked)
+      if (result && 'error' in result) {
+        navigate('/register/resultados', { state: { error: result.message } })
+      } else {
+        navigate('/register/resultados', { state: { result } })
+      }
+    } catch (err) {
+      const response = (err as { response?: { message?: string } })?.response
+      if (response?.message) {
+        setErrorMsg(response.message)
+      } else {
+        setErrorMsg(
+          'Não foi possível consultar o Cadastro Centralizado de Contribuintes da SEFA/PR. Tente novamente.',
+        )
+      }
+      setLoading(false)
+    }
+  }
+
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center p-6"
+      className="min-h-screen flex flex-col items-center justify-center p-6 relative"
       style={{ backgroundColor: '#3B626B' }}
     >
-      <Link
-        to="/login"
+      <button
+        onClick={() => navigate('/login')}
         className="absolute top-6 left-6 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/5 transition-colors"
       >
         <ArrowLeft className="w-6 h-6" />
-      </Link>
+      </button>
 
-      <div className="text-center space-y-4 max-w-sm">
-        <h1 className="text-white text-2xl font-bold">Cadastro de Produtor Rural</h1>
-        <p className="text-white/70 text-sm leading-relaxed">
-          O fluxo de cadastro de novo produtor rural estará disponível em breve. Entre em contato
-          com o suporte para criar sua conta.
-        </p>
-        <Link
-          to="/login"
-          className="inline-block text-sm hover:underline mt-2"
-          style={{ color: '#A8914E' }}
-        >
-          Voltar para o login
-        </Link>
+      <div className="w-full max-w-sm flex flex-col items-center space-y-8 animate-fade-in-up">
+        <h1 className="text-2xl font-bold text-center" style={{ color: '#A8914E' }}>
+          Localizar Cadastro Rural
+        </h1>
+
+        <form onSubmit={handleSubmit} className="w-full space-y-6">
+          <div className="space-y-1.5">
+            <Label className="text-white/80 text-sm font-medium">CPF</Label>
+            <Input
+              type="text"
+              inputMode="numeric"
+              value={cpf}
+              onChange={handleCpfChange}
+              placeholder="000.000.000-00"
+              className="bg-white border-none text-gray-900 rounded-[14px] shadow-sm focus-visible:ring-2 focus-visible:ring-[#A8914E]/40"
+              style={{ height: '52px' }}
+            />
+          </div>
+
+          {errorMsg && (
+            <p className="text-red-300 text-sm text-center font-medium animate-fade-in">
+              {errorMsg}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={!isCpfValid || loading}
+            className="w-[80%] mx-auto block text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+            style={{ backgroundColor: '#A8914E', height: '56px' }}
+          >
+            {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : 'CONSULTAR CADASTRO'}
+          </button>
+        </form>
       </div>
     </div>
   )
