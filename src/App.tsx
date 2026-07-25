@@ -9,6 +9,8 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import InvoiceHistory from './pages/InvoiceHistory'
 import ProducerProfile from './pages/ProducerProfile'
+import ForgotPassword from './pages/ForgotPassword'
+import Register from './pages/Register'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 
@@ -29,6 +31,8 @@ const App = () => (
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/register" element={<Register />} />
 
             <Route
               path="/dashboard"

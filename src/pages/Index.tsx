@@ -9,9 +9,10 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-[#002C45] flex flex-col items-center justify-between p-6 select-none relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent pointer-events-none" />
-
+    <div
+      className="min-h-screen flex flex-col items-center justify-between p-6 select-none relative overflow-hidden"
+      style={{ backgroundColor: '#3B626B' }}
+    >
       <div className="w-full flex-1 flex flex-col items-center justify-center -mt-10 animate-fade-in-up">
         <div className="w-full max-w-xs sm:max-w-sm flex flex-col items-center">
           <Logo2A size="lg" showTagline={true} />
@@ -22,8 +23,8 @@ export default function Index() {
         <button
           onClick={handleEntrar}
           type="button"
-          style={{ backgroundColor: '#FFFFFF', color: '#002C45' }}
-          className="w-[80%] h-14 bg-[#FFFFFF] rounded-2xl text-[#002C45] font-sans font-bold text-xl tracking-wide shadow-lg hover:bg-white/95 active:scale-95 transition-all duration-150 flex items-center justify-center"
+          style={{ backgroundColor: '#FFFFFF', color: '#3B626B' }}
+          className="w-[80%] h-14 bg-[#FFFFFF] rounded-2xl text-[#3B626B] font-sans font-bold text-xl tracking-wide shadow-lg hover:bg-white/95 active:scale-95 transition-all duration-150 flex items-center justify-center"
         >
           ENTRAR
         </button>

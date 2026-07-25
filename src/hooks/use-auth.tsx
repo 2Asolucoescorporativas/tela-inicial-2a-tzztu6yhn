@@ -13,6 +13,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   signUp: (email: string, password: string) => Promise<{ error: any }>
   signIn: (email: string, password: string) => Promise<{ error: any }>
+  signInWithCpf: (cpf: string, password: string) => Promise<{ error: any }>
   signOut: () => void
   loading: boolean
 }
@@ -72,6 +73,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const signInWithCpf = async (cpf: string, password: string) => {
+    try {
+      const cleanCpf = cpf.replace(/\D/g, '')
+      const result = await pb.send('/backend/v1/auth/cpf', {
+        method: 'POST',
+        body: JSON.stringify({ cpf: cleanCpf, password }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      pb.authStore.save(result.token, result.record)
+      return { error: null }
+    } catch (error) {
+      return { error }
+    }
+  }
+
   const signOut = () => {
     pb.authStore.clear()
   }
@@ -83,6 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated,
         signUp,
         signIn,
+        signInWithCpf,
         signOut,
         loading,
       }}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T20:26:37.109Z",
+  "generatedAt": "2026-07-25T20:38:58.954Z",
   "collections": [
     {
       "name": "users",
@@ -37,11 +37,18 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "cpf",
+          "type": "text",
+          "required": true,
+          "system": false
         }
       ],
       "indexes": [
         "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
-        "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
+        "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''",
+        "CREATE UNIQUE INDEX `idx_users_cpf` ON `users` (cpf) WHERE cpf != ''"
       ]
     },
     {
