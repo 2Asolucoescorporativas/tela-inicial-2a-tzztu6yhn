@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { maskCpf, unmaskCpf, isValidCpf } from '@/lib/cpf-utils'
-import { consultarCpf } from '@/services/cadastro'
+import { getCadastroProvider } from '@/providers/cadastro-provider'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -28,20 +28,14 @@ export default function Register() {
     setErrorMsg('')
 
     try {
-      const result = await consultarCpf(unmasked)
-      if (result && 'error' in result) {
-        navigate('/register/resultados', { state: { error: result.message } })
-      } else {
-        navigate('/register/resultados', { state: { result } })
-      }
+      const result = await getCadastroProvider().consultarCPF(unmasked)
+      navigate('/register/resultados', { state: { result } })
     } catch (err) {
       const response = (err as { response?: { message?: string } })?.response
       if (response?.message) {
         setErrorMsg(response.message)
       } else {
-        setErrorMsg(
-          'Não foi possível consultar o Cadastro Centralizado de Contribuintes da SEFA/PR. Tente novamente.',
-        )
+        setErrorMsg('Não foi possível consultar o cadastro. Tente novamente.')
       }
       setLoading(false)
     }

@@ -1,38 +1,29 @@
 import pb from '@/lib/pocketbase/client'
 
-export interface InscricaoEstadual {
-  ie: string
+export interface Cadastro {
+  nome: string
+  cpf: string
+  inscricao_estadual: string
   situacao_ie: string
   tipo_ie: string
   municipio: string
-  uf: string
   codigo_ibge: string
-  endereco: string
-  bairro: string
-  cep: string
+  uf: string
   cnae: string
-  data_inicio_atividade: string
-  data_situacao_cadastral: string
-  regime_tributacao: string
-  credito_presumido: string
+  regime: string
   tipo_produtor: string
+  situacao_cpf: string
 }
 
 export interface ConsultaCadastroResponse {
-  cpf: string
-  nome: string
-  situacao_cpf: string
-  inscricoes: InscricaoEstadual[]
+  success: boolean
+  environment: string
+  source: string
+  quantidade: number
+  cadastros: Cadastro[]
 }
 
-export interface ConsultaCadastroError {
-  error: string
-  message: string
-}
-
-export async function consultarCpf(
-  cpf: string,
-): Promise<ConsultaCadastroResponse | ConsultaCadastroError> {
+export async function consultarCpf(cpf: string): Promise<ConsultaCadastroResponse> {
   return pb.send('/backend/v1/cadastro/consultar-cpf', {
     method: 'POST',
     body: JSON.stringify({ cpf }),
