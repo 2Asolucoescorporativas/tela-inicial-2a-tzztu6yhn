@@ -70,7 +70,7 @@ export default function RegisterRevisao() {
         response?: { error?: string; message?: string }
         message?: string
       }
-      const specificError = error?.response?.error || error?.response?.message
+      const specificError = error?.response?.error || error?.response?.message || error?.message
       const displayMsg = specificError || 'Erro ao concluir cadastro. Tente novamente.'
       setErrorMsg(displayMsg)
       toast.error(displayMsg)

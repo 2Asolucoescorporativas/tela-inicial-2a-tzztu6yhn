@@ -42,7 +42,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
       '_pb_users_auth_',
       "cpf = '" + cpf + "' && cadastro_concluido = true",
     )
-    return e.json(400, { success: false, error: 'Este CPF já possui cadastro no 2A Rural.' })
+    return e.json(409, { success: false, error: 'CPF já cadastrado' })
   } catch (_) {}
 
   if (!Array.isArray(propriedades) || propriedades.length === 0) {
@@ -111,7 +111,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
     }
     var norm = nome.replace(/\s+/g, ' ').toLowerCase()
     if (normalizedNames[norm]) {
-      return e.json(400, {
+      return e.json(409, {
         success: false,
         error: 'Já existe uma propriedade com esse nome. Escolha outro nome.',
       })
@@ -131,7 +131,7 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
           'propriedades',
           "usuario_id = '" + existingUser.id + "' && nome_normalizado = '" + key + "'",
         )
-        return e.json(400, {
+        return e.json(409, {
           success: false,
           error: 'Já existe uma propriedade com esse nome. Escolha outro nome.',
         })
@@ -240,28 +240,27 @@ routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
       }
 
       var consultaRecord = txApp.findRecordById('consultas', consulta.id)
-      consultaRecord.set('utilizada', true)
-      txApp.save(consultaRecord)
+      txApp.delete(consultaRecord)
     })
   } catch (err) {
     var errMsg = String((err && err.message) || err || '')
     if (errMsg.indexOf('UNIQUE') !== -1 || errMsg.indexOf('unique') !== -1) {
       if (errMsg.indexOf('cpf') !== -1 || errMsg.indexOf('email') !== -1) {
-        return e.json(400, { success: false, error: 'Este CPF já possui cadastro no 2A Rural.' })
+        return e.json(409, { success: false, error: 'CPF já cadastrado' })
       }
       if (errMsg.indexOf('nome_normalizado') !== -1) {
-        return e.json(400, {
+        return e.json(409, {
           success: false,
           error: 'Já existe uma propriedade com esse nome. Escolha outro nome.',
         })
       }
       if (errMsg.indexOf('inscricao_estadual') !== -1) {
-        return e.json(400, {
+        return e.json(409, {
           success: false,
           error: 'Já existe uma propriedade com esta inscrição estadual.',
         })
       }
-      return e.json(400, { success: false, error: 'Já existe um cadastro com esses dados.' })
+      return e.json(409, { success: false, error: 'Já existe um cadastro com esses dados.' })
     }
     return e.json(500, { success: false, error: 'Erro ao concluir cadastro. Tente novamente.' })
   }
