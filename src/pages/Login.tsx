@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { Logo2A } from '@/components/Logo2A'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react'
 import { maskCpf, isValidCpf } from '@/lib/cpf-utils'
 
 export default function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { signInWithCpf } = useAuth()
 
   const [cpf, setCpf] = useState('')
@@ -17,6 +18,9 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [cpfError, setCpfError] = useState('')
+  const [showSuccessBanner, setShowSuccessBanner] = useState(
+    (location.state as { registrationSuccess?: boolean })?.registrationSuccess || false,
+  )
 
   const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const masked = maskCpf(e.target.value)
@@ -64,6 +68,24 @@ export default function Login() {
 
       <div className="w-full max-w-sm flex flex-col items-center space-y-8 animate-fade-in-up">
         <Logo2A size="sm" showTagline={true} className="scale-110" />
+
+        {showSuccessBanner && (
+          <div className="w-full bg-green-500/15 border border-green-400/30 rounded-[14px] p-3 flex items-start gap-2 animate-fade-in">
+            <CheckCircle className="w-5 h-5 text-green-300 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-green-200 text-sm leading-relaxed">
+                Cadastro concluído com sucesso. Agora você já pode acessar o 2A Rural com seu CPF e
+                sua senha.
+              </p>
+              <button
+                onClick={() => setShowSuccessBanner(false)}
+                className="text-green-300/60 text-xs hover:text-green-200 mt-1"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="w-full space-y-4">
           <div className="space-y-1.5">

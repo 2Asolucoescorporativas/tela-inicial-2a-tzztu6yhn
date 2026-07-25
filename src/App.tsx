@@ -12,6 +12,9 @@ import ProducerProfile from './pages/ProducerProfile'
 import ForgotPassword from './pages/ForgotPassword'
 import Register from './pages/Register'
 import RegisterResultados from './pages/RegisterResultados'
+import RegisterPropriedades from './pages/RegisterPropriedades'
+import RegisterSenha from './pages/RegisterSenha'
+import RegisterRevisao from './pages/RegisterRevisao'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 
@@ -35,6 +38,9 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register/resultados" element={<RegisterResultados />} />
+            <Route path="/register/propriedades" element={<RegisterPropriedades />} />
+            <Route path="/register/senha" element={<RegisterSenha />} />
+            <Route path="/register/revisao" element={<RegisterRevisao />} />
 
             <Route
               path="/dashboard"

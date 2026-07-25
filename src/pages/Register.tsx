@@ -11,6 +11,7 @@ export default function Register() {
   const [cpf, setCpf] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [jaCadastrado, setJaCadastrado] = useState(false)
 
   const isCpfValid = isValidCpf(cpf)
 
@@ -29,6 +30,11 @@ export default function Register() {
 
     try {
       const result = await getCadastroProvider().consultarCPF(unmasked)
+      if (result.ja_cadastrado) {
+        setJaCadastrado(true)
+        setLoading(false)
+        return
+      }
       navigate('/register/resultados', { state: { result } })
     } catch (err) {
       const response = (err as { response?: { message?: string } })?.response
@@ -39,6 +45,50 @@ export default function Register() {
       }
       setLoading(false)
     }
+  }
+
+  if (jaCadastrado) {
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center p-6 relative"
+        style={{ backgroundColor: '#3B626B' }}
+      >
+        <button
+          onClick={() => navigate('/login')}
+          className="absolute top-6 left-6 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/5 transition-colors"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+
+        <div className="w-full max-w-sm flex flex-col items-center space-y-8 animate-fade-in-up">
+          <h1 className="text-2xl font-bold text-center" style={{ color: '#A8914E' }}>
+            Cadastro já existe
+          </h1>
+
+          <p className="text-white/80 text-center text-base leading-relaxed">
+            Este CPF já possui cadastro no 2A Rural. Acesse o aplicativo utilizando seu CPF e sua
+            senha.
+          </p>
+
+          <div className="w-full space-y-3">
+            <button
+              onClick={() => navigate('/login')}
+              className="w-full text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all"
+              style={{ backgroundColor: '#A8914E', height: '56px' }}
+            >
+              IR PARA LOGIN
+            </button>
+            <button
+              onClick={() => navigate('/forgot-password')}
+              className="w-full text-white/80 font-bold text-lg rounded-[14px] border border-white/20 hover:bg-white/5 active:scale-95 transition-all"
+              style={{ height: '56px' }}
+            >
+              RECUPERAR SENHA
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
