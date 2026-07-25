@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T21:45:50.209Z",
+  "generatedAt": "2026-07-25T22:28:15.622Z",
   "collections": [
     {
       "name": "users",
@@ -42,6 +42,36 @@
           "name": "cpf",
           "type": "text",
           "required": true,
+          "system": false
+        },
+        {
+          "name": "cadastro_concluido",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "senha_hash",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "data_cadastro_concluido",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "data_criacao_senha",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "data_ultima_alteracao_senha",
+          "type": "date",
+          "required": false,
           "system": false
         }
       ],
@@ -161,6 +191,171 @@
       "indexes": [
         "CREATE INDEX idx_invoices_user ON invoices (user_id)",
         "CREATE INDEX idx_invoices_status ON invoices (status)"
+      ]
+    },
+    {
+      "name": "propriedades",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != \"\" && usuario_id = @request.auth.id",
+        "view": "@request.auth.id != \"\" && usuario_id = @request.auth.id",
+        "create": "@request.auth.id != \"\"",
+        "update": "@request.auth.id != \"\" && usuario_id = @request.auth.id",
+        "delete": "@request.auth.id != \"\" && usuario_id = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "usuario_id",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "users"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "nome_normalizado",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "inscricao_estadual",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "situacao_ie",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "tipo_ie",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "municipio",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "codigo_ibge",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "uf",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "endereco",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "cnae",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "tipo_produtor",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "ativo",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_prop_usuario_nome ON propriedades (usuario_id, nome_normalizado)",
+        "CREATE UNIQUE INDEX idx_prop_usuario_ie ON propriedades (usuario_id, inscricao_estadual)"
+      ]
+    },
+    {
+      "name": "consultas",
+      "type": "base",
+      "apiRules": {
+        "list": null,
+        "view": null,
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "cpf",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "consulta_id",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "resultado_json",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "utilizada",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_consultas_id ON consultas (consulta_id)",
+        "CREATE INDEX idx_consultas_cpf ON consultas (cpf)"
       ]
     }
   ]
