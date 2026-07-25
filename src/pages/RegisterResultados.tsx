@@ -1,6 +1,14 @@
+import { useState } from 'react'
 import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { cn } from '@/lib/utils'
 import { maskCpf } from '@/lib/cpf-utils'
+import {
+  isPropertyEligible,
+  getIneligibilityReason,
+  type RegistrationFlowState,
+} from '@/lib/registration-utils'
 import type { ConsultaCadastroResponse } from '@/services/cadastro'
 
 interface ResultadosState {
@@ -11,14 +19,39 @@ interface ResultadosState {
 export default function RegisterResultados() {
   const navigate = useNavigate()
   const location = useLocation()
+  const [selected, setSelected] = useState<Set<number>>(new Set())
   const state = location.state as ResultadosState | null
 
-  if (!state) {
+  if (!state?.result || !state.result.success) {
     return <Navigate to="/register" replace />
   }
 
-  const { result, error } = state
-  const isMock = result?.source === 'MOCK'
+  const result = state.result
+  const isMock = result.source === 'MOCK'
+
+  const toggleSelection = (idx: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(idx)) next.delete(idx)
+      else next.add(idx)
+      return next
+    })
+  }
+
+  const handleContinue = () => {
+    const selectedCadastros = result.cadastros
+      .filter((_, idx) => selected.has(idx))
+      .filter(isPropertyEligible)
+    navigate('/register/propriedades', {
+      state: {
+        consulta_id: result.consulta_id || '',
+        cpf: result.cadastros[0]?.cpf || '',
+        nomeUsuario: result.cadastros[0]?.nome || '',
+        selectedCadastros,
+        isMock,
+      } as RegistrationFlowState,
+    })
+  }
 
   return (
     <div className="min-h-screen flex flex-col p-6 relative" style={{ backgroundColor: '#3B626B' }}>
@@ -29,7 +62,7 @@ export default function RegisterResultados() {
         <ArrowLeft className="w-6 h-6" />
       </button>
 
-      <div className="w-full max-w-md mx-auto flex flex-col space-y-6 pt-20 pb-10 animate-fade-in-up">
+      <div className="w-full max-w-md mx-auto flex flex-col space-y-4 pt-20 pb-10 animate-fade-in-up">
         <h1 className="text-2xl font-bold text-center" style={{ color: '#A8914E' }}>
           Cadastros Localizados
         </h1>
@@ -43,23 +76,8 @@ export default function RegisterResultados() {
           </div>
         )}
 
-        {error && (
-          <div className="flex flex-col items-center justify-center py-12 space-y-4">
-            <p className="text-center text-base leading-relaxed" style={{ color: '#A8914E' }}>
-              {error}
-            </p>
-            <button
-              onClick={() => navigate('/register')}
-              className="text-sm hover:underline"
-              style={{ color: '#A8914E' }}
-            >
-              Nova consulta
-            </button>
-          </div>
-        )}
-
-        {result && result.quantidade === 0 && !error && (
-          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        {result.quantidade === 0 && (
+          <div className="flex flex-col items-center py-12 space-y-4">
             <p className="text-center text-base leading-relaxed" style={{ color: '#A8914E' }}>
               Não foram encontradas inscrições estaduais vinculadas ao CPF informado.
             </p>
@@ -73,24 +91,40 @@ export default function RegisterResultados() {
           </div>
         )}
 
-        {result &&
-          result.cadastros.map((cadastro, idx) => (
-            <div key={idx} className="bg-white rounded-[14px] shadow-md p-5 space-y-3">
-              <div className="border-b border-gray-100 pb-2">
-                <p className="font-bold text-gray-900 text-base">{cadastro.nome}</p>
-                <p className="text-gray-500 text-sm">{maskCpf(cadastro.cpf)}</p>
+        {result.cadastros.map((cadastro, idx) => {
+          const eligible = isPropertyEligible(cadastro)
+          const reason = getIneligibilityReason(cadastro)
+          return (
+            <div
+              key={idx}
+              className={cn(
+                'bg-white rounded-[14px] shadow-md p-4 space-y-2',
+                !eligible && 'opacity-60',
+              )}
+            >
+              <div className="flex items-start justify-between border-b border-gray-100 pb-2">
+                <div>
+                  <p className="font-bold text-gray-900 text-sm">{cadastro.nome}</p>
+                  <p className="text-gray-500 text-xs">{maskCpf(cadastro.cpf)}</p>
+                </div>
+                <Checkbox
+                  checked={selected.has(idx)}
+                  onCheckedChange={() => toggleSelection(idx)}
+                  disabled={!eligible}
+                  className="w-6 h-6 border-2 data-[state=checked]:bg-[#A8914E] data-[state=checked]:border-[#A8914E]"
+                />
               </div>
-              <div className="space-y-1.5 text-sm">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Inscrição Estadual</span>
+                  <span className="text-gray-500">IE</span>
                   <span className="text-gray-900 font-medium">{cadastro.inscricao_estadual}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Situação da IE</span>
+                  <span className="text-gray-500">Situação</span>
                   <span className="text-gray-900 font-medium">{cadastro.situacao_ie}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Tipo da IE</span>
+                  <span className="text-gray-500">Tipo IE</span>
                   <span className="text-gray-900 font-medium">{cadastro.tipo_ie}</span>
                 </div>
                 <div className="flex justify-between">
@@ -98,20 +132,37 @@ export default function RegisterResultados() {
                   <span className="text-gray-900 font-medium">{cadastro.municipio}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">UF</span>
-                  <span className="text-gray-900 font-medium">{cadastro.uf}</span>
+                  <span className="text-gray-500">Endereço</span>
+                  <span className="text-gray-900 font-medium text-right max-w-[60%]">
+                    {cadastro.endereco || '-'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">IBGE</span>
+                  <span className="text-gray-900 font-medium">{cadastro.codigo_ibge}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">CNAE</span>
+                  <span className="text-gray-900 font-medium">{cadastro.cnae}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Tipo Produtor</span>
+                  <span className="text-gray-900 font-medium">{cadastro.tipo_produtor}</span>
                 </div>
               </div>
+              {reason && <p className="text-xs text-red-500 font-medium">{reason}</p>}
             </div>
-          ))}
+          )
+        })}
 
-        {result && result.quantidade > 0 && (
+        {result.quantidade > 0 && (
           <button
-            onClick={() => navigate('/register')}
-            className="text-sm hover:underline text-center mx-auto block pt-2"
-            style={{ color: '#A8914E' }}
+            onClick={handleContinue}
+            disabled={selected.size === 0}
+            className="w-[80%] mx-auto block text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+            style={{ backgroundColor: '#A8914E', height: '56px' }}
           >
-            Nova consulta
+            CONTINUAR
           </button>
         )}
       </div>
