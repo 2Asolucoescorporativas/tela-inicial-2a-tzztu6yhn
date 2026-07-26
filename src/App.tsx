@@ -17,6 +17,8 @@ import RegisterPropriedades from './pages/RegisterPropriedades'
 import RegisterSenha from './pages/RegisterSenha'
 import RegisterRevisao from './pages/RegisterRevisao'
 import SelectProperty from './pages/SelectProperty'
+import NotaFiscal from './pages/NotaFiscal'
+import Configuracoes from './pages/Configuracoes'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 
@@ -67,6 +69,22 @@ const App = () => (
                 element={
                   <RequireProperty>
                     <Dashboard />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/nota-fiscal"
+                element={
+                  <RequireProperty>
+                    <NotaFiscal />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/configuracoes"
+                element={
+                  <RequireProperty>
+                    <Configuracoes />
                   </RequireProperty>
                 }
               />
