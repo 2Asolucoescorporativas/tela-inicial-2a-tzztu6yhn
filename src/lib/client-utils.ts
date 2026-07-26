@@ -74,7 +74,7 @@ export function recordToForm(r: Record<string, unknown>): ClientFormData {
     complemento: (r.complemento as string) || '',
     bairro: (r.bairro as string) || '',
     municipio: (r.municipio as string) || '',
-    codigo_ibge: (r.codigo_ibge as string) || '',
+    codigo_ibge: String(r.codigo_ibge ?? ''),
     uf: (r.uf as string) || '',
     pais: (r.pais as string) || 'Brasil',
     codigo_pais: (r.codigo_pais as string) || '1058',
@@ -128,7 +128,9 @@ export function validateClientForm(form: ClientFormData): Record<string, string>
   if (!form.numero.trim()) errors.numero = 'Número é obrigatório'
   if (!form.bairro.trim()) errors.bairro = 'Bairro é obrigatório'
   if (!form.municipio.trim()) errors.municipio = 'Município é obrigatório'
-  if (!form.codigo_ibge.trim()) errors.codigo_ibge = 'Código IBGE é obrigatório'
+  const codigoIbgeStr =
+    typeof form.codigo_ibge === 'string' ? form.codigo_ibge : String(form.codigo_ibge ?? '')
+  if (!codigoIbgeStr.trim()) errors.codigo_ibge = 'Código IBGE é obrigatório'
   if (!form.uf.trim()) errors.uf = 'UF é obrigatório'
   return errors
 }
