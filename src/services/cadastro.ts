@@ -1,30 +1,37 @@
 import pb from '@/lib/pocketbase/client'
 
-export interface Cadastro {
-  nome: string
-  cpf: string
+export interface Propriedade {
   inscricao_estadual: string
-  situacao_ie: string
-  tipo_ie: string
-  municipio: string
-  codigo_ibge: string
   uf: string
-  cnae: string
-  regime: string
-  tipo_produtor: string
-  situacao_cpf: string
-  endereco?: string
+  ativa: boolean
+  tipo_ie: string
+  situacao_cadastral: string
+  data_status: string
+  municipio: string
+  codigo_municipio_ibge: string
+  logradouro: string
+  numero: string
+  bairro: string
+  cep: string
+  elegivel_cadastro: boolean
+  motivo_inelegibilidade: string | null
 }
 
-export interface ConsultaCadastroResponse {
+export interface ConsultaPropriedadesResponse {
   success: boolean
-  environment: string
-  source: string
-  quantidade: number
-  cadastros: Cadastro[]
   consulta_id?: string
+  cpf?: string
+  nome?: string
+  uf_consultada?: string
+  origem?: string
+  origem_cache?: boolean
+  is_cache?: boolean
+  quantidade_encontrada?: number
+  quantidade_elegivel?: number
+  propriedades?: Propriedade[]
   ja_cadastrado?: boolean
   message?: string
+  error?: string
 }
 
 export interface ConcluirCadastroRequest {
@@ -42,8 +49,8 @@ export interface ConcluirCadastroResponse {
   quantidade_propriedades?: number
 }
 
-export async function consultarCpf(cpf: string): Promise<ConsultaCadastroResponse> {
-  return pb.send('/backend/v1/cadastro/consultar-cpf', {
+export async function consultarPropriedades(cpf: string): Promise<ConsultaPropriedadesResponse> {
+  return pb.send('/backend/v1/cadastro/consultar-propriedades', {
     method: 'POST',
     body: JSON.stringify({ cpf }),
     headers: { 'Content-Type': 'application/json' },

@@ -1,16 +1,16 @@
-import { consultarCpf, type ConsultaCadastroResponse } from '@/services/cadastro'
+import { consultarPropriedades, type ConsultaPropriedadesResponse } from '@/services/cadastro'
 
 export interface CadastroProvider {
-  consultarCPF(cpf: string): Promise<ConsultaCadastroResponse>
+  consultarPropriedades(cpf: string): Promise<ConsultaPropriedadesResponse>
 }
 
-export class MockCadastroProvider implements CadastroProvider {
-  async consultarCPF(cpf: string): Promise<ConsultaCadastroResponse> {
-    return consultarCpf(cpf)
+export class SintegraProdutorRuralProvider implements CadastroProvider {
+  async consultarPropriedades(cpf: string): Promise<ConsultaPropriedadesResponse> {
+    return consultarPropriedades(cpf)
   }
 }
 
-const provider: CadastroProvider = new MockCadastroProvider()
+const provider: CadastroProvider = new SintegraProdutorRuralProvider()
 
 export function getCadastroProvider(): CadastroProvider {
   return provider

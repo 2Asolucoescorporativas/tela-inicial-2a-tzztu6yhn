@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import {
   normalizeName,
   validatePropertyName,
+  formatEndereco,
   type RegistrationFlowState,
 } from '@/lib/registration-utils'
 
@@ -16,7 +17,7 @@ export default function RegisterPropriedades() {
   const [nomes, setNomes] = useState<Record<string, string>>({})
   const [touched, setTouched] = useState<Set<string>>(new Set())
 
-  if (!state?.selectedCadastros?.length) {
+  if (!state?.selectedPropriedades?.length) {
     return <Navigate to="/register" replace />
   }
 
@@ -25,7 +26,7 @@ export default function RegisterPropriedades() {
     const baseError = validatePropertyName(name)
     if (baseError) return baseError
     const normalized = normalizeName(name)
-    for (const c of state.selectedCadastros) {
+    for (const c of state.selectedPropriedades) {
       if (c.inscricao_estadual === ie) continue
       const otherName = nomes[c.inscricao_estadual] || ''
       if (otherName && normalizeName(otherName) === normalized) {
@@ -35,7 +36,7 @@ export default function RegisterPropriedades() {
     return null
   }
 
-  const allValid = state.selectedCadastros.every(
+  const allValid = state.selectedPropriedades.every(
     (c) => getFieldError(c.inscricao_estadual) === null,
   )
 
@@ -48,7 +49,7 @@ export default function RegisterPropriedades() {
   }
 
   const handleContinue = () => {
-    const propriedadeNomes = state.selectedCadastros.map((c) => ({
+    const propriedadeNomes = state.selectedPropriedades.map((c) => ({
       inscricao_estadual: c.inscricao_estadual,
       nome: (nomes[c.inscricao_estadual] || '').trim(),
     }))
@@ -83,8 +84,8 @@ export default function RegisterPropriedades() {
           </div>
         )}
 
-        {state.selectedCadastros.map((cadastro) => {
-          const ie = cadastro.inscricao_estadual
+        {state.selectedPropriedades.map((propriedade) => {
+          const ie = propriedade.inscricao_estadual
           const error = touched.has(ie) ? getFieldError(ie) : null
           return (
             <div key={ie} className="bg-white rounded-[14px] shadow-md p-4 space-y-3">
@@ -95,12 +96,12 @@ export default function RegisterPropriedades() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Município</span>
-                  <span className="text-gray-900 font-medium">{cadastro.municipio}</span>
+                  <span className="text-gray-900 font-medium">{propriedade.municipio}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Endereço</span>
                   <span className="text-gray-900 font-medium text-right max-w-[60%]">
-                    {cadastro.endereco || '-'}
+                    {formatEndereco(propriedade)}
                   </span>
                 </div>
               </div>

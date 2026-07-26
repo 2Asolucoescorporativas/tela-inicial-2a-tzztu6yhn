@@ -29,7 +29,7 @@ export default function Register() {
     setErrorMsg('')
 
     try {
-      const result = await getCadastroProvider().consultarCPF(unmasked)
+      const result = await getCadastroProvider().consultarPropriedades(unmasked)
       if (result.ja_cadastrado) {
         setJaCadastrado(true)
         setLoading(false)

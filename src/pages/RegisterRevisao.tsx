@@ -27,12 +27,14 @@ export default function RegisterRevisao() {
   }
 
   const propriedades = state.propriedadeNomes.map((pn) => {
-    const cad = state.selectedCadastros.find((c) => c.inscricao_estadual === pn.inscricao_estadual)
+    const prop = state.selectedPropriedades.find(
+      (c) => c.inscricao_estadual === pn.inscricao_estadual,
+    )
     return {
       nome: pn.nome,
       inscricao_estadual: pn.inscricao_estadual,
-      municipio: cad?.municipio || '-',
-      uf: cad?.uf || '-',
+      municipio: prop?.municipio || '-',
+      uf: prop?.uf || '-',
     }
   })
 

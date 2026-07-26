@@ -1,18 +1,19 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Navigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Database } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import { maskCpf } from '@/lib/cpf-utils'
 import {
   isPropertyEligible,
   getIneligibilityReason,
+  formatEndereco,
   type RegistrationFlowState,
 } from '@/lib/registration-utils'
-import type { ConsultaCadastroResponse } from '@/services/cadastro'
+import type { ConsultaPropriedadesResponse } from '@/services/cadastro'
 
 interface ResultadosState {
-  result?: ConsultaCadastroResponse
+  result?: ConsultaPropriedadesResponse
   error?: string
 }
 
@@ -27,7 +28,9 @@ export default function RegisterResultados() {
   }
 
   const result = state.result
-  const isMock = result.source === 'MOCK'
+  const isMock = result.origem === 'mock'
+  const isCache = result.is_cache === true
+  const propriedades = result.propriedades || []
 
   const toggleSelection = (idx: number) => {
     setSelected((prev) => {
@@ -39,16 +42,17 @@ export default function RegisterResultados() {
   }
 
   const handleContinue = () => {
-    const selectedCadastros = result.cadastros
+    const selectedPropriedades = propriedades
       .filter((_, idx) => selected.has(idx))
       .filter(isPropertyEligible)
     navigate('/register/propriedades', {
       state: {
         consulta_id: result.consulta_id || '',
-        cpf: result.cadastros[0]?.cpf || '',
-        nomeUsuario: result.cadastros[0]?.nome || '',
-        selectedCadastros,
+        cpf: result.cpf || '',
+        nomeUsuario: result.nome || '',
+        selectedPropriedades,
         isMock,
+        isCache,
       } as RegistrationFlowState,
     })
   }
@@ -67,7 +71,19 @@ export default function RegisterResultados() {
           Cadastros Localizados
         </h1>
 
-        {isMock && (
+        {result.nome && (
+          <p className="text-center text-white/80 text-sm font-medium">{result.nome}</p>
+        )}
+        {result.cpf && <p className="text-center text-white/50 text-xs">{maskCpf(result.cpf)}</p>}
+
+        {isCache && (
+          <div className="flex items-center justify-center gap-1.5 text-white/40 text-xs">
+            <Database className="w-3 h-3" />
+            <span>Dados cadastrais obtidos da última consulta disponível.</span>
+          </div>
+        )}
+
+        {isMock && !isCache && (
           <div className="flex flex-col items-center">
             <span className="text-[10px] uppercase tracking-wide text-white/40 font-medium">
               AMBIENTE DE TESTE
@@ -76,10 +92,11 @@ export default function RegisterResultados() {
           </div>
         )}
 
-        {result.quantidade === 0 && (
+        {(result.quantidade_encontrada === 0 || propriedades.length === 0) && (
           <div className="flex flex-col items-center py-12 space-y-4">
             <p className="text-center text-base leading-relaxed" style={{ color: '#A8914E' }}>
-              Não foram encontradas inscrições estaduais vinculadas ao CPF informado.
+              Nenhuma inscrição estadual de produtor rural foi localizada no Paraná para o CPF
+              informado.
             </p>
             <button
               onClick={() => navigate('/register')}
@@ -91,9 +108,9 @@ export default function RegisterResultados() {
           </div>
         )}
 
-        {result.cadastros.map((cadastro, idx) => {
-          const eligible = isPropertyEligible(cadastro)
-          const reason = getIneligibilityReason(cadastro)
+        {propriedades.map((prop, idx) => {
+          const eligible = isPropertyEligible(prop)
+          const reason = getIneligibilityReason(prop)
           return (
             <div
               key={idx}
@@ -103,9 +120,11 @@ export default function RegisterResultados() {
               )}
             >
               <div className="flex items-start justify-between border-b border-gray-100 pb-2">
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">{cadastro.nome}</p>
-                  <p className="text-gray-500 text-xs">{maskCpf(cadastro.cpf)}</p>
+                <div className="space-y-0.5">
+                  <p className="font-bold text-gray-900 text-sm">{prop.inscricao_estadual}</p>
+                  <p className="text-gray-500 text-xs">
+                    {prop.municipio}/{prop.uf}
+                  </p>
                 </div>
                 <Checkbox
                   checked={selected.has(idx)}
@@ -116,38 +135,30 @@ export default function RegisterResultados() {
               </div>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">IE</span>
-                  <span className="text-gray-900 font-medium">{cadastro.inscricao_estadual}</span>
-                </div>
-                <div className="flex justify-between">
                   <span className="text-gray-500">Situação</span>
-                  <span className="text-gray-900 font-medium">{cadastro.situacao_ie}</span>
+                  <span className="text-gray-900 font-medium">
+                    {prop.situacao_cadastral || '-'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Tipo IE</span>
-                  <span className="text-gray-900 font-medium">{cadastro.tipo_ie}</span>
+                  <span className="text-gray-900 font-medium">{prop.tipo_ie || '-'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Município</span>
-                  <span className="text-gray-900 font-medium">{cadastro.municipio}</span>
+                  <span className="text-gray-500">Ativa</span>
+                  <span className="text-gray-900 font-medium">{prop.ativa ? 'Sim' : 'Não'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Endereço</span>
                   <span className="text-gray-900 font-medium text-right max-w-[60%]">
-                    {cadastro.endereco || '-'}
+                    {formatEndereco(prop)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">IBGE</span>
-                  <span className="text-gray-900 font-medium">{cadastro.codigo_ibge}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">CNAE</span>
-                  <span className="text-gray-900 font-medium">{cadastro.cnae}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Tipo Produtor</span>
-                  <span className="text-gray-900 font-medium">{cadastro.tipo_produtor}</span>
+                  <span className="text-gray-900 font-medium">
+                    {prop.codigo_municipio_ibge || '-'}
+                  </span>
                 </div>
               </div>
               {reason && <p className="text-xs text-red-500 font-medium">{reason}</p>}
@@ -155,7 +166,7 @@ export default function RegisterResultados() {
           )
         })}
 
-        {result.quantidade > 0 && (
+        {propriedades.length > 0 && (
           <button
             onClick={handleContinue}
             disabled={selected.size === 0}

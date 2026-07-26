@@ -1,17 +1,19 @@
-import type { Cadastro } from '@/services/cadastro'
+import type { Propriedade } from '@/services/cadastro'
 
-export function isPropertyEligible(cadastro: Cadastro): boolean {
-  return cadastro.situacao_ie === 'Habilitado' && cadastro.tipo_ie === 'IE de Produtor Rural'
+export function isPropertyEligible(propriedade: Propriedade): boolean {
+  return propriedade.elegivel_cadastro === true
 }
 
-export function getIneligibilityReason(cadastro: Cadastro): string | null {
-  if (cadastro.situacao_ie !== 'Habilitado') {
-    return 'Esta inscrição não está habilitada.'
-  }
-  if (cadastro.tipo_ie !== 'IE de Produtor Rural') {
-    return 'Esta inscrição não é classificada como IE de Produtor Rural.'
-  }
-  return null
+export function getIneligibilityReason(propriedade: Propriedade): string | null {
+  return propriedade.motivo_inelegibilidade || null
+}
+
+export function formatEndereco(propriedade: Propriedade): string {
+  const parts: string[] = []
+  if (propriedade.logradouro) parts.push(propriedade.logradouro)
+  if (propriedade.numero) parts.push(propriedade.numero)
+  if (propriedade.bairro) parts.push(propriedade.bairro)
+  return parts.join(', ') || '-'
 }
 
 export function normalizeName(name: string): string {
@@ -64,8 +66,9 @@ export interface RegistrationFlowState {
   consulta_id: string
   cpf: string
   nomeUsuario: string
-  selectedCadastros: Cadastro[]
+  selectedPropriedades: Propriedade[]
   isMock: boolean
+  isCache: boolean
   propriedadeNomes?: { inscricao_estadual: string; nome: string }[]
   senha?: string
 }

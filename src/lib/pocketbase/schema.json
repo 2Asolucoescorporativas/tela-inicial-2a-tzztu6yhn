@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T23:25:24.309Z",
+  "generatedAt": "2026-07-26T12:51:53.823Z",
   "collections": [
     {
       "name": "users",
@@ -351,6 +351,48 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "uf_consultada",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "resultado_normalizado",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "origem",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "origem_cache",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "data_expiracao",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "ip_origem",
+          "type": "text",
+          "required": false,
+          "system": false
         }
       ],
       "indexes": [
