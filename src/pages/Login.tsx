@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
-import { Logo2A } from '@/components/Logo2A'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react'
@@ -67,8 +66,6 @@ export default function Login() {
       </button>
 
       <div className="w-full max-w-sm flex flex-col items-center space-y-8 animate-fade-in-up">
-        <Logo2A size="sm" showTagline={true} linkTo="/" className="scale-110" />
-
         {showSuccessBanner && (
           <div className="w-full bg-green-500/15 border border-green-400/30 rounded-[14px] p-3 flex items-start gap-2 animate-fade-in">
             <CheckCircle className="w-5 h-5 text-green-300 flex-shrink-0 mt-0.5" />
@@ -141,6 +138,22 @@ export default function Login() {
             style={{ backgroundColor: '#A8914E', height: '56px' }}
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : 'ENTRAR'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setCpf('')
+              setPassword('')
+              setCpfError('')
+              setErrorMsg('')
+              setShowSuccessBanner(false)
+              navigate('/')
+            }}
+            className="w-[80%] mx-auto block text-white/80 font-medium text-base rounded-[14px] border border-white/20 hover:bg-white/5 active:scale-95 transition-all"
+            style={{ height: '48px' }}
+          >
+            Cancelar
           </button>
         </form>
 
