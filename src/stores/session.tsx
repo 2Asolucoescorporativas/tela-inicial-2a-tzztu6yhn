@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 
 const STORAGE_KEY = '2a-rural-active-property'
+const DRAFT_KEY = '2a-rural-draft-invoice'
 
 export type OperationType = 'VENDA_LEITE' | 'VENDA_GADO'
 
@@ -12,6 +13,22 @@ export interface SessionProperty {
   uf: string
 }
 
+export interface DraftInvoice {
+  tipoOperacao: OperationType
+  descricaoProduto: string
+  unidadeComercial: string
+  quantidade: number
+  valorUnitario: number
+  valorTotal: number
+  userId: string
+  cpf: string
+  propertyId: string
+  propertyName: string
+  cadastroPro: string
+  municipio: string
+  uf: string
+}
+
 interface SessionContextType {
   activeProperty: SessionProperty | null
   setActiveProperty: (prop: SessionProperty) => void
@@ -19,6 +36,9 @@ interface SessionContextType {
   operationType: OperationType | null
   setOperationType: (op: OperationType) => void
   clearOperationType: () => void
+  draftInvoice: DraftInvoice | null
+  setDraftInvoice: (draft: DraftInvoice) => void
+  clearDraftInvoice: () => void
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined)
@@ -41,6 +61,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const [operationType, setOperationTypeState] = useState<OperationType | null>(null)
 
+  const [draftInvoice, setDraftInvoiceState] = useState<DraftInvoice | null>(() => {
+    try {
+      const stored = sessionStorage.getItem(DRAFT_KEY)
+      return stored ? (JSON.parse(stored) as DraftInvoice) : null
+    } catch {
+      return null
+    }
+  })
+
   const setActiveProperty = (prop: SessionProperty) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(prop))
     setActivePropertyState(prop)
@@ -59,6 +88,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setOperationTypeState(null)
   }
 
+  const setDraftInvoice = (draft: DraftInvoice) => {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+    setDraftInvoiceState(draft)
+  }
+
+  const clearDraftInvoice = () => {
+    sessionStorage.removeItem(DRAFT_KEY)
+    setDraftInvoiceState(null)
+  }
+
   return (
     <SessionContext.Provider
       value={{
@@ -68,6 +107,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         operationType,
         setOperationType,
         clearOperationType,
+        draftInvoice,
+        setDraftInvoice,
+        clearDraftInvoice,
       }}
     >
       {children}
