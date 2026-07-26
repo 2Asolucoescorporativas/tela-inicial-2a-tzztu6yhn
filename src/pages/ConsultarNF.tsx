@@ -1,12 +1,25 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getInvoices, type InvoiceRecord } from '@/services/invoices'
+import { toast } from 'sonner'
+import { getInvoices, cancelInvoice, type InvoiceRecord } from '@/services/invoices'
 import { useRealtime } from '@/hooks/use-realtime'
 import { Logo2A } from '@/components/Logo2A'
+import { InvoiceActionsBar } from '@/components/InvoiceActionsBar'
+import { downloadInvoiceXml, printDanfe } from '@/lib/invoice-xml'
 import { normalizeForSearch } from '@/lib/search-utils'
 import { formatCurrency } from '@/lib/decimal-utils'
 import { cn } from '@/lib/utils'
-import { ArrowLeft, Search, FileText, ChevronDown, CalendarDays } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { ArrowLeft, Search, FileText, ChevronDown, Plus } from 'lucide-react'
 
 const STATUS_LABELS: Record<string, string> = {
   emitida: 'Emitida',
@@ -22,26 +35,17 @@ const STATUS_COLORS: Record<string, string> = {
   rascunho: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
 }
 
-const DATE_FILTERS = [
-  { key: 'all', label: 'Todas' },
-  { key: 'today', label: 'Hoje' },
-  { key: '7d', label: '7 dias' },
-  { key: '30d', label: '30 dias' },
-  { key: '90d', label: '90 dias' },
-] as const
-
-const STATUS_FILTERS = ['all', 'emitida', 'processando', 'cancelada', 'rascunho'] as const
-
 const PAGE_SIZE = 20
 
 export default function ConsultarNF() {
   const navigate = useNavigate()
   const [invoices, setInvoices] = useState<InvoiceRecord[]>([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [dateFilter, setDateFilter] = useState<string>('all')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [loading, setLoading] = useState(true)
+  const [cancelOpen, setCancelOpen] = useState(false)
+  const [canceling, setCanceling] = useState(false)
 
   const loadData = async () => {
     try {
@@ -62,48 +66,60 @@ export default function ConsultarNF() {
     loadData()
   })
 
+  useEffect(() => () => setSelectedId(null), [])
+
   const filtered = useMemo(() => {
     const q = normalizeForSearch(searchTerm)
     const digits = searchTerm.replace(/\D/g, '')
-
+    if (!q) return invoices
     return invoices.filter((inv) => {
-      if (statusFilter !== 'all' && inv.status !== statusFilter) return false
-
-      if (dateFilter !== 'all') {
-        const now = new Date()
-        const cutoff = new Date(now)
-        if (dateFilter === 'today') {
-          cutoff.setHours(0, 0, 0, 0)
-        } else {
-          const days = parseInt(dateFilter, 10)
-          cutoff.setDate(cutoff.getDate() - days)
-        }
-        if (new Date(inv.created) < cutoff) return false
-      }
-
-      if (!q) return true
-
       const textMatch =
         normalizeForSearch(inv.number).includes(q) ||
         normalizeForSearch(inv.recipient_name).includes(q) ||
-        normalizeForSearch(inv.recipient_document).includes(q) ||
-        normalizeForSearch(inv.items_summary || '').includes(q) ||
         normalizeForSearch(inv.producer_name).includes(q)
-
       const digitMatch =
         digits.length > 0 &&
         (inv.recipient_document.replace(/\D/g, '').includes(digits) ||
+          inv.cpf_cnpj.replace(/\D/g, '').includes(digits) ||
           inv.number.replace(/\D/g, '').includes(digits))
-
       return textMatch || digitMatch
     })
-  }, [invoices, searchTerm, statusFilter, dateFilter])
+  }, [invoices, searchTerm])
 
   const visible = filtered.slice(0, visibleCount)
+  const selectedInvoice = invoices.find((i) => i.id === selectedId) || null
 
-  const handleFilterChange = (setter: (v: string) => void) => (v: string) => {
-    setter(v)
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value)
+    setSelectedId(null)
     setVisibleCount(PAGE_SIZE)
+  }
+
+  const handleCardClick = (id: string) => {
+    setSelectedId((prev) => (prev === id ? null : id))
+  }
+
+  const handleCancel = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (!selectedInvoice) return
+    setCanceling(true)
+    try {
+      await cancelInvoice(selectedInvoice.id)
+      toast.success('Nota fiscal cancelada com sucesso.')
+      setInvoices((prev) =>
+        prev.map((i) => (i.id === selectedInvoice.id ? { ...i, status: 'cancelada' as const } : i)),
+      )
+      setSelectedId(null)
+      setCancelOpen(false)
+    } catch {
+      toast.error('Erro ao cancelar nota fiscal.')
+    } finally {
+      setCanceling(false)
+    }
+  }
+
+  const handleSend = () => {
+    toast.info('Transmissao para SEFAZ sera implementada em breve.')
   }
 
   return (
@@ -122,59 +138,26 @@ export default function ConsultarNF() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto">
+      <div
+        className={cn(
+          'flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto',
+          selectedId && 'pb-28',
+        )}
+      >
         <h1 className="text-xl font-bold text-white text-center mb-1">Consultar Notas Fiscais</h1>
         <p className="text-xs text-white/50 text-center mb-5">
           {filtered.length} {filtered.length === 1 ? 'nota encontrada' : 'notas encontradas'}
         </p>
 
-        <div className="relative mb-4">
+        <div className="relative mb-5">
           <Search className="w-4 h-4 text-white/50 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value)
-              setVisibleCount(PAGE_SIZE)
-            }}
-            placeholder="Buscar por número, cliente, CPF/CNPJ..."
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder="Buscar por numero, cliente, CPF/CNPJ..."
             className="w-full bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-white/40 outline-none focus:ring-2 focus:ring-[#A8914E]"
           />
-        </div>
-
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
-          {STATUS_FILTERS.map((s) => (
-            <button
-              key={s}
-              onClick={() => handleFilterChange(setStatusFilter)(s)}
-              className={cn(
-                'px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors',
-                statusFilter === s
-                  ? 'bg-[#A8914E] text-[#002C45]'
-                  : 'bg-white/10 text-white/60 hover:bg-white/20',
-              )}
-            >
-              {s === 'all' ? 'Todas' : STATUS_LABELS[s]}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
-          {DATE_FILTERS.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => handleFilterChange(setDateFilter)(f.key)}
-              className={cn(
-                'px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1',
-                dateFilter === f.key
-                  ? 'bg-[#A8914E] text-[#002C45]'
-                  : 'bg-white/10 text-white/60 hover:bg-white/20',
-              )}
-            >
-              {f.key !== 'all' && <CalendarDays className="w-3 h-3" />}
-              {f.label}
-            </button>
-          ))}
         </div>
 
         {loading ? (
@@ -184,15 +167,28 @@ export default function ConsultarNF() {
         ) : visible.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
             <FileText className="w-12 h-12 text-white/30" />
-            <p className="text-sm text-white/60">Nenhuma nota emitida ainda.</p>
+            <p className="text-sm text-white/60">Nenhuma nota fiscal emitida.</p>
+            <button
+              onClick={() => navigate('/emitir-nf')}
+              className="bg-gold-gradient text-[#002C45] font-bold px-6 py-2.5 rounded-xl text-sm flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Emitir Nota Fiscal
+            </button>
           </div>
         ) : (
           <>
             <div className="space-y-3">
               {visible.map((inv) => (
-                <div
+                <button
                   key={inv.id}
-                  className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2"
+                  onClick={() => handleCardClick(inv.id)}
+                  className={cn(
+                    'w-full text-left rounded-xl p-4 space-y-2 transition-all duration-150 border',
+                    selectedId === inv.id
+                      ? 'bg-[#A8914E]/15 border-[#A8914E] ring-1 ring-[#A8914E]'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10',
+                  )}
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-bold text-white">NFe {inv.number}</span>
@@ -206,23 +202,11 @@ export default function ConsultarNF() {
                     </span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-white/60">Destinatário</span>
+                    <span className="text-white/60">Destinatario</span>
                     <span className="text-white font-medium text-right max-w-[60%] truncate">
                       {inv.recipient_name}
                     </span>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-white/60">Documento</span>
-                    <span className="text-white/70">{inv.recipient_document}</span>
-                  </div>
-                  {inv.items_summary && (
-                    <div className="flex justify-between text-xs">
-                      <span className="text-white/60">Produto</span>
-                      <span className="text-white/70 text-right max-w-[60%] truncate">
-                        {inv.items_summary}
-                      </span>
-                    </div>
-                  )}
                   <div className="flex justify-between text-xs">
                     <span className="text-white/60">Total</span>
                     <span className="text-[#A8914E] font-bold">
@@ -230,7 +214,7 @@ export default function ConsultarNF() {
                     </span>
                   </div>
                   <div className="flex justify-between text-xs pt-1 border-t border-white/10">
-                    <span className="text-white/60">Emissão</span>
+                    <span className="text-white/60">Emissao</span>
                     <span className="text-white/70">
                       {new Date(inv.created).toLocaleDateString('pt-BR', {
                         day: '2-digit',
@@ -239,7 +223,7 @@ export default function ConsultarNF() {
                       })}
                     </span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
 
@@ -255,6 +239,43 @@ export default function ConsultarNF() {
           </>
         )}
       </div>
+
+      {selectedInvoice && (
+        <InvoiceActionsBar
+          invoice={selectedInvoice}
+          onDownloadXml={() => downloadInvoiceXml(selectedInvoice)}
+          onPrintDanfe={() => printDanfe(selectedInvoice)}
+          onSend={handleSend}
+          onCancel={() => setCancelOpen(true)}
+        />
+      )}
+
+      <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <AlertDialogContent className="bg-[#002C45] text-white border-white/10 max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-[#F9E27D]">Cancelar Nota Fiscal</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/70">
+              Tem certeza que deseja cancelar a NFe {selectedInvoice?.number}? Esta acao nao pode
+              ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+              disabled={canceling}
+            >
+              Voltar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancel}
+              disabled={canceling}
+              className="bg-red-500 hover:bg-red-600 text-white border-0"
+            >
+              {canceling ? 'Cancelando...' : 'Confirmar Cancelamento'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

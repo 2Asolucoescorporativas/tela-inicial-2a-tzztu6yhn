@@ -43,3 +43,11 @@ export const getNextInvoiceNumber = async (): Promise<{ number: string; series: 
 export const createInvoice = async (data: Omit<InvoiceRecord, 'id' | 'created' | 'updated'>) => {
   return pb.collection('invoices').create<InvoiceRecord>(data)
 }
+
+export const updateInvoiceStatus = async (id: string, status: InvoiceRecord['status']) => {
+  return pb.collection('invoices').update<InvoiceRecord>(id, { status })
+}
+
+export const cancelInvoice = async (id: string) => {
+  return updateInvoiceStatus(id, 'cancelada')
+}
