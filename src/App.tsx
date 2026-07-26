@@ -18,6 +18,8 @@ import RegisterSenha from './pages/RegisterSenha'
 import RegisterRevisao from './pages/RegisterRevisao'
 import SelectProperty from './pages/SelectProperty'
 import NotaFiscal from './pages/NotaFiscal'
+import EmitirNF from './pages/EmitirNF'
+import ConsultarNF from './pages/ConsultarNF'
 import Configuracoes from './pages/Configuracoes'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
@@ -85,6 +87,22 @@ const App = () => (
                 element={
                   <RequireProperty>
                     <Configuracoes />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/emitir-nf"
+                element={
+                  <RequireProperty>
+                    <EmitirNF />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/consultar-nf"
+                element={
+                  <RequireProperty>
+                    <ConsultarNF />
                   </RequireProperty>
                 }
               />
