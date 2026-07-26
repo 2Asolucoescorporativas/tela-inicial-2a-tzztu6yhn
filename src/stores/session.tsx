@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactNode } from 'react'
 
 const STORAGE_KEY = '2a-rural-active-property'
 const DRAFT_KEY = '2a-rural-draft-invoice'
+const RECIPIENT_KEY = '2a-rural-recipient'
 
 export type OperationType = 'VENDA_LEITE' | 'VENDA_GADO'
 
@@ -11,6 +12,20 @@ export interface SessionProperty {
   inscricao_estadual: string
   municipio: string
   uf: string
+  codigo_ibge?: string
+  endereco?: string
+}
+
+export interface SessionRecipient {
+  cnpj: string
+  razaoSocial: string
+  ie: string
+  logradouro: string
+  numero: string
+  bairro: string
+  municipio: string
+  uf: string
+  cMun: string
 }
 
 export interface DraftInvoice {
@@ -27,6 +42,22 @@ export interface DraftInvoice {
   cadastroPro: string
   municipio: string
   uf: string
+  nNF?: string
+  serie?: number
+  nfeXml?: string
+  nfeObject?: Record<string, unknown>
+}
+
+const DEFAULT_RECIPIENT: SessionRecipient = {
+  cnpj: '12345678000190',
+  razaoSocial: 'LATICÍNIOS BOA SORTE LTDA',
+  ie: '123456789',
+  logradouro: 'Rodovia BR-153',
+  numero: 'Km 42',
+  bairro: 'Zona Rural',
+  municipio: 'Goiânia',
+  uf: 'GO',
+  cMun: '5208707',
 }
 
 interface SessionContextType {
@@ -39,6 +70,9 @@ interface SessionContextType {
   draftInvoice: DraftInvoice | null
   setDraftInvoice: (draft: DraftInvoice) => void
   clearDraftInvoice: () => void
+  recipient: SessionRecipient | null
+  setRecipient: (r: SessionRecipient) => void
+  clearRecipient: () => void
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined)
@@ -58,9 +92,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       return null
     }
   })
-
   const [operationType, setOperationTypeState] = useState<OperationType | null>(null)
-
   const [draftInvoice, setDraftInvoiceState] = useState<DraftInvoice | null>(() => {
     try {
       const stored = sessionStorage.getItem(DRAFT_KEY)
@@ -69,33 +101,40 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       return null
     }
   })
+  const [recipient, setRecipientState] = useState<SessionRecipient | null>(() => {
+    try {
+      const stored = sessionStorage.getItem(RECIPIENT_KEY)
+      return stored ? (JSON.parse(stored) as SessionRecipient) : DEFAULT_RECIPIENT
+    } catch {
+      return DEFAULT_RECIPIENT
+    }
+  })
 
   const setActiveProperty = (prop: SessionProperty) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(prop))
     setActivePropertyState(prop)
   }
-
   const clearActiveProperty = () => {
     sessionStorage.removeItem(STORAGE_KEY)
     setActivePropertyState(null)
   }
-
-  const setOperationType = (op: OperationType) => {
-    setOperationTypeState(op)
-  }
-
-  const clearOperationType = () => {
-    setOperationTypeState(null)
-  }
-
+  const setOperationType = (op: OperationType) => setOperationTypeState(op)
+  const clearOperationType = () => setOperationTypeState(null)
   const setDraftInvoice = (draft: DraftInvoice) => {
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
     setDraftInvoiceState(draft)
   }
-
   const clearDraftInvoice = () => {
     sessionStorage.removeItem(DRAFT_KEY)
     setDraftInvoiceState(null)
+  }
+  const setRecipient = (r: SessionRecipient) => {
+    sessionStorage.setItem(RECIPIENT_KEY, JSON.stringify(r))
+    setRecipientState(r)
+  }
+  const clearRecipient = () => {
+    sessionStorage.removeItem(RECIPIENT_KEY)
+    setRecipientState(null)
   }
 
   return (
@@ -110,6 +149,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         draftInvoice,
         setDraftInvoice,
         clearDraftInvoice,
+        recipient,
+        setRecipient,
+        clearRecipient,
       }}
     >
       {children}

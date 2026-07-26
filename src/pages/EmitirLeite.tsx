@@ -11,12 +11,15 @@ import {
   numberToCommaString,
   sanitizeNumericInput,
 } from '@/lib/decimal-utils'
-import { ArrowLeft } from 'lucide-react'
+import { generateNfe } from '@/lib/nfe-generator'
+import { FISCAL_CONFIG } from '@/lib/fiscal-config'
+import { getNextInvoiceNumber } from '@/services/invoices'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 
 export default function EmitirLeite() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { activeProperty, draftInvoice, setDraftInvoice } = useSession()
+  const { activeProperty, draftInvoice, setDraftInvoice, recipient } = useSession()
 
   const [quantidade, setQuantidade] = useState(() =>
     draftInvoice?.tipoOperacao === 'VENDA_LEITE' && draftInvoice.quantidade
@@ -29,49 +32,94 @@ export default function EmitirLeite() {
       : '',
   )
   const [touched, setTouched] = useState({ quantidade: false, valorUnitario: false })
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
 
   const qtyNum = parseCommaDecimal(quantidade)
   const priceNum = parseCommaDecimal(valorUnitario)
   const isFormValid = !isNaN(qtyNum) && qtyNum > 0 && !isNaN(priceNum) && priceNum > 0
   const total = isFormValid ? calculateTotal(qtyNum, priceNum) : 0
 
-  const qtyValue = quantidade.replace(/,/g, '').trim()
   const qtyError = touched.quantidade
-    ? !qtyValue
+    ? !quantidade.replace(/,/g, '').trim()
       ? 'Informe a quantidade de leite.'
       : qtyNum <= 0
         ? 'A quantidade deve ser maior que zero.'
         : undefined
     : undefined
-
-  const priceValue = valorUnitario.replace(/,/g, '').trim()
   const priceError = touched.valorUnitario
-    ? !priceValue
+    ? !valorUnitario.replace(/,/g, '').trim()
       ? 'Informe o valor unitário do leite.'
       : priceNum <= 0
         ? 'O valor unitário deve ser maior que zero.'
         : undefined
     : undefined
 
-  const handleContinuar = () => {
+  const handleContinuar = async () => {
     if (!isFormValid || !user || !activeProperty) return
-    const draft: DraftInvoice = {
-      tipoOperacao: 'VENDA_LEITE',
-      descricaoProduto: 'LEITE CRU',
-      unidadeComercial: 'L',
-      quantidade: qtyNum,
-      valorUnitario: priceNum,
-      valorTotal: total,
-      userId: user.id,
-      cpf: user.cpf || '',
-      propertyId: activeProperty.id,
-      propertyName: activeProperty.nome,
-      cadastroPro: activeProperty.inscricao_estadual,
-      municipio: activeProperty.municipio,
-      uf: activeProperty.uf,
+    if (!user.cpf || !recipient) {
+      setGenerateError(
+        'Dados insuficientes para gerar o XML. Verifique se o destinatário foi selecionado.',
+      )
+      return
     }
-    setDraftInvoice(draft)
-    navigate('/emitir-leite/next')
+    setIsGenerating(true)
+    setGenerateError(null)
+    try {
+      const { nextNumber } = await getNextInvoiceNumber()
+      const nNF = String(parseInt(nextNumber.replace(/\./g, ''), 10))
+      const { data, xml } = generateNfe({
+        userCpf: user.cpf,
+        userName: user.name || activeProperty.nome,
+        property: {
+          inscricao_estadual: activeProperty.inscricao_estadual,
+          municipio: activeProperty.municipio,
+          uf: activeProperty.uf,
+          codigo_ibge: activeProperty.codigo_ibge,
+          endereco: activeProperty.endereco,
+        },
+        recipient: {
+          cnpj: recipient.cnpj,
+          razaoSocial: recipient.razaoSocial,
+          ie: recipient.ie,
+          logradouro: recipient.logradouro,
+          numero: recipient.numero,
+          bairro: recipient.bairro,
+          municipio: recipient.municipio,
+          uf: recipient.uf,
+          cMun: recipient.cMun,
+        },
+        quantidade: qtyNum,
+        valorUnitario: priceNum,
+        valorTotal: total,
+        nNF,
+      })
+      const draft: DraftInvoice = {
+        tipoOperacao: 'VENDA_LEITE',
+        descricaoProduto: 'LEITE CRU',
+        unidadeComercial: 'L',
+        quantidade: qtyNum,
+        valorUnitario: priceNum,
+        valorTotal: total,
+        userId: user.id,
+        cpf: user.cpf,
+        propertyId: activeProperty.id,
+        propertyName: activeProperty.nome,
+        cadastroPro: activeProperty.inscricao_estadual,
+        municipio: activeProperty.municipio,
+        uf: activeProperty.uf,
+        nNF,
+        serie: FISCAL_CONFIG.serie,
+        nfeXml: xml,
+        nfeObject: data,
+      }
+      setDraftInvoice(draft)
+      navigate('/emitir-leite/next')
+    } catch {
+      setGenerateError('Erro ao gerar XML. Tente novamente.')
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   return (
@@ -114,14 +162,12 @@ export default function EmitirLeite() {
               LEITE CRU
             </div>
           </div>
-
           <div>
             <label className="text-sm text-white/70 mb-1.5 block">Unidade de Medida</label>
             <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 text-base">
               L – Litro
             </div>
           </div>
-
           <div>
             <label className="text-sm text-white/70 mb-1.5 block">Quantidade (L) *</label>
             <input
@@ -135,7 +181,6 @@ export default function EmitirLeite() {
             />
             {qtyError && <p className="text-sm text-red-400 mt-1">{qtyError}</p>}
           </div>
-
           <div>
             <label className="text-sm text-white/70 mb-1.5 block">Valor Unitário (R$/L) *</label>
             <div className="relative">
@@ -154,25 +199,36 @@ export default function EmitirLeite() {
             </div>
             {priceError && <p className="text-sm text-red-400 mt-1">{priceError}</p>}
           </div>
-
           <div className="bg-white rounded-xl border-l-4 border-[#A8914E] px-5 py-4 mt-6">
             <p className="text-sm font-bold text-[#002C45] tracking-wide">VALOR TOTAL</p>
             <p className="text-3xl font-extrabold text-[#002C45] mt-1">{formatCurrency(total)}</p>
           </div>
         </div>
 
+        {generateError && (
+          <div className="mt-4 bg-red-500/20 border border-red-500/40 rounded-xl px-4 py-3">
+            <p className="text-sm text-red-300">{generateError}</p>
+          </div>
+        )}
+
         <div className="mt-auto pt-6">
           <button
             onClick={handleContinuar}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isGenerating}
             className={cn(
-              'w-full rounded-xl py-4 px-6 font-bold text-lg transition-all',
-              isFormValid
+              'w-full rounded-xl py-4 px-6 font-bold text-lg transition-all flex items-center justify-center gap-2',
+              isFormValid && !isGenerating
                 ? 'bg-white border-2 border-[#A8914E] text-[#002C45] hover:brightness-95 active:scale-[0.98]'
                 : 'bg-white/10 border-2 border-white/20 text-white/30 cursor-not-allowed',
             )}
           >
-            Continuar
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" /> Gerando XML...
+              </>
+            ) : (
+              'Continuar'
+            )}
           </button>
         </div>
       </div>
