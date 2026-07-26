@@ -2,6 +2,8 @@ import { createContext, useContext, useState, ReactNode } from 'react'
 
 const STORAGE_KEY = '2a-rural-active-property'
 
+export type OperationType = 'VENDA_LEITE' | 'VENDA_GADO'
+
 export interface SessionProperty {
   id: string
   nome: string
@@ -14,6 +16,9 @@ interface SessionContextType {
   activeProperty: SessionProperty | null
   setActiveProperty: (prop: SessionProperty) => void
   clearActiveProperty: () => void
+  operationType: OperationType | null
+  setOperationType: (op: OperationType) => void
+  clearOperationType: () => void
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined)
@@ -34,6 +39,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     }
   })
 
+  const [operationType, setOperationTypeState] = useState<OperationType | null>(null)
+
   const setActiveProperty = (prop: SessionProperty) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(prop))
     setActivePropertyState(prop)
@@ -44,8 +51,25 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setActivePropertyState(null)
   }
 
+  const setOperationType = (op: OperationType) => {
+    setOperationTypeState(op)
+  }
+
+  const clearOperationType = () => {
+    setOperationTypeState(null)
+  }
+
   return (
-    <SessionContext.Provider value={{ activeProperty, setActiveProperty, clearActiveProperty }}>
+    <SessionContext.Provider
+      value={{
+        activeProperty,
+        setActiveProperty,
+        clearActiveProperty,
+        operationType,
+        setOperationType,
+        clearOperationType,
+      }}
+    >
       {children}
     </SessionContext.Provider>
   )

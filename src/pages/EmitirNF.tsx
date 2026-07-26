@@ -1,13 +1,31 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
-import { useSession } from '@/stores/session'
+import { useSession, type OperationType } from '@/stores/session'
 import { Logo2A } from '@/components/Logo2A'
-import { ArrowLeft, FilePlus2 } from 'lucide-react'
+import { ArrowLeft, Milk, Beef } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+
+interface OperationOption {
+  id: OperationType
+  label: string
+  icon: LucideIcon
+  route: string
+}
+
+const OPERATION_OPTIONS: OperationOption[] = [
+  { id: 'VENDA_LEITE', label: 'VENDA DE LEITE', icon: Milk, route: '/emitir-leite' },
+  { id: 'VENDA_GADO', label: 'VENDA DE GADO', icon: Beef, route: '/emitir-gado' },
+]
 
 export default function EmitirNF() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { activeProperty } = useSession()
+  const { activeProperty, setOperationType } = useSession()
+
+  const handleSelect = (op: OperationOption) => {
+    setOperationType(op.id)
+    navigate(op.route)
+  }
 
   return (
     <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
@@ -25,17 +43,41 @@ export default function EmitirNF() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-5 text-center gap-4 animate-fade-in">
-        <div className="p-4 bg-[#A8914E]/10 rounded-2xl">
-          <FilePlus2 className="w-12 h-12 text-[#A8914E]" />
-        </div>
-        <h1 className="text-xl font-bold text-white">Emitir Nota Fiscal</h1>
-        <p className="text-sm text-white/60">Página em construção</p>
-        {activeProperty && (
-          <p className="text-xs text-white/40">
-            {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estadual}
+      <div className="flex-1 flex flex-col px-5 pt-8 pb-10 animate-fade-in">
+        <div className="text-center space-y-1 mb-8">
+          <h2 className="text-base font-semibold text-white/80 tracking-wide">
+            {user?.name || 'Usuário'}
+          </h2>
+          <h1 className="text-2xl font-extrabold text-white leading-tight">
+            {activeProperty?.nome || 'Propriedade'}
+          </h1>
+          <p className="text-sm text-[#A8914E] font-medium">
+            CAD/PRO: {activeProperty?.inscricao_estadual || '—'}
           </p>
-        )}
+        </div>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-white">Emitir Nota Fiscal</h2>
+          <p className="text-sm text-white/60 mt-1">Selecione o tipo de operação.</p>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center gap-6">
+          {OPERATION_OPTIONS.map((op) => {
+            const Icon = op.icon
+            return (
+              <button
+                key={op.id}
+                onClick={() => handleSelect(op)}
+                className="w-[85%] max-w-[400px] bg-white border-2 border-[#A8914E] text-[#002C45] font-bold text-lg rounded-2xl py-6 px-6 flex items-center gap-4 shadow-md hover:brightness-95 active:scale-[0.98] transition-all"
+              >
+                <div className="p-2.5 bg-[#A8914E]/10 rounded-xl">
+                  <Icon className="w-7 h-7 text-[#A8914E]" />
+                </div>
+                <span className="tracking-wide">{op.label}</span>
+              </button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

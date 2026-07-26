@@ -19,6 +19,8 @@ import RegisterRevisao from './pages/RegisterRevisao'
 import SelectProperty from './pages/SelectProperty'
 import NotaFiscal from './pages/NotaFiscal'
 import EmitirNF from './pages/EmitirNF'
+import EmitirLeite from './pages/EmitirLeite'
+import EmitirGado from './pages/EmitirGado'
 import ConsultarNF from './pages/ConsultarNF'
 import Configuracoes from './pages/Configuracoes'
 import NotFound from './pages/NotFound'
@@ -95,6 +97,22 @@ const App = () => (
                 element={
                   <RequireProperty>
                     <EmitirNF />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/emitir-leite"
+                element={
+                  <RequireProperty>
+                    <EmitirLeite />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/emitir-gado"
+                element={
+                  <RequireProperty>
+                    <EmitirGado />
                   </RequireProperty>
                 }
               />
