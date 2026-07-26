@@ -72,8 +72,6 @@ routerAdd(
 
     var rawJson = res.json || {}
 
-    // Unwrap nested response — SintegraAPI v2 may nest the payload under
-    // 'data', 'dados', or 'resultado'. Fall back to the top-level object.
     var d = rawJson
     if (d.data && typeof d.data === 'object' && !Array.isArray(d.data)) {
       d = d.data
@@ -88,21 +86,8 @@ routerAdd(
     var situacaoPj = String(d.situacao_pj || d.situacao || d.situacao_cadastral || d.status || '')
     var updatedAt = String(d.updated_at || d.data || d.data_consulta || d.data_atualizacao || '')
 
-    // Extract endereco from multiple possible response structures
-    var endObj = {}
-    if (d.endereco && typeof d.endereco === 'object') {
-      endObj = d.endereco
-    } else if (d.dados_endereco && typeof d.dados_endereco === 'object') {
-      endObj = d.dados_endereco
-    } else if (d.endereco_completo && typeof d.endereco_completo === 'object') {
-      endObj = d.endereco_completo
-    }
-
-    // Build logradouro — combine tipo_logradouro + logradouro when both exist
-    var tipoLog = String(endObj.tipo_logradouro || d.tipo_logradouro || '').trim()
-    var nomeLog = String(
-      endObj.logradouro || endObj.rua || endObj.endereco || d.logradouro || d.endereco || '',
-    ).trim()
+    var tipoLog = String(d.tipo_logradouro || '').trim()
+    var nomeLog = String(d.logradouro || d.endereco || '').trim()
     var logradouro = ''
     if (tipoLog && nomeLog) {
       logradouro = tipoLog + ' ' + nomeLog
@@ -114,28 +99,17 @@ routerAdd(
 
     var endereco = {
       logradouro: logradouro,
-      numero: String(endObj.numero || endObj.num || d.numero || ''),
-      complemento: String(endObj.complemento || d.complemento || ''),
-      bairro: String(endObj.bairro || endObj.distrito || d.bairro || ''),
-      municipio: String(
-        endObj.municipio || endObj.cidade || endObj.municipio_nome || d.municipio || d.cidade || '',
-      ),
-      codigo_ibge: String(
-        endObj.codigo_ibge ||
-          endObj.codigo_municipio ||
-          endObj.cod_ibge ||
-          endObj.ibge ||
-          d.codigo_ibge ||
-          d.codigo_municipio ||
-          '',
-      ),
-      cep: String(endObj.cep || d.cep || ''),
-      uf: String(endObj.uf || endObj.estado || uf),
+      numero: String(d.numero || ''),
+      complemento: String(d.complemento || ''),
+      bairro: String(d.bairro || ''),
+      municipio: String(d.municipio || d.cidade || ''),
+      codigo_ibge: String(d.codigo_ibge || d.codigo_municipio || d.cod_ibge || ''),
+      cep: String(d.cep || ''),
+      uf: String(d.uf || d.estado || uf),
       pais: 'Brasil',
       codigo_pais: '1058',
     }
 
-    // Extract inscricoes estaduais from multiple possible array keys
     var rawInscricoes = d.inscricoes_estaduais
     if (!Array.isArray(rawInscricoes)) {
       rawInscricoes = d.inscricoes || d.ies || d.inscricoesEstaduais || []
@@ -155,6 +129,9 @@ routerAdd(
 
       if (!isAtiva) continue
 
+      var inscUf = String(insc.uf || insc.estado || '').toUpperCase()
+      if (inscUf && inscUf !== uf) continue
+
       activeIes.push({
         inscricao_estadual: String(
           insc.inscricao_estadual || insc.ie || insc.numero || insc.numero_inscricao || '',
@@ -162,6 +139,29 @@ routerAdd(
         tipo_ie: String(insc.tipo_ie || insc.tipo || insc.tipo_inscricao || 'Contribuinte'),
         ativa: true,
       })
+    }
+
+    if (activeIes.length === 0) {
+      for (var j = 0; j < rawInscricoes.length; j++) {
+        var insc2 = rawInscricoes[j]
+        if (!insc2 || typeof insc2 !== 'object') continue
+
+        var situacaoVal2 = String(
+          insc2.situacao || insc2.situacao_ie || insc2.situacao_cadastral || insc2.status || '',
+        )
+        var isAtiva2 =
+          situacaoVal2.toLowerCase() === 'ativa' || situacaoVal2.toLowerCase() === 'habilitado'
+
+        if (!isAtiva2) continue
+
+        activeIes.push({
+          inscricao_estadual: String(
+            insc2.inscricao_estadual || insc2.ie || insc2.numero || insc2.numero_inscricao || '',
+          ),
+          tipo_ie: String(insc2.tipo_ie || insc2.tipo || insc2.tipo_inscricao || 'Contribuinte'),
+          ativa: true,
+        })
+      }
     }
 
     var inscricaoEstadualField
