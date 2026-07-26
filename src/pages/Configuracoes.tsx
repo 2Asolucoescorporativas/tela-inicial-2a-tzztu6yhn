@@ -19,17 +19,33 @@ export default function Configuracoes() {
         <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-5 text-center gap-4 animate-fade-in">
-        <div className="p-4 bg-[#A8914E]/10 rounded-2xl">
-          <Settings className="w-12 h-12 text-[#A8914E]" />
+      <div className="flex-1 px-5 py-6 space-y-8 animate-fade-in">
+        <div className="flex flex-col items-center gap-3 text-center pt-4">
+          <div className="p-4 bg-[#A8914E]/10 rounded-2xl">
+            <Settings className="w-12 h-12 text-[#A8914E]" />
+          </div>
+          <h1 className="text-xl font-bold text-white">Configurações</h1>
+          {activeProperty && (
+            <p className="text-xs text-white/40">
+              {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estadual}
+            </p>
+          )}
         </div>
-        <h1 className="text-xl font-bold text-white">Configurações</h1>
-        <p className="text-sm text-white/60">Página em construção</p>
-        {activeProperty && (
-          <p className="text-xs text-white/40">
-            {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estadual}
-          </p>
-        )}
+        <div className="space-y-3 max-w-sm mx-auto w-full">
+          <button
+            onClick={() => navigate('/cadastrar-cliente')}
+            className="w-full text-white font-bold text-base rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all"
+            style={{ backgroundColor: '#A8914E', height: '52px' }}
+          >
+            Cadastrar Cliente
+          </button>
+          <button
+            className="w-full text-white font-medium text-base rounded-[14px] border border-white/20 hover:bg-white/5 active:scale-95 transition-all"
+            style={{ height: '52px' }}
+          >
+            Outras Configurações
+          </button>
+        </div>
       </div>
     </div>
   )
