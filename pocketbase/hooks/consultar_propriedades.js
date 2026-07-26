@@ -1,6 +1,7 @@
 routerAdd('POST', '/backend/v1/cadastro/consultar-propriedades', (e) => {
   var body = e.requestInfo().body || {}
   var cpf = String(body.cpf || '').replace(/\D/g, '')
+  var debug = body.debug === true
   var requestId = $security.randomString(16)
   var startTime = new Date().getTime()
   var maskedCpf = '***.***.***-' + cpf.slice(-2)
@@ -310,19 +311,35 @@ routerAdd('POST', '/backend/v1/cadastro/consultar-propriedades', (e) => {
     externalData = { nome: mockNome, cpf: cpf, inscricoes: mockProps, origem: 'mock', cache: false }
   }
 
-  console.log('TEMPORARY DIAGNOSTIC - FULL API RESPONSE:', JSON.stringify(externalData))
-
   var nomeConsulta = externalData.nome || externalData.razao_social || ''
-  var inscricoes = externalData.inscricoes || externalData.propriedades || []
+
+  var inscricoes = externalData.inscricoes_estaduais
+  if (!inscricoes) inscricoes = externalData.inscricoes
+  if (!inscricoes) inscricoes = externalData.propriedades
+
+  if (!inscricoes && externalData.data) {
+    var nestedData = externalData.data
+    if (!nomeConsulta) {
+      nomeConsulta = nestedData.nome || nestedData.razao_social || ''
+    }
+    inscricoes = nestedData.inscricoes_estaduais
+    if (!inscricoes) inscricoes = nestedData.inscricoes
+    if (!inscricoes) inscricoes = nestedData.propriedades
+  }
+
+  if (!inscricoes || !Array.isArray(inscricoes)) inscricoes = []
 
   var propriedades = []
   for (var i = 0; i < inscricoes.length; i++) {
     var insc = inscricoes[i]
+    if (!insc || typeof insc !== 'object') continue
+
     var ativa =
       insc.ativa !== undefined
         ? insc.ativa === true
-        : String(insc.situacao || insc.situacao_cadastral || '').toLowerCase() === 'habilitado' ||
-          String(insc.situacao || '').toLowerCase() === 'ativo'
+        : String(
+            insc.situacao || insc.situacao_cadastral || insc.situacao_ie || '',
+          ).toLowerCase() === 'habilitado' || String(insc.situacao || '').toLowerCase() === 'ativo'
     var tipoIe = String(insc.tipo_ie || insc.tipo || '').trim()
     var elegivel = ativa === true && tipoIe.toLowerCase() === 'ie de produtor rural'
     var motivo = null
@@ -336,7 +353,7 @@ routerAdd('POST', '/backend/v1/cadastro/consultar-propriedades', (e) => {
     }
 
     propriedades.push({
-      inscricao_estadual: String(insc.inscricao_estadual || insc.ie || ''),
+      inscricao_estadual: String(insc.inscricao_estadual || insc.ie || insc.numero_inscricao || ''),
       uf: String(insc.uf || DEFAULT_UF),
       ativa: ativa,
       tipo_ie: tipoIe,
@@ -344,14 +361,14 @@ routerAdd('POST', '/backend/v1/cadastro/consultar-propriedades', (e) => {
         insc.situacao_cadastral || insc.situacao || insc.situacao_ie || '',
       ),
       data_status: String(insc.data_status || insc.data || ''),
-      municipio: String(insc.municipio || ''),
+      municipio: String(insc.municipio || insc.nome_municipio || ''),
       codigo_municipio_ibge: String(insc.codigo_municipio_ibge || insc.codigo_ibge || ''),
       logradouro: String(insc.logradouro || insc.endereco || ''),
       numero: String(insc.numero || ''),
       bairro: String(insc.bairro || ''),
       cep: String(insc.cep || ''),
       elegivel_cadastro: elegivel,
-      motivo_inelegibilidade: motivo,
+      motivo_inegibilidade: motivo,
     })
   }
 
@@ -375,6 +392,22 @@ routerAdd('POST', '/backend/v1/cadastro/consultar-propriedades', (e) => {
     quantidade_encontrada: propriedades.length,
     quantidade_elegivel: quantidadeElegivel,
     propriedades: propriedades,
+  }
+
+  if (debug) {
+    var debugFieldNames = []
+    if (inscricoes.length > 0 && typeof inscricoes[0] === 'object' && inscricoes[0] !== null) {
+      debugFieldNames = Object.keys(inscricoes[0])
+    }
+    var debugResponseKeys = []
+    if (externalData && typeof externalData === 'object') {
+      debugResponseKeys = Object.keys(externalData)
+    }
+    normalizedData.debug_info = {
+      response_keys: debugResponseKeys,
+      record_count: inscricoes.length,
+      field_names: debugFieldNames,
+    }
   }
 
   try {

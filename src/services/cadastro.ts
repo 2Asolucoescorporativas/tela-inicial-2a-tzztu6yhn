@@ -17,6 +17,12 @@ export interface Propriedade {
   motivo_inelegibilidade: string | null
 }
 
+export interface DebugInfo {
+  response_keys: string[]
+  record_count: number
+  field_names: string[]
+}
+
 export interface ConsultaPropriedadesResponse {
   success: boolean
   consulta_id?: string
@@ -32,6 +38,7 @@ export interface ConsultaPropriedadesResponse {
   ja_cadastrado?: boolean
   message?: string
   error?: string
+  debug_info?: DebugInfo
 }
 
 export interface ConcluirCadastroRequest {
