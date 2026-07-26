@@ -57,17 +57,6 @@ routerAdd(
 
     var d = res.json || {}
 
-    var rawInscricoes = d.inscricoes_estaduais
-    if (!Array.isArray(rawInscricoes)) rawInscricoes = []
-
-    console.log('[DEBUG - consultar_cnpj_sintegra] HTTP status: ' + res.statusCode)
-    console.log(
-      '[DEBUG - consultar_cnpj_sintegra] Object.keys(data): ' + JSON.stringify(Object.keys(d)),
-    )
-    console.log(
-      '[DEBUG - consultar_cnpj_sintegra] inscricoes_estaduais length: ' + rawInscricoes.length,
-    )
-
     if (res.statusCode === 404 || res.statusCode === 400) {
       return e.json(404, {
         success: false,
@@ -85,13 +74,13 @@ routerAdd(
       })
     }
 
-    var razaoSocial = String(d.razao_social || d.nome || d.nome_empresarial || '')
-    var ufFinal = String(d.uf || d.estado || uf).toUpperCase()
-    var situacaoPj = String(d.situacao_pj || d.situacao || d.situacao_cadastral || d.status || '')
-    var updatedAt = String(d.updated_at || d.data || d.data_consulta || d.data_atualizacao || '')
+    var endObj = {}
+    if (d.endereco && typeof d.endereco === 'object' && !Array.isArray(d.endereco)) {
+      endObj = d.endereco
+    }
 
-    var tipoLog = String(d.tipo_logradouro || '').trim()
-    var nomeLog = String(d.logradouro || d.endereco || '').trim()
+    var tipoLog = String(d.tipo_logradouro || endObj.tipo_logradouro || '').trim()
+    var nomeLog = String(d.logradouro || endObj.logradouro || '').trim()
     var logradouro = ''
     if (tipoLog && nomeLog) {
       logradouro = tipoLog + ' ' + nomeLog
@@ -101,18 +90,30 @@ routerAdd(
       logradouro = tipoLog
     }
 
+    var ufFinal = String(d.uf || endObj.uf || d.estado || endObj.estado || uf).toUpperCase()
+
     var endereco = {
       logradouro: logradouro,
-      numero: String(d.numero || ''),
-      complemento: String(d.complemento || ''),
-      bairro: String(d.bairro || ''),
-      municipio: String(d.municipio || d.cidade || ''),
-      codigo_ibge: String(d.codigo_ibge || d.codigo_municipio || d.cod_ibge || ''),
-      cep: String(d.cep || ''),
-      uf: String(d.uf || d.estado || ufFinal),
+      numero: String(d.numero || endObj.numero || ''),
+      complemento: String(d.complemento || endObj.complemento || ''),
+      bairro: String(d.bairro || endObj.bairro || ''),
+      municipio: String(d.municipio || endObj.municipio || d.cidade || endObj.cidade || ''),
+      codigo_ibge: String(
+        d.codigo_ibge ||
+          endObj.codigo_ibge ||
+          d.codigo_municipio ||
+          endObj.codigo_municipio ||
+          d.cod_ibge ||
+          '',
+      ),
+      cep: String(d.cep || endObj.cep || ''),
+      uf: ufFinal,
       pais: 'Brasil',
       codigo_pais: '1058',
     }
+
+    var rawInscricoes = d.inscricoes_estaduais
+    if (!Array.isArray(rawInscricoes)) rawInscricoes = []
 
     var activeIes = []
     for (var i = 0; i < rawInscricoes.length; i++) {
@@ -172,7 +173,6 @@ routerAdd(
       }
     }
 
-    var inscricaoEstadualField
     if (activeIes.length === 0 && rawInscricoes.length > 0) {
       var firstIe = rawInscricoes[0]
       if (firstIe && typeof firstIe === 'object') {
@@ -209,6 +209,8 @@ routerAdd(
 
     var cnpjFormatted = cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
 
+    var razaoSocial = String(d.razao_social || d.nome || d.nome_empresarial || '')
+
     var normalized = {
       cnpj: cnpjFormatted,
       razao_social: razaoSocial,
@@ -216,8 +218,8 @@ routerAdd(
       inscricao_estadual: inscricaoEstadualField,
       ativa: ativa,
       tipo_ie: tipoIe,
-      situacao_pj: situacaoPj,
-      updated_at: updatedAt,
+      situacao_pj: String(d.situacao_pj || d.situacao || d.situacao_cadastral || d.status || ''),
+      updated_at: String(d.updated_at || d.data || d.data_consulta || d.data_atualizacao || ''),
       endereco: endereco,
     }
 
