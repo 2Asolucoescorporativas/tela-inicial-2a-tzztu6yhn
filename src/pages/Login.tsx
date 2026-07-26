@@ -50,7 +50,7 @@ export default function Login() {
       setErrorMsg('CPF ou senha inválidos')
       setLoading(false)
     } else {
-      navigate('/dashboard')
+      navigate('/selecionar-propriedade')
     }
   }
 

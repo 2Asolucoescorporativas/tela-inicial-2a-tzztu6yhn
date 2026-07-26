@@ -6,6 +6,7 @@ interface AuthUser {
   email: string
   name?: string
   avatar?: string
+  cpf?: string
 }
 
 interface AuthContextType {
@@ -89,6 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const signOut = () => {
+    sessionStorage.removeItem('2a-rural-active-property')
     pb.authStore.clear()
   }
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T14:40:22.571Z",
+  "generatedAt": "2026-07-26T14:59:07.273Z",
   "collections": [
     {
       "name": "users",
@@ -300,7 +300,8 @@
       ],
       "indexes": [
         "CREATE UNIQUE INDEX idx_prop_usuario_nome ON propriedades (usuario_id, nome_normalizado)",
-        "CREATE UNIQUE INDEX idx_prop_usuario_ie ON propriedades (usuario_id, inscricao_estadual)"
+        "CREATE UNIQUE INDEX idx_prop_usuario_ie ON propriedades (usuario_id, inscricao_estadual)",
+        "CREATE INDEX `idx_prop_usuario_id` ON `propriedades` (usuario_id)"
       ]
     },
     {
