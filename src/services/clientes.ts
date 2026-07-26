@@ -1,6 +1,36 @@
 import pb from '@/lib/pocketbase/client'
 import { unmaskDocument, type ClientFormData } from '@/lib/client-utils'
 
+export interface CnpjConsultaResult {
+  cpf_cnpj: string
+  nome_razao_social: string
+  nome_fantasia: string
+  indicador_ie: string
+  inscricao_estadual: string
+  cep: string
+  logradouro: string
+  numero: string
+  complemento: string
+  bairro: string
+  municipio: string
+  codigo_ibge: string
+  uf: string
+  pais: string
+  codigo_pais: string
+  telefone: string
+  email: string
+}
+
+export async function consultarCnpj(cnpj: string): Promise<CnpjConsultaResult> {
+  try {
+    return await pb.send(`/backend/v1/consultar-cnpj/${cnpj}`, { method: 'GET' })
+  } catch (err: unknown) {
+    const resp = err as { response?: { error?: string }; message?: string }
+    const msg = resp?.response?.error || resp?.message || 'Erro ao consultar CNPJ'
+    throw new Error(typeof msg === 'string' ? msg : 'Erro ao consultar CNPJ')
+  }
+}
+
 export interface ClienteRecord {
   id: string
   user_id: string

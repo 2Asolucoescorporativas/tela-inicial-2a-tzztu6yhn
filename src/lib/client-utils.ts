@@ -60,6 +60,29 @@ export function isValidCnpj(value: string): boolean {
   return true
 }
 
+export function recordToForm(r: Record<string, unknown>): ClientFormData {
+  return {
+    tipo_pessoa: 'JURIDICA',
+    cpf_cnpj: maskCnpj((r.cpf_cnpj as string) || ''),
+    nome_razao_social: (r.nome_razao_social as string) || '',
+    nome_fantasia: (r.nome_fantasia as string) || '',
+    indicador_ie: ((r.indicador_ie as string) || '') as ClientFormData['indicador_ie'],
+    inscricao_estadual: (r.inscricao_estadual as string) || '',
+    cep: maskCep((r.cep as string) || ''),
+    logradouro: (r.logradouro as string) || '',
+    numero: (r.numero as string) || '',
+    complemento: (r.complemento as string) || '',
+    bairro: (r.bairro as string) || '',
+    municipio: (r.municipio as string) || '',
+    codigo_ibge: (r.codigo_ibge as string) || '',
+    uf: (r.uf as string) || '',
+    pais: (r.pais as string) || 'Brasil',
+    codigo_pais: (r.codigo_pais as string) || '1058',
+    telefone: (r.telefone as string) || '',
+    email: (r.email as string) || '',
+  }
+}
+
 export function getDefaultClientForm(): ClientFormData {
   return {
     tipo_pessoa: 'JURIDICA',
