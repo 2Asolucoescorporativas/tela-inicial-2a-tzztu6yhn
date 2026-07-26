@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import brandBgImage from '@/assets/chatgpt-image-26-de-jul.de-2026-113837-e2d9a.png'
+import brandBgImage from '@/assets/chatgpt-image-26-de-jul.de-2026-204722-95cd6.png'
 
 export default function Index() {
   const navigate = useNavigate()
@@ -12,7 +12,7 @@ export default function Index() {
     <div className="min-h-screen w-full relative flex flex-col items-center justify-between p-6 select-none overflow-hidden bg-[#071c33]">
       {/* Official 2A Rural Brand Background Image Layer */}
       <div
-        className="absolute inset-0 z-0 bg-center bg-no-repeat bg-contain sm:bg-cover transition-all duration-300 pointer-events-none"
+        className="absolute inset-0 z-0 bg-center bg-no-repeat bg-contain md:bg-cover transition-all duration-300 pointer-events-none"
         style={{
           backgroundImage: `url(${brandBgImage})`,
           backgroundColor: '#071c33',
@@ -20,7 +20,7 @@ export default function Index() {
       />
 
       {/* Subtle overlay gradients for depth and visual contrast */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#071c33]/40 via-transparent to-[#071c33]/80 pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#071c33]/30 via-transparent to-[#071c33]/85 pointer-events-none" />
 
       {/* Central hero area showcasing the brand logo within the background */}
       <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center py-12">
