@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T18:58:59.903Z",
+  "generatedAt": "2026-07-26T19:07:51.828Z",
   "collections": [
     {
       "name": "users",
@@ -186,6 +186,12 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "municipio",
+          "type": "text",
+          "required": false,
+          "system": false
         }
       ],
       "indexes": [

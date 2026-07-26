@@ -15,6 +15,7 @@ export interface InvoiceRecord {
   status: 'emitida' | 'processando' | 'cancelada' | 'rascunho'
   chavenfe?: string
   items_summary?: string
+  municipio?: string
   created: string
   updated: string
 }

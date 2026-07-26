@@ -24,6 +24,7 @@ import EmitirLeite from './pages/EmitirLeite'
 import EmitirGado from './pages/EmitirGado'
 import EmitirLeiteNext from './pages/EmitirLeiteNext'
 import ConsultarNF from './pages/ConsultarNF'
+import InvoiceDetail from './pages/InvoiceDetail'
 import Configuracoes from './pages/Configuracoes'
 import CadastrarCliente from './pages/CadastrarCliente'
 import NotFound from './pages/NotFound'
@@ -148,6 +149,14 @@ const App = () => (
                 element={
                   <RequireProperty>
                     <ConsultarNF />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/consultar-nf/:invoiceId"
+                element={
+                  <RequireProperty>
+                    <InvoiceDetail />
                   </RequireProperty>
                 }
               />
