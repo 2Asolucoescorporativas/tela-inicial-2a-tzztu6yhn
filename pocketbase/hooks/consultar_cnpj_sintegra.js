@@ -55,16 +55,7 @@ routerAdd(
       })
     }
 
-    var rawJson = res.json || {}
-
-    var d = rawJson
-    if (d.data && typeof d.data === 'object' && !Array.isArray(d.data)) {
-      d = d.data
-    } else if (d.dados && typeof d.dados === 'object' && !Array.isArray(d.dados)) {
-      d = d.dados
-    } else if (d.resultado && typeof d.resultado === 'object' && !Array.isArray(d.resultado)) {
-      d = d.resultado
-    }
+    var d = res.json || {}
 
     var rawInscricoes = d.inscricoes_estaduais
     if (!Array.isArray(rawInscricoes)) rawInscricoes = []
@@ -182,6 +173,27 @@ routerAdd(
     }
 
     var inscricaoEstadualField
+    if (activeIes.length === 0 && rawInscricoes.length > 0) {
+      var firstIe = rawInscricoes[0]
+      if (firstIe && typeof firstIe === 'object') {
+        activeIes.push({
+          inscricao_estadual: String(
+            firstIe.inscricao_estadual ||
+              firstIe.inscricao ||
+              firstIe.ie ||
+              firstIe.numero ||
+              firstIe.numero_inscricao ||
+              '',
+          ),
+          tipo_ie: String(
+            firstIe.tipo_ie || firstIe.tipo || firstIe.tipo_inscricao || 'Contribuinte',
+          ),
+          ativa: false,
+        })
+      }
+    }
+
+    var inscricaoEstadualField
     if (activeIes.length === 0) {
       inscricaoEstadualField = ''
     } else if (activeIes.length === 1) {
@@ -209,7 +221,7 @@ routerAdd(
       endereco: endereco,
     }
 
-    if (activeIes.length > 1) {
+    if (activeIes.length > 0) {
       normalized.inscricoes_ativas = activeIes
     }
 

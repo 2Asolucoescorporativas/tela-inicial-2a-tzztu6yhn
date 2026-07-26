@@ -72,6 +72,10 @@ export function sintegraToForm(data: SintegraData): ClientFormData {
     indicadorIe = '1'
   } else if (ies.length > 1) {
     indicadorIe = '1'
+  } else if (typeof data.inscricao_estadual === 'string' && data.inscricao_estadual) {
+    inscricaoEstadual = data.inscricao_estadual
+    tipoIe = data.tipo_ie || ''
+    indicadorIe = '1'
   }
 
   return {
