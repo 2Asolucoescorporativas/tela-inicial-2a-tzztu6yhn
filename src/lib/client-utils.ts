@@ -1,4 +1,5 @@
 import { isValidCpf, maskCpf } from '@/lib/cpf-utils'
+import type { SintegraData } from '@/services/clientes'
 
 export interface ClientFormData {
   tipo_pessoa: 'FISICA' | 'JURIDICA'
@@ -7,6 +8,7 @@ export interface ClientFormData {
   nome_fantasia: string
   indicador_ie: '' | '1' | '2' | '9'
   inscricao_estadual: string
+  tipo_ie: string
   cep: string
   logradouro: string
   numero: string
@@ -47,27 +49,63 @@ export function isValidCnpj(value: string): boolean {
   const d = unmaskDocument(value)
   if (d.length !== 14) return false
   if (/^(\d)\1{13}$/.test(d)) return false
-  const calc = (len: number, weights: number[]) => {
+  const calc = (weights: number[]) => {
     let sum = 0
     for (let i = 0; i < weights.length; i++) sum += parseInt(d[i]) * weights[i]
     const rest = sum % 11
     return rest < 2 ? 0 : 11 - rest
   }
-  const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-  if (calc(12, w1) !== parseInt(d[12])) return false
-  const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-  if (calc(13, w2) !== parseInt(d[13])) return false
+  if (calc([5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) !== parseInt(d[12])) return false
+  if (calc([6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) !== parseInt(d[13])) return false
   return true
+}
+
+export function sintegraToForm(data: SintegraData): ClientFormData {
+  const ies = data.inscricoes_ativas || []
+  let inscricaoEstadual = ''
+  let tipoIe = ''
+  let indicadorIe: ClientFormData['indicador_ie'] = '9'
+
+  if (ies.length === 1) {
+    inscricaoEstadual = ies[0].inscricao_estadual
+    tipoIe = ies[0].tipo_ie
+    indicadorIe = '1'
+  } else if (ies.length > 1) {
+    indicadorIe = '1'
+  }
+
+  return {
+    tipo_pessoa: 'JURIDICA',
+    cpf_cnpj: maskCnpj(unmaskDocument(data.cnpj)),
+    nome_razao_social: data.razao_social || '',
+    nome_fantasia: '',
+    indicador_ie: indicadorIe,
+    inscricao_estadual: inscricaoEstadual,
+    tipo_ie: tipoIe,
+    cep: maskCep(data.endereco?.cep || ''),
+    logradouro: data.endereco?.logradouro || '',
+    numero: data.endereco?.numero || '',
+    complemento: data.endereco?.complemento || '',
+    bairro: data.endereco?.bairro || '',
+    municipio: data.endereco?.municipio || '',
+    codigo_ibge: data.endereco?.codigo_ibge || '',
+    uf: data.endereco?.uf || data.uf || '',
+    pais: data.endereco?.pais || 'Brasil',
+    codigo_pais: data.endereco?.codigo_pais || '1058',
+    telefone: '',
+    email: '',
+  }
 }
 
 export function recordToForm(r: Record<string, unknown>): ClientFormData {
   return {
-    tipo_pessoa: 'JURIDICA',
+    tipo_pessoa: (r.tipo_pessoa as 'FISICA' | 'JURIDICA') || 'JURIDICA',
     cpf_cnpj: maskCnpj((r.cpf_cnpj as string) || ''),
     nome_razao_social: (r.nome_razao_social as string) || '',
     nome_fantasia: (r.nome_fantasia as string) || '',
     indicador_ie: ((r.indicador_ie as string) || '') as ClientFormData['indicador_ie'],
     inscricao_estadual: (r.inscricao_estadual as string) || '',
+    tipo_ie: (r.tipo_ie as string) || '',
     cep: maskCep((r.cep as string) || ''),
     logradouro: (r.logradouro as string) || '',
     numero: (r.numero as string) || '',
@@ -91,6 +129,7 @@ export function getDefaultClientForm(): ClientFormData {
     nome_fantasia: '',
     indicador_ie: '',
     inscricao_estadual: '',
+    tipo_ie: '',
     cep: '',
     logradouro: '',
     numero: '',

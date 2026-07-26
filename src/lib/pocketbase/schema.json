@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T22:18:57.766Z",
+  "generatedAt": "2026-07-26T22:27:02.566Z",
   "collections": [
     {
       "name": "users",
@@ -565,6 +565,12 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "tipo_ie",
+          "type": "text",
+          "required": false,
+          "system": false
         }
       ],
       "indexes": ["CREATE UNIQUE INDEX idx_clientes_user_cpf_cnpj ON clientes (user_id, cpf_cnpj)"]
