@@ -1,4 +1,4 @@
-routerAdd('POST', '/backend/v1/cadastro/concluir', (e) => {
+routerAdd('POST', '/backend/v1/cadastro/concluir-cadastro', (e) => {
   var body = e.requestInfo().body || {}
   var consultaId = String(body.consulta_id || '')
   var cpf = String(body.cpf || '').replace(/\D/g, '')
