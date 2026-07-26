@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession, type DraftInvoice } from '@/stores/session'
 import { Logo2A } from '@/components/Logo2A'
@@ -11,15 +11,13 @@ import {
   numberToCommaString,
   sanitizeNumericInput,
 } from '@/lib/decimal-utils'
-import { generateNfe } from '@/lib/nfe-generator'
-import { FISCAL_CONFIG } from '@/lib/fiscal-config'
-import { getNextInvoiceNumber } from '@/services/invoices'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { maskDocumentByType } from '@/lib/client-utils'
+import { ArrowLeft, Pencil } from 'lucide-react'
 
 export default function EmitirLeite() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { activeProperty, draftInvoice, setDraftInvoice, recipient } = useSession()
+  const { activeProperty, draftInvoice, setDraftInvoice, selectedClient } = useSession()
 
   const [quantidade, setQuantidade] = useState(() =>
     draftInvoice?.tipoOperacao === 'VENDA_LEITE' && draftInvoice.quantidade
@@ -32,13 +30,22 @@ export default function EmitirLeite() {
       : '',
   )
   const [touched, setTouched] = useState({ quantidade: false, valorUnitario: false })
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generateError, setGenerateError] = useState<string | null>(null)
+
+  if (!selectedClient) {
+    return <Navigate to="/emitir-leite/selecionar-cliente" replace />
+  }
 
   const qtyNum = parseCommaDecimal(quantidade)
   const priceNum = parseCommaDecimal(valorUnitario)
   const isFormValid = !isNaN(qtyNum) && qtyNum > 0 && !isNaN(priceNum) && priceNum > 0
   const total = isFormValid ? calculateTotal(qtyNum, priceNum) : 0
+
+  const isClientValid = !!(
+    selectedClient.cpf_cnpj &&
+    selectedClient.nome_razao_social &&
+    selectedClient.municipio &&
+    selectedClient.uf
+  )
 
   const qtyError = touched.quantidade
     ? !quantidade.replace(/,/g, '').trim()
@@ -55,71 +62,35 @@ export default function EmitirLeite() {
         : undefined
     : undefined
 
-  const handleContinuar = async () => {
-    if (!isFormValid || !user || !activeProperty) return
-    if (!user.cpf || !recipient) {
-      setGenerateError(
-        'Dados insuficientes para gerar o XML. Verifique se o destinatário foi selecionado.',
-      )
-      return
+  const buildDraft = (): DraftInvoice => ({
+    ...draftInvoice,
+    tipoOperacao: 'VENDA_LEITE',
+    descricaoProduto: 'LEITE CRU',
+    unidadeComercial: 'L',
+    quantidade: qtyNum,
+    valorUnitario: priceNum,
+    valorTotal: total,
+    userId: user?.id || '',
+    cpf: user?.cpf || '',
+    propertyId: activeProperty?.id || '',
+    propertyName: activeProperty?.nome || '',
+    cadastroPro: activeProperty?.inscricao_estadual || '',
+    municipio: activeProperty?.municipio || '',
+    uf: activeProperty?.uf || '',
+    clienteId: selectedClient.id,
+  })
+
+  const handleAlterarCliente = () => {
+    if (isFormValid) {
+      setDraftInvoice(buildDraft())
     }
-    setIsGenerating(true)
-    setGenerateError(null)
-    try {
-      const { nextNumber } = await getNextInvoiceNumber()
-      const nNF = String(parseInt(nextNumber.replace(/\./g, ''), 10))
-      const { data, xml } = generateNfe({
-        userCpf: user.cpf,
-        userName: user.name || activeProperty.nome,
-        property: {
-          inscricao_estadual: activeProperty.inscricao_estadual,
-          municipio: activeProperty.municipio,
-          uf: activeProperty.uf,
-          codigo_ibge: activeProperty.codigo_ibge,
-          endereco: activeProperty.endereco,
-        },
-        recipient: {
-          cnpj: recipient.cnpj,
-          razaoSocial: recipient.razaoSocial,
-          ie: recipient.ie,
-          logradouro: recipient.logradouro,
-          numero: recipient.numero,
-          bairro: recipient.bairro,
-          municipio: recipient.municipio,
-          uf: recipient.uf,
-          cMun: recipient.cMun,
-        },
-        quantidade: qtyNum,
-        valorUnitario: priceNum,
-        valorTotal: total,
-        nNF,
-      })
-      const draft: DraftInvoice = {
-        tipoOperacao: 'VENDA_LEITE',
-        descricaoProduto: 'LEITE CRU',
-        unidadeComercial: 'L',
-        quantidade: qtyNum,
-        valorUnitario: priceNum,
-        valorTotal: total,
-        userId: user.id,
-        cpf: user.cpf,
-        propertyId: activeProperty.id,
-        propertyName: activeProperty.nome,
-        cadastroPro: activeProperty.inscricao_estadual,
-        municipio: activeProperty.municipio,
-        uf: activeProperty.uf,
-        nNF,
-        serie: FISCAL_CONFIG.serie,
-        nfeXml: xml,
-        nfeObject: data,
-      }
-      setDraftInvoice(draft)
-      navigate('/emitir-leite/next')
-    } catch {
-      setGenerateError('Erro ao gerar XML. Tente novamente.')
-    } finally {
-      setIsGenerating(false)
-    }
+    navigate('/emitir-leite/selecionar-cliente')
+  }
+
+  const handleContinuar = () => {
+    if (!isFormValid || !user || !activeProperty || !isClientValid) return
+    setDraftInvoice(buildDraft())
+    navigate('/emitir-leite/next')
   }
 
   return (
@@ -152,7 +123,32 @@ export default function EmitirLeite() {
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold text-white">VENDA DE LEITE</h2>
           <p className="text-sm text-white/60 mt-1">Informe os dados do produto.</p>
-          <p className="text-xs text-[#A8914E] mt-2 font-medium">Etapa 1 – Produto</p>
+          <p className="text-xs text-[#A8914E] mt-2 font-medium">Etapa 2 – Produto</p>
+        </div>
+
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-semibold text-[#A8914E] uppercase tracking-wide">
+              Cliente
+            </span>
+            <button
+              onClick={handleAlterarCliente}
+              className="flex items-center gap-1 text-xs bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 transition-colors"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Alterar Cliente
+            </button>
+          </div>
+          <div className="space-y-1">
+            <p className="text-white font-semibold text-sm">{selectedClient.nome_razao_social}</p>
+            <p className="text-white/60 text-xs">
+              {selectedClient.tipo_pessoa === 'FISICA' ? 'CPF' : 'CNPJ'}:{' '}
+              {maskDocumentByType(selectedClient.cpf_cnpj, selectedClient.tipo_pessoa)}
+            </p>
+            <p className="text-white/50 text-xs">
+              {selectedClient.municipio}/{selectedClient.uf}
+            </p>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -205,30 +201,26 @@ export default function EmitirLeite() {
           </div>
         </div>
 
-        {generateError && (
+        {!isClientValid && (
           <div className="mt-4 bg-red-500/20 border border-red-500/40 rounded-xl px-4 py-3">
-            <p className="text-sm text-red-300">{generateError}</p>
+            <p className="text-sm text-red-300">
+              O cliente selecionado possui dados incompletos. Selecione outro cliente.
+            </p>
           </div>
         )}
 
         <div className="mt-auto pt-6">
           <button
             onClick={handleContinuar}
-            disabled={!isFormValid || isGenerating}
+            disabled={!isFormValid || !isClientValid}
             className={cn(
               'w-full rounded-xl py-4 px-6 font-bold text-lg transition-all flex items-center justify-center gap-2',
-              isFormValid && !isGenerating
+              isFormValid && isClientValid
                 ? 'bg-white border-2 border-[#A8914E] text-[#002C45] hover:brightness-95 active:scale-[0.98]'
                 : 'bg-white/10 border-2 border-white/20 text-white/30 cursor-not-allowed',
             )}
           >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" /> Gerando XML...
-              </>
-            ) : (
-              'Continuar'
-            )}
+            Continuar
           </button>
         </div>
       </div>

@@ -93,6 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     sessionStorage.removeItem('2a-rural-active-property')
     sessionStorage.removeItem('2a-rural-draft-invoice')
     sessionStorage.removeItem('2a-rural-recipient')
+    sessionStorage.removeItem('2a-rural-selected-client')
     pb.authStore.clear()
   }
 

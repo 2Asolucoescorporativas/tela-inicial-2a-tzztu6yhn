@@ -31,6 +31,26 @@ export interface SessionRecipient {
   cMun: string
 }
 
+export interface SelectedClient {
+  id: string
+  tipo_pessoa: 'FISICA' | 'JURIDICA'
+  cpf_cnpj: string
+  nome_razao_social: string
+  nome_fantasia: string
+  indicador_ie: string
+  inscricao_estadual: string
+  cep: string
+  logradouro: string
+  numero: string
+  complemento: string
+  bairro: string
+  municipio: string
+  codigo_ibge: string
+  uf: string
+  pais: string
+  codigo_pais: string
+}
+
 export interface DraftInvoice {
   tipoOperacao: OperationType
   descricaoProduto: string
@@ -45,6 +65,7 @@ export interface DraftInvoice {
   cadastroPro: string
   municipio: string
   uf: string
+  clienteId?: string
   nNF?: string
   serie?: number
   nfeXml?: string
@@ -76,6 +97,9 @@ interface SessionContextType {
   recipient: SessionRecipient | null
   setRecipient: (r: SessionRecipient) => void
   clearRecipient: () => void
+  selectedClient: SelectedClient | null
+  setSelectedClient: (client: SelectedClient) => void
+  clearSelectedClient: () => void
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined)
@@ -112,6 +136,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       return DEFAULT_RECIPIENT
     }
   })
+  const [selectedClient, setSelectedClientState] = useState<SelectedClient | null>(() => {
+    try {
+      const stored = sessionStorage.getItem('2a-rural-selected-client')
+      return stored ? (JSON.parse(stored) as SelectedClient) : null
+    } catch {
+      return null
+    }
+  })
 
   const setActiveProperty = (prop: SessionProperty) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(prop))
@@ -139,6 +171,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     sessionStorage.removeItem(RECIPIENT_KEY)
     setRecipientState(null)
   }
+  const setSelectedClient = (client: SelectedClient) => {
+    sessionStorage.setItem('2a-rural-selected-client', JSON.stringify(client))
+    setSelectedClientState(client)
+  }
+  const clearSelectedClient = () => {
+    sessionStorage.removeItem('2a-rural-selected-client')
+    setSelectedClientState(null)
+  }
 
   return (
     <SessionContext.Provider
@@ -155,6 +195,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         recipient,
         setRecipient,
         clearRecipient,
+        selectedClient,
+        setSelectedClient,
+        clearSelectedClient,
       }}
     >
       {children}

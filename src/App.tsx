@@ -19,6 +19,7 @@ import RegisterRevisao from './pages/RegisterRevisao'
 import SelectProperty from './pages/SelectProperty'
 import NotaFiscal from './pages/NotaFiscal'
 import EmitirNF from './pages/EmitirNF'
+import SelectClient from './pages/SelectClient'
 import EmitirLeite from './pages/EmitirLeite'
 import EmitirGado from './pages/EmitirGado'
 import EmitirLeiteNext from './pages/EmitirLeiteNext'
@@ -107,6 +108,14 @@ const App = () => (
                 element={
                   <RequireProperty>
                     <EmitirNF />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/emitir-leite/selecionar-cliente"
+                element={
+                  <RequireProperty>
+                    <SelectClient />
                   </RequireProperty>
                 }
               />

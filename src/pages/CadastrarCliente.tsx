@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
 import { Logo2A } from '@/components/Logo2A'
@@ -21,6 +21,8 @@ import { getErrorMessage } from '@/lib/pocketbase/errors'
 
 export default function CadastrarCliente() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const returnTo = searchParams.get('returnTo')
   const { user } = useAuth()
   const { activeProperty } = useSession()
   const [clients, setClients] = useState<ClienteRecord[]>([])
@@ -61,6 +63,9 @@ export default function CadastrarCliente() {
       setEditingClient(null)
       setFormKey((k) => k + 1)
       await loadClients()
+      if (returnTo) {
+        navigate(returnTo)
+      }
     } catch (err) {
       toast.error(getErrorMessage(err))
     } finally {
@@ -84,7 +89,7 @@ export default function CadastrarCliente() {
     }
   }
 
-  const handleCancel = () => navigate('/configuracoes')
+  const handleCancel = () => navigate(returnTo || '/configuracoes')
 
   return (
     <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">

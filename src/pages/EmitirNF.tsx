@@ -13,7 +13,12 @@ interface OperationOption {
 }
 
 const OPERATION_OPTIONS: OperationOption[] = [
-  { id: 'VENDA_LEITE', label: 'VENDA DE LEITE', icon: Milk, route: '/emitir-leite' },
+  {
+    id: 'VENDA_LEITE',
+    label: 'VENDA DE LEITE',
+    icon: Milk,
+    route: '/emitir-leite/selecionar-cliente',
+  },
   { id: 'VENDA_GADO', label: 'VENDA DE GADO', icon: Beef, route: '/emitir-gado' },
 ]
 
