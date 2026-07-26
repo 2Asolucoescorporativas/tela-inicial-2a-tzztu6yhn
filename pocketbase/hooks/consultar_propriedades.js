@@ -310,6 +310,8 @@ routerAdd('POST', '/backend/v1/cadastro/consultar-propriedades', (e) => {
     externalData = { nome: mockNome, cpf: cpf, inscricoes: mockProps, origem: 'mock', cache: false }
   }
 
+  console.log('TEMPORARY DIAGNOSTIC - FULL API RESPONSE:', JSON.stringify(externalData))
+
   var nomeConsulta = externalData.nome || externalData.razao_social || ''
   var inscricoes = externalData.inscricoes || externalData.propriedades || []
 
