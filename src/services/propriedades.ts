@@ -11,6 +11,9 @@ export interface PropriedadeRecord {
   codigo_ibge: string
   uf: string
   endereco: string
+  numero: string
+  bairro: string
+  cep: string
   cnae: string
   tipo_produtor: string
   ativo: boolean

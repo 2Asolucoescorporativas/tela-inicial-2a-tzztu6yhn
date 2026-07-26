@@ -10,6 +10,9 @@ export interface NfeBuildInput {
     uf: string
     codigo_ibge?: string
     endereco?: string
+    numero?: string
+    bairro?: string
+    cep?: string
   }
   recipient: {
     cnpj: string
@@ -176,12 +179,12 @@ export function generateNfe(input: NfeBuildInput): { data: Record<string, unknow
   })
   const enderEmitXml = tags({
     xLgr: input.property.endereco || 'Não informado',
-    nro: 'S/N',
-    xBairro: 'Zona Rural',
+    nro: input.property.numero?.trim() || 'S/N',
+    xBairro: input.property.bairro?.trim() || 'Zona Rural',
     cMun,
     xMun: input.property.municipio,
     UF: input.property.uf,
-    CEP: '00000000',
+    CEP: input.property.cep?.replace(/\D/g, '') || '00000000',
   })
   const enderDestXml = tags({
     xLgr: input.recipient.logradouro,

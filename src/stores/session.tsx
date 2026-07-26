@@ -14,6 +14,9 @@ export interface SessionProperty {
   uf: string
   codigo_ibge?: string
   endereco?: string
+  numero?: string
+  bairro?: string
+  cep?: string
 }
 
 export interface SessionRecipient {

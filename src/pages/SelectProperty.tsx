@@ -48,6 +48,11 @@ export default function SelectProperty() {
       inscricao_estadual: selected.inscricao_estadual,
       municipio: selected.municipio,
       uf: selected.uf,
+      codigo_ibge: selected.codigo_ibge || '',
+      endereco: selected.endereco || '',
+      numero: selected.numero || '',
+      bairro: selected.bairro || '',
+      cep: selected.cep || '',
     })
     navigate('/dashboard')
   }

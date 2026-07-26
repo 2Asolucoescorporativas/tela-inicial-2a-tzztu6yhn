@@ -200,6 +200,9 @@ routerAdd('POST', '/backend/v1/cadastro/concluir-cadastro', (e) => {
       codigo_ibge: String(found.codigo_municipio_ibge || found.codigo_ibge || ''),
       uf: String(found.uf || ''),
       endereco: endereco,
+      numero: String(found.numero || ''),
+      bairro: String(found.bairro || ''),
+      cep: String(found.cep || ''),
       cnae: String(found.cnae || ''),
       tipo_produtor: String(found.tipo_produtor || ''),
     })
@@ -236,6 +239,9 @@ routerAdd('POST', '/backend/v1/cadastro/concluir-cadastro', (e) => {
         propRecord.set('codigo_ibge', pd.codigo_ibge)
         propRecord.set('uf', pd.uf)
         propRecord.set('endereco', pd.endereco)
+        propRecord.set('numero', pd.numero)
+        propRecord.set('bairro', pd.bairro)
+        propRecord.set('cep', pd.cep)
         propRecord.set('cnae', pd.cnae)
         propRecord.set('tipo_produtor', pd.tipo_produtor)
         propRecord.set('ativo', true)
