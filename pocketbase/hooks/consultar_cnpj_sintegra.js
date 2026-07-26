@@ -18,6 +18,8 @@ routerAdd(
     var apiKey = $secrets.get('SINTEGRA_API_KEY') || ''
     var defaultUf = $secrets.get('PRODUTOR_RURAL_DEFAULT_UF') || 'PR'
 
+    var uf = String(body.uf || defaultUf).toUpperCase()
+
     if (!apiBaseUrl || !apiKey) {
       return e.json(502, {
         success: false,
@@ -33,7 +35,7 @@ routerAdd(
       '/consultas/v2/sintegra/' +
       cnpj +
       '?uf=' +
-      defaultUf +
+      uf +
       '&cache_strategy=ONLINE_PREFERENCIAL&cache=7&error_fallback=true&endereco=true'
 
     var res
@@ -53,6 +55,28 @@ routerAdd(
       })
     }
 
+    var rawJson = res.json || {}
+
+    var d = rawJson
+    if (d.data && typeof d.data === 'object' && !Array.isArray(d.data)) {
+      d = d.data
+    } else if (d.dados && typeof d.dados === 'object' && !Array.isArray(d.dados)) {
+      d = d.dados
+    } else if (d.resultado && typeof d.resultado === 'object' && !Array.isArray(d.resultado)) {
+      d = d.resultado
+    }
+
+    var rawInscricoes = d.inscricoes_estaduais
+    if (!Array.isArray(rawInscricoes)) rawInscricoes = []
+
+    console.log('[DEBUG - consultar_cnpj_sintegra] HTTP status: ' + res.statusCode)
+    console.log(
+      '[DEBUG - consultar_cnpj_sintegra] Object.keys(data): ' + JSON.stringify(Object.keys(d)),
+    )
+    console.log(
+      '[DEBUG - consultar_cnpj_sintegra] inscricoes_estaduais length: ' + rawInscricoes.length,
+    )
+
     if (res.statusCode === 404 || res.statusCode === 400) {
       return e.json(404, {
         success: false,
@@ -70,19 +94,8 @@ routerAdd(
       })
     }
 
-    var rawJson = res.json || {}
-
-    var d = rawJson
-    if (d.data && typeof d.data === 'object' && !Array.isArray(d.data)) {
-      d = d.data
-    } else if (d.dados && typeof d.dados === 'object' && !Array.isArray(d.dados)) {
-      d = d.dados
-    } else if (d.resultado && typeof d.resultado === 'object' && !Array.isArray(d.resultado)) {
-      d = d.resultado
-    }
-
     var razaoSocial = String(d.razao_social || d.nome || d.nome_empresarial || '')
-    var uf = String(d.uf || d.estado || defaultUf).toUpperCase()
+    var ufFinal = String(d.uf || d.estado || uf).toUpperCase()
     var situacaoPj = String(d.situacao_pj || d.situacao || d.situacao_cadastral || d.status || '')
     var updatedAt = String(d.updated_at || d.data || d.data_consulta || d.data_atualizacao || '')
 
@@ -105,16 +118,10 @@ routerAdd(
       municipio: String(d.municipio || d.cidade || ''),
       codigo_ibge: String(d.codigo_ibge || d.codigo_municipio || d.cod_ibge || ''),
       cep: String(d.cep || ''),
-      uf: String(d.uf || d.estado || uf),
+      uf: String(d.uf || d.estado || ufFinal),
       pais: 'Brasil',
       codigo_pais: '1058',
     }
-
-    var rawInscricoes = d.inscricoes_estaduais
-    if (!Array.isArray(rawInscricoes)) {
-      rawInscricoes = d.inscricoes || d.ies || d.inscricoesEstaduais || []
-    }
-    if (!Array.isArray(rawInscricoes)) rawInscricoes = []
 
     var activeIes = []
     for (var i = 0; i < rawInscricoes.length; i++) {
@@ -130,11 +137,16 @@ routerAdd(
       if (!isAtiva) continue
 
       var inscUf = String(insc.uf || insc.estado || '').toUpperCase()
-      if (inscUf && inscUf !== uf) continue
+      if (inscUf && inscUf !== ufFinal) continue
 
       activeIes.push({
         inscricao_estadual: String(
-          insc.inscricao_estadual || insc.ie || insc.numero || insc.numero_inscricao || '',
+          insc.inscricao_estadual ||
+            insc.inscricao ||
+            insc.ie ||
+            insc.numero ||
+            insc.numero_inscricao ||
+            '',
         ),
         tipo_ie: String(insc.tipo_ie || insc.tipo || insc.tipo_inscricao || 'Contribuinte'),
         ativa: true,
@@ -156,7 +168,12 @@ routerAdd(
 
         activeIes.push({
           inscricao_estadual: String(
-            insc2.inscricao_estadual || insc2.ie || insc2.numero || insc2.numero_inscricao || '',
+            insc2.inscricao_estadual ||
+              insc2.inscricao ||
+              insc2.ie ||
+              insc2.numero ||
+              insc2.numero_inscricao ||
+              '',
           ),
           tipo_ie: String(insc2.tipo_ie || insc2.tipo || insc2.tipo_inscricao || 'Contribuinte'),
           ativa: true,
@@ -183,7 +200,7 @@ routerAdd(
     var normalized = {
       cnpj: cnpjFormatted,
       razao_social: razaoSocial,
-      uf: uf,
+      uf: ufFinal,
       inscricao_estadual: inscricaoEstadualField,
       ativa: ativa,
       tipo_ie: tipoIe,
