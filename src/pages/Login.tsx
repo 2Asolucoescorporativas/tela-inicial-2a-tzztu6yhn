@@ -67,7 +67,7 @@ export default function Login() {
       </button>
 
       <div className="w-full max-w-sm flex flex-col items-center space-y-8 animate-fade-in-up">
-        <Logo2A size="sm" showTagline={true} className="scale-110" />
+        <Logo2A size="sm" showTagline={true} linkTo="/" className="scale-110" />
 
         {showSuccessBanner && (
           <div className="w-full bg-green-500/15 border border-green-400/30 rounded-[14px] p-3 flex items-start gap-2 animate-fade-in">

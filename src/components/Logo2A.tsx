@@ -1,90 +1,65 @@
+import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import logoImg from '@/assets/icone-invertido-2a-solucoes-1b349.jpg'
 
 interface Logo2AProps {
   className?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   showTagline?: boolean
+  linkTo?: string
+  altText?: string
 }
 
-export function Logo2A({ className, size = 'md', showTagline = true }: Logo2AProps) {
+export function Logo2A({
+  className,
+  size = 'md',
+  showTagline = true,
+  linkTo,
+  altText = '2A Soluções Corporativas Logo',
+}: Logo2AProps) {
   const sizeClasses = {
-    sm: { container: 'w-28 h-20', font: 'text-2xl', subFont: 'text-3xl' },
-    md: { container: 'w-48 h-36', font: 'text-4xl', subFont: 'text-4xl sm:text-5xl' },
-    lg: { container: 'w-64 h-48', font: 'text-6xl', subFont: 'text-5xl sm:text-6xl' },
+    xs: { img: 'w-10 h-10 rounded-lg', text: 'text-xl' },
+    sm: { img: 'w-16 h-16 rounded-xl', text: 'text-2xl' },
+    md: { img: 'w-24 h-24 rounded-2xl', text: 'text-3xl' },
+    lg: { img: 'w-32 h-32 rounded-2xl', text: 'text-4xl' },
   }
 
   const currentSize = sizeClasses[size]
 
-  return (
-    <div className={cn('flex flex-col items-center select-none', className)}>
-      <div className={cn('relative flex items-center justify-center', currentSize.container)}>
-        <svg
-          viewBox="0 0 320 220"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full drop-shadow-md"
-        >
-          <path
-            d="M50 145 C50 85, 110 50, 150 82 C165 98, 142 122, 100 152 L158 152 L158 168 L50 168 L50 152 C95 120, 126 100, 108 82 C88 64, 68 85, 68 115 Z"
-            fill="#FFFFFF"
-          />
-          <path
-            d="M175 168 L220 50 L245 50 L288 168 L264 168 L252 136 L208 136 L196 168 Z M214 118 L246 118 L230 72 Z"
-            fill="url(#goldGradientText)"
-          />
-          <path
-            d="M38 152 C90 178, 185 162, 280 102"
-            stroke="url(#goldGradientArrow)"
-            strokeWidth="18"
-            strokeLinecap="round"
-          />
-          <path d="M260 85 L292 95 L272 125 Z" fill="#A8914E" />
-          <defs>
-            <linearGradient
-              id="goldGradientText"
-              x1="170"
-              y1="50"
-              x2="288"
-              y2="168"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop offset="0%" stopColor="#A8914E" />
-              <stop offset="50%" stopColor="#F9E27D" />
-              <stop offset="100%" stopColor="#A8914E" />
-            </linearGradient>
-            <linearGradient
-              id="goldGradientArrow"
-              x1="38"
-              y1="160"
-              x2="280"
-              y2="100"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop offset="0%" stopColor="#002C45" />
-              <stop offset="30%" stopColor="#A8914E" />
-              <stop offset="70%" stopColor="#F9E27D" />
-              <stop offset="100%" stopColor="#A8914E" />
-            </linearGradient>
-          </defs>
-        </svg>
+  const content = (
+    <div className={cn('flex flex-col items-center select-none group', className)}>
+      <div className="relative overflow-hidden shadow-md border border-white/10 rounded-2xl transition-transform duration-200 group-hover:scale-105 bg-[#002C45]">
+        <img src={logoImg} alt={altText} className={cn('object-cover', currentSize.img)} />
       </div>
 
       {showTagline && (
-        <div className="w-full flex justify-end pr-2 -mt-2 sm:-mt-4">
-          <span
-            className={cn(
-              'font-serif italic tracking-wider font-light text-right drop-shadow-sm',
-              currentSize.subFont,
-            )}
-            style={{
-              fontFamily: "'Playfair Display', Garamond, 'Times New Roman', serif",
-              color: '#A8914E',
-            }}
-          >
-            Rural
-          </span>
-        </div>
+        <span
+          className={cn(
+            'font-serif italic tracking-wider font-light drop-shadow-sm mt-1',
+            currentSize.text,
+          )}
+          style={{
+            fontFamily: "'Playfair Display', Garamond, 'Times New Roman', serif",
+            color: '#A8914E',
+          }}
+        >
+          Rural
+        </span>
       )}
     </div>
   )
+
+  if (linkTo) {
+    return (
+      <Link
+        to={linkTo}
+        aria-label="2A Soluções Corporativas - Página Inicial"
+        className="inline-block"
+      >
+        {content}
+      </Link>
+    )
+  }
+
+  return content
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react'
+import { Logo2A } from '@/components/Logo2A'
 import {
   Dialog,
   DialogContent,
@@ -92,8 +93,9 @@ export default function RegisterRevisao() {
         <ArrowLeft className="w-6 h-6" />
       </button>
 
-      <div className="w-full max-w-md mx-auto flex flex-col space-y-5 pt-20 pb-10 animate-fade-in-up">
+      <div className="w-full max-w-md mx-auto flex flex-col space-y-5 pt-16 pb-10 animate-fade-in-up">
         <div className="text-center space-y-2">
+          <Logo2A size="sm" showTagline={true} linkTo="/" className="mx-auto mb-2" />
           <h1 className="text-2xl font-bold" style={{ color: '#A8914E' }}>
             Revise seu cadastro
           </h1>

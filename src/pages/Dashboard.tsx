@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
+import { Logo2A } from '@/components/Logo2A'
 import { getInvoices, InvoiceRecord } from '@/services/invoices'
 import { useRealtime } from '@/hooks/use-realtime'
 import { BottomNav } from '@/components/BottomNav'
@@ -50,6 +51,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#002C45] text-white pb-24 max-w-md mx-auto sm:max-w-xl md:max-w-2xl relative">
       <div className="p-5 flex items-center justify-between border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30">
         <div className="flex items-center gap-3">
+          <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
           <div className="w-10 h-10 rounded-full bg-gold-gradient text-[#002C45] font-bold flex items-center justify-center text-lg shadow-sm">
             {user?.name ? user.name[0] : 'A'}
           </div>

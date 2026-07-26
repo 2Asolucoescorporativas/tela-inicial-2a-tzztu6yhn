@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Loader2 } from 'lucide-react'
+import { Logo2A } from '@/components/Logo2A'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { maskCpf, unmaskCpf, isValidCpf } from '@/lib/cpf-utils'
@@ -103,7 +104,9 @@ export default function Register() {
         <ArrowLeft className="w-6 h-6" />
       </button>
 
-      <div className="w-full max-w-sm flex flex-col items-center space-y-8 animate-fade-in-up">
+      <div className="w-full max-w-sm flex flex-col items-center space-y-6 animate-fade-in-up">
+        <Logo2A size="sm" showTagline={true} linkTo="/" />
+
         <h1 className="text-2xl font-bold text-center" style={{ color: '#A8914E' }}>
           Localizar Cadastro Rural
         </h1>

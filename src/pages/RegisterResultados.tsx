@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { ArrowLeft, Database } from 'lucide-react'
+import { Logo2A } from '@/components/Logo2A'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import { maskCpf } from '@/lib/cpf-utils'
@@ -66,7 +67,9 @@ export default function RegisterResultados() {
         <ArrowLeft className="w-6 h-6" />
       </button>
 
-      <div className="w-full max-w-md mx-auto flex flex-col space-y-4 pt-20 pb-10 animate-fade-in-up">
+      <div className="w-full max-w-md mx-auto flex flex-col space-y-4 pt-16 pb-10 animate-fade-in-up">
+        <Logo2A size="sm" showTagline={true} linkTo="/" className="mx-auto" />
+
         <h1 className="text-2xl font-bold text-center" style={{ color: '#A8914E' }}>
           Cadastros Localizados
         </h1>
