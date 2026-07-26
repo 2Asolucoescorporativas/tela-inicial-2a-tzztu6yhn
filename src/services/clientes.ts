@@ -8,6 +8,7 @@ export interface SintegraEndereco {
   bairro: string
   municipio: string
   codigo_ibge: string
+  codigo_municipio_ibge?: string
   cep: string
   uf: string
   pais: string
@@ -18,6 +19,8 @@ export interface SintegraIE {
   inscricao_estadual: string
   tipo_ie: string
   ativa: boolean
+  uf?: string
+  endereco?: SintegraEndereco
 }
 
 export interface SintegraData {

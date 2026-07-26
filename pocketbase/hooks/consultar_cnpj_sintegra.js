@@ -74,48 +74,70 @@ routerAdd(
       })
     }
 
-    var endObj = {}
-    if (d.endereco && typeof d.endereco === 'object' && !Array.isArray(d.endereco)) {
-      endObj = d.endereco
+    var ufFinal = String(d.uf || d.estado || uf).toUpperCase()
+
+    function normalizeEndereco(endObj, fallbackUf) {
+      var end = {}
+      if (endObj && typeof endObj === 'object' && !Array.isArray(endObj)) {
+        end = endObj
+      }
+
+      var tipoLog = String(end.tipo_logradouro || '').trim()
+      var nomeLog = String(end.logradouro || '').trim()
+      var logradouro = ''
+      if (tipoLog && nomeLog) {
+        logradouro = tipoLog + ' ' + nomeLog
+      } else if (nomeLog) {
+        logradouro = nomeLog
+      } else if (tipoLog) {
+        logradouro = tipoLog
+      }
+
+      var codigoIbge = String(
+        end.codigo_municipio_ibge || end.codigo_ibge || end.codigo_municipio || end.cod_ibge || '',
+      )
+
+      return {
+        logradouro: logradouro,
+        numero: String(end.numero || ''),
+        complemento: String(end.complemento || ''),
+        bairro: String(end.bairro || ''),
+        municipio: String(end.municipio || end.cidade || ''),
+        codigo_municipio_ibge: codigoIbge,
+        codigo_ibge: codigoIbge,
+        cep: String(end.cep || ''),
+        uf: String(end.uf || fallbackUf || '').toUpperCase(),
+        pais: 'Brasil',
+        codigo_pais: '1058',
+      }
     }
 
-    var tipoLog = String(d.tipo_logradouro || endObj.tipo_logradouro || '').trim()
-    var nomeLog = String(d.logradouro || endObj.logradouro || '').trim()
-    var logradouro = ''
-    if (tipoLog && nomeLog) {
-      logradouro = tipoLog + ' ' + nomeLog
-    } else if (nomeLog) {
-      logradouro = nomeLog
-    } else if (tipoLog) {
-      logradouro = tipoLog
-    }
-
-    var ufFinal = String(d.uf || endObj.uf || d.estado || endObj.estado || uf).toUpperCase()
-
-    var endereco = {
-      logradouro: logradouro,
-      numero: String(d.numero || endObj.numero || ''),
-      complemento: String(d.complemento || endObj.complemento || ''),
-      bairro: String(d.bairro || endObj.bairro || ''),
-      municipio: String(d.municipio || endObj.municipio || d.cidade || endObj.cidade || ''),
-      codigo_ibge: String(
-        d.codigo_ibge ||
-          endObj.codigo_ibge ||
-          d.codigo_municipio ||
-          endObj.codigo_municipio ||
-          d.cod_ibge ||
+    function extractIeItem(insc) {
+      var inscEst = String(
+        insc.inscricao_estadual ||
+          insc.inscricao ||
+          insc.ie ||
+          insc.numero ||
+          insc.numero_inscricao ||
           '',
-      ),
-      cep: String(d.cep || endObj.cep || ''),
-      uf: ufFinal,
-      pais: 'Brasil',
-      codigo_pais: '1058',
+      )
+      var tipoIeVal = String(insc.tipo_ie || insc.tipo || insc.tipo_inscricao || 'Contribuinte')
+      var inscUf = String(insc.uf || insc.estado || '').toUpperCase()
+      var end = normalizeEndereco(insc.endereco, inscUf)
+
+      return {
+        inscricao_estadual: inscEst,
+        tipo_ie: tipoIeVal,
+        uf: inscUf,
+        endereco: end,
+      }
     }
 
     var rawInscricoes = d.inscricoes_estaduais
     if (!Array.isArray(rawInscricoes)) rawInscricoes = []
 
     var activeIes = []
+
     for (var i = 0; i < rawInscricoes.length; i++) {
       var insc = rawInscricoes[i]
       if (!insc || typeof insc !== 'object') continue
@@ -131,18 +153,9 @@ routerAdd(
       var inscUf = String(insc.uf || insc.estado || '').toUpperCase()
       if (inscUf && inscUf !== ufFinal) continue
 
-      activeIes.push({
-        inscricao_estadual: String(
-          insc.inscricao_estadual ||
-            insc.inscricao ||
-            insc.ie ||
-            insc.numero ||
-            insc.numero_inscricao ||
-            '',
-        ),
-        tipo_ie: String(insc.tipo_ie || insc.tipo || insc.tipo_inscricao || 'Contribuinte'),
-        ativa: true,
-      })
+      var item = extractIeItem(insc)
+      item.ativa = true
+      activeIes.push(item)
     }
 
     if (activeIes.length === 0) {
@@ -158,38 +171,18 @@ routerAdd(
 
         if (!isAtiva2) continue
 
-        activeIes.push({
-          inscricao_estadual: String(
-            insc2.inscricao_estadual ||
-              insc2.inscricao ||
-              insc2.ie ||
-              insc2.numero ||
-              insc2.numero_inscricao ||
-              '',
-          ),
-          tipo_ie: String(insc2.tipo_ie || insc2.tipo || insc2.tipo_inscricao || 'Contribuinte'),
-          ativa: true,
-        })
+        var item2 = extractIeItem(insc2)
+        item2.ativa = true
+        activeIes.push(item2)
       }
     }
 
     if (activeIes.length === 0 && rawInscricoes.length > 0) {
       var firstIe = rawInscricoes[0]
       if (firstIe && typeof firstIe === 'object') {
-        activeIes.push({
-          inscricao_estadual: String(
-            firstIe.inscricao_estadual ||
-              firstIe.inscricao ||
-              firstIe.ie ||
-              firstIe.numero ||
-              firstIe.numero_inscricao ||
-              '',
-          ),
-          tipo_ie: String(
-            firstIe.tipo_ie || firstIe.tipo || firstIe.tipo_inscricao || 'Contribuinte',
-          ),
-          ativa: false,
-        })
+        var item3 = extractIeItem(firstIe)
+        item3.ativa = false
+        activeIes.push(item3)
       }
     }
 
@@ -199,17 +192,27 @@ routerAdd(
     } else if (activeIes.length === 1) {
       inscricaoEstadualField = activeIes[0].inscricao_estadual
     } else {
-      inscricaoEstadualField = activeIes.map(function (ie) {
-        return ie.inscricao_estadual
-      })
+      inscricaoEstadualField = []
+      for (var k = 0; k < activeIes.length; k++) {
+        inscricaoEstadualField.push(activeIes[k].inscricao_estadual)
+      }
     }
 
     var tipoIe = activeIes.length > 0 ? activeIes[0].tipo_ie : 'Não contribuinte'
     var ativa = activeIes.length > 0
 
+    if (activeIes.length > 0 && activeIes[0].uf) {
+      ufFinal = activeIes[0].uf
+    }
+
     var cnpjFormatted = cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
 
     var razaoSocial = String(d.razao_social || d.nome || d.nome_empresarial || '')
+
+    var endereco = {}
+    if (activeIes.length > 0 && activeIes[0].endereco) {
+      endereco = activeIes[0].endereco
+    }
 
     var normalized = {
       cnpj: cnpjFormatted,

@@ -94,8 +94,24 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
     setConsulting(true)
     try {
       const data = await consultarCnpj(clean)
-      setForm(sintegraToForm(data))
-      setActiveIes(data.inscricoes_ativas || [])
+      const ies = data.inscricoes_ativas || []
+      setActiveIes(ies)
+      const baseForm = sintegraToForm(data)
+      if (ies.length > 0) {
+        const selectedIe = ies[0]
+        const end = selectedIe.endereco
+        baseForm.logradouro = end?.logradouro || ''
+        baseForm.numero = end?.numero || ''
+        baseForm.complemento = end?.complemento || ''
+        baseForm.bairro = end?.bairro || ''
+        baseForm.municipio = end?.municipio || ''
+        baseForm.codigo_ibge = end?.codigo_municipio_ibge || end?.codigo_ibge || ''
+        baseForm.uf = end?.uf || selectedIe.uf || baseForm.uf || ''
+        baseForm.cep = end?.cep || ''
+        baseForm.inscricao_estadual = selectedIe.inscricao_estadual
+        baseForm.tipo_ie = selectedIe.tipo_ie
+      }
+      setForm(baseForm)
       setHasData(true)
       setErrors({})
       setIsDirty(false)
@@ -105,14 +121,22 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
       setConsulting(false)
     }
   }
-
   const handleIeSelect = (value: string) => {
     const selected = activeIes.find((ie) => ie.inscricao_estadual === value)
     if (selected) {
+      const end = selected.endereco
       setForm((p) => ({
         ...p,
         inscricao_estadual: selected.inscricao_estadual,
         tipo_ie: selected.tipo_ie,
+        logradouro: end?.logradouro || '',
+        numero: end?.numero || '',
+        complemento: end?.complemento || '',
+        bairro: end?.bairro || '',
+        municipio: end?.municipio || '',
+        codigo_ibge: end?.codigo_municipio_ibge || end?.codigo_ibge || '',
+        uf: end?.uf || selected.uf || p.uf || '',
+        cep: end?.cep || '',
       }))
       setIsDirty(true)
       if (errors.inscricao_estadual)
