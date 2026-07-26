@@ -70,6 +70,25 @@ routerAdd(
       })
     }
 
+    // TEMPORARY DIAGNOSTIC LOG — capture raw SintegraAPI v2 response for field inspection
+    // This log is visible only in the Skip Cloud Bug Scanner logs, not in the UI.
+    // Remove after debugging is complete.
+    console.log(
+      '[DEBUG][consultar_cnpj_sintegra] raw SintegraAPI v2 response:',
+      JSON.stringify(res.json || {}),
+    )
+    try {
+      $app
+        .logger()
+        .info(
+          '[DEBUG][consultar_cnpj_sintegra] raw SintegraAPI v2 response',
+          'statusCode',
+          String(res.statusCode),
+          'rawBody',
+          JSON.stringify(res.json || {}),
+        )
+    } catch (_) {}
+
     var d = res.json || {}
 
     var razaoSocial = String(d.razao_social || d.nome || '')
