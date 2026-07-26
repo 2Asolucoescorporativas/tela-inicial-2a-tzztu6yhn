@@ -6,15 +6,18 @@ export interface Propriedade {
   ativa: boolean
   tipo_ie: string
   situacao_cadastral: string
+  situacao_ie?: string
   data_status: string
   municipio: string
   codigo_municipio_ibge: string
+  codigo_ibge?: string
   logradouro: string
+  endereco?: string
   numero: string
   bairro: string
   cep: string
   elegivel_cadastro: boolean
-  motivo_inelegibilidade: string | null
+  motivo_inegibilidade: string | null
 }
 
 export interface DebugInfo {
@@ -46,7 +49,10 @@ export interface ConcluirCadastroRequest {
   cpf: string
   senha: string
   confirmacao_senha: string
-  propriedades: { inscricao_estadual: string; nome: string }[]
+  propriedades: {
+    inscricao_estadual: string
+    nome: string
+  }[]
 }
 
 export interface ConcluirCadastroResponse {
@@ -67,7 +73,7 @@ export async function consultarPropriedades(cpf: string): Promise<ConsultaPropri
 export async function concluirCadastro(
   data: ConcluirCadastroRequest,
 ): Promise<ConcluirCadastroResponse> {
-  return pb.send('/backend/v1/cadastro/concluir', {
+  return pb.send('/backend/v1/cadastro/concluir-cadastro', {
     method: 'POST',
     body: JSON.stringify(data),
     headers: { 'Content-Type': 'application/json' },
