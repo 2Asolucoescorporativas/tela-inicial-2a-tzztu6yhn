@@ -16,7 +16,7 @@ routerAdd(
 
     var apiBaseUrl = $secrets.get('SINTEGRA_API_BASE_URL') || ''
     var apiKey = $secrets.get('SINTEGRA_API_KEY') || ''
-    var defaultUf = $secrets.get('SINTEGRA_EMPRESA_DEFAULT_UF') || 'PR'
+    var defaultUf = $secrets.get('PRODUTOR_RURAL_DEFAULT_UF') || 'PR'
 
     if (!apiBaseUrl || !apiKey) {
       return e.json(502, {
@@ -70,47 +70,76 @@ routerAdd(
       })
     }
 
-    // TEMPORARY DIAGNOSTIC LOG — capture raw SintegraAPI v2 response for field inspection
-    // This log is visible only in the Skip Cloud Bug Scanner logs, not in the UI.
-    // Remove after debugging is complete.
-    console.log(
-      '[DEBUG][consultar_cnpj_sintegra] raw SintegraAPI v2 response:',
-      JSON.stringify(res.json || {}),
-    )
-    try {
-      $app
-        .logger()
-        .info(
-          '[DEBUG][consultar_cnpj_sintegra] raw SintegraAPI v2 response',
-          'statusCode',
-          String(res.statusCode),
-          'rawBody',
-          JSON.stringify(res.json || {}),
-        )
-    } catch (_) {}
+    var rawJson = res.json || {}
 
-    var d = res.json || {}
+    // Unwrap nested response — SintegraAPI v2 may nest the payload under
+    // 'data', 'dados', or 'resultado'. Fall back to the top-level object.
+    var d = rawJson
+    if (d.data && typeof d.data === 'object' && !Array.isArray(d.data)) {
+      d = d.data
+    } else if (d.dados && typeof d.dados === 'object' && !Array.isArray(d.dados)) {
+      d = d.dados
+    } else if (d.resultado && typeof d.resultado === 'object' && !Array.isArray(d.resultado)) {
+      d = d.resultado
+    }
 
-    var razaoSocial = String(d.razao_social || d.nome || '')
-    var uf = String(d.uf || defaultUf).toUpperCase()
-    var situacaoPj = String(d.situacao_pj || d.situacao || '')
-    var updatedAt = String(d.updated_at || d.data || d.data_consulta || '')
+    var razaoSocial = String(d.razao_social || d.nome || d.nome_empresarial || '')
+    var uf = String(d.uf || d.estado || defaultUf).toUpperCase()
+    var situacaoPj = String(d.situacao_pj || d.situacao || d.situacao_cadastral || d.status || '')
+    var updatedAt = String(d.updated_at || d.data || d.data_consulta || d.data_atualizacao || '')
 
-    var endObj = d.endereco && typeof d.endereco === 'object' ? d.endereco : {}
+    // Extract endereco from multiple possible response structures
+    var endObj = {}
+    if (d.endereco && typeof d.endereco === 'object') {
+      endObj = d.endereco
+    } else if (d.dados_endereco && typeof d.dados_endereco === 'object') {
+      endObj = d.dados_endereco
+    } else if (d.endereco_completo && typeof d.endereco_completo === 'object') {
+      endObj = d.endereco_completo
+    }
+
+    // Build logradouro — combine tipo_logradouro + logradouro when both exist
+    var tipoLog = String(endObj.tipo_logradouro || d.tipo_logradouro || '').trim()
+    var nomeLog = String(
+      endObj.logradouro || endObj.rua || endObj.endereco || d.logradouro || d.endereco || '',
+    ).trim()
+    var logradouro = ''
+    if (tipoLog && nomeLog) {
+      logradouro = tipoLog + ' ' + nomeLog
+    } else if (nomeLog) {
+      logradouro = nomeLog
+    } else if (tipoLog) {
+      logradouro = tipoLog
+    }
+
     var endereco = {
-      logradouro: String(endObj.logradouro || d.logradouro || ''),
-      numero: String(endObj.numero || d.numero || ''),
+      logradouro: logradouro,
+      numero: String(endObj.numero || endObj.num || d.numero || ''),
       complemento: String(endObj.complemento || d.complemento || ''),
-      bairro: String(endObj.bairro || d.bairro || ''),
-      municipio: String(endObj.municipio || d.municipio || ''),
-      codigo_ibge: String(endObj.codigo_ibge || endObj.codigo_municipio || d.codigo_ibge || ''),
+      bairro: String(endObj.bairro || endObj.distrito || d.bairro || ''),
+      municipio: String(
+        endObj.municipio || endObj.cidade || endObj.municipio_nome || d.municipio || d.cidade || '',
+      ),
+      codigo_ibge: String(
+        endObj.codigo_ibge ||
+          endObj.codigo_municipio ||
+          endObj.cod_ibge ||
+          endObj.ibge ||
+          d.codigo_ibge ||
+          d.codigo_municipio ||
+          '',
+      ),
       cep: String(endObj.cep || d.cep || ''),
-      uf: String(endObj.uf || uf),
+      uf: String(endObj.uf || endObj.estado || uf),
       pais: 'Brasil',
       codigo_pais: '1058',
     }
 
+    // Extract inscricoes estaduais from multiple possible array keys
     var rawInscricoes = d.inscricoes_estaduais
+    if (!Array.isArray(rawInscricoes)) {
+      rawInscricoes = d.inscricoes || d.ies || d.inscricoesEstaduais || []
+    }
     if (!Array.isArray(rawInscricoes)) rawInscricoes = []
 
     var activeIes = []
@@ -118,15 +147,19 @@ routerAdd(
       var insc = rawInscricoes[i]
       if (!insc || typeof insc !== 'object') continue
 
-      var situacaoVal = String(insc.situacao || insc.situacao_ie || insc.situacao_cadastral || '')
+      var situacaoVal = String(
+        insc.situacao || insc.situacao_ie || insc.situacao_cadastral || insc.status || '',
+      )
       var isAtiva =
         situacaoVal.toLowerCase() === 'ativa' || situacaoVal.toLowerCase() === 'habilitado'
 
       if (!isAtiva) continue
 
       activeIes.push({
-        inscricao_estadual: String(insc.inscricao_estadual || insc.ie || insc.numero || ''),
-        tipo_ie: String(insc.tipo_ie || insc.tipo || 'Contribuinte'),
+        inscricao_estadual: String(
+          insc.inscricao_estadual || insc.ie || insc.numero || insc.numero_inscricao || '',
+        ),
+        tipo_ie: String(insc.tipo_ie || insc.tipo || insc.tipo_inscricao || 'Contribuinte'),
         ativa: true,
       })
     }
