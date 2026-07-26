@@ -1,15 +1,111 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
 import { Logo2A } from '@/components/Logo2A'
+import { cn } from '@/lib/utils'
 import { formatCurrency } from '@/lib/decimal-utils'
 import { maskDocumentByType } from '@/lib/client-utils'
-import { ArrowLeft, Check, FileCode2 } from 'lucide-react'
+import { generateNfe } from '@/lib/nfe-generator'
+import { getNextInvoiceNumber } from '@/services/invoices'
+import { useToast } from '@/hooks/use-toast'
+import { ArrowLeft, Check, FileCode2, Loader2, Download, AlertCircle } from 'lucide-react'
 
 export default function EmitirLeiteNext() {
   const navigate = useNavigate()
-  const { draftInvoice, selectedClient, activeProperty } = useSession()
+  const { user } = useAuth()
+  const { toast } = useToast()
+  const { draftInvoice, setDraftInvoice, selectedClient, activeProperty } = useSession()
+
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [generatedXml, setGeneratedXml] = useState('')
 
   const hasData = !!draftInvoice && !!selectedClient
+
+  const missingFields: string[] = []
+  if (!activeProperty) missingFields.push('Propriedade')
+  if (!selectedClient) missingFields.push('Cliente')
+  if (!draftInvoice || draftInvoice.quantidade <= 0) missingFields.push('Quantidade')
+  if (!draftInvoice || draftInvoice.valorUnitario <= 0) missingFields.push('Valor unitário')
+  if (!user?.cpf) missingFields.push('CPF do produtor')
+  if (!user?.name) missingFields.push('Nome do produtor')
+
+  const handleEmitir = async () => {
+    if (missingFields.length > 0) {
+      toast({
+        title: 'Dados incompletos',
+        description: `Verifique: ${missingFields.join(', ')}`,
+        variant: 'destructive',
+      })
+      return
+    }
+    setLoading(true)
+    try {
+      const nNFResult: any = await getNextInvoiceNumber()
+      const nNFStr = String(
+        typeof nNFResult === 'object' && nNFResult !== null
+          ? (nNFResult.number ?? nNFResult.nNF ?? '')
+          : nNFResult,
+      )
+      const result = generateNfe({
+        userCpf: user!.cpf,
+        userName: user!.name,
+        property: {
+          inscricao_estadual: activeProperty!.inscricao_estadual,
+          municipio: activeProperty!.municipio,
+          uf: activeProperty!.uf,
+          codigo_ibge: activeProperty!.codigo_ibge,
+          endereco: activeProperty!.endereco,
+          numero: activeProperty!.numero,
+          bairro: activeProperty!.bairro,
+          cep: activeProperty!.cep,
+        },
+        recipient: {
+          cnpj: selectedClient!.cpf_cnpj,
+          razaoSocial: selectedClient!.nome_razao_social,
+          ie: selectedClient!.inscricao_estadual || 'ISENTO',
+          logradouro: selectedClient!.logradouro || 'Não informado',
+          numero: selectedClient!.numero || 'S/N',
+          bairro: selectedClient!.bairro || 'Centro',
+          municipio: selectedClient!.municipio,
+          uf: selectedClient!.uf,
+          cMun: selectedClient!.codigo_ibge || '',
+        },
+        quantidade: draftInvoice!.quantidade,
+        valorUnitario: draftInvoice!.valorUnitario,
+        valorTotal: draftInvoice!.valorTotal,
+        nNF: nNFStr,
+      })
+      setDraftInvoice({ ...draftInvoice!, nNF: nNFStr, nfeXml: result.xml, nfeObject: result.data })
+      setGeneratedXml(result.xml)
+      setSuccess(true)
+      toast({
+        title: 'NF-e gerada com sucesso!',
+        description: 'O XML foi gerado e está pronto para download.',
+      })
+    } catch {
+      toast({
+        title: 'Erro ao gerar NF-e',
+        description: 'Não foi possível gerar o XML. Tente novamente.',
+        variant: 'destructive',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDownloadXml = () => {
+    const blob = new Blob([generatedXml], { type: 'application/xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `nfe-${draftInvoice?.nNF || 'rascunho'}.xml`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
@@ -40,6 +136,31 @@ export default function EmitirLeiteNext() {
             >
               Voltar para o formulário
             </button>
+          </div>
+        ) : success ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 animate-fade-in">
+            <div className="inline-flex p-4 bg-[#A8914E]/10 rounded-2xl mb-2">
+              <Check className="w-10 h-10 text-[#A8914E]" />
+            </div>
+            <h2 className="text-xl font-bold text-white">NF-e Gerada com Sucesso!</h2>
+            <p className="text-sm text-white/60 max-w-xs">
+              O XML da Nota Fiscal foi gerado.
+              {draftInvoice?.nNF ? ` Número: ${draftInvoice.nNF}` : ''}
+            </p>
+            <div className="w-full space-y-3 mt-4">
+              <button
+                onClick={handleDownloadXml}
+                className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white border-2 border-[#A8914E] text-[#002C45] hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              >
+                <Download className="w-5 h-5" /> Baixar XML
+              </button>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white/10 border-2 border-white/20 text-white hover:bg-white/15 transition-all"
+              >
+                Ir para o Dashboard
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -121,11 +242,38 @@ export default function EmitirLeiteNext() {
               </div>
             </div>
 
-            <p className="text-xs text-white/40 mt-3 text-center">
-              O XML será gerado na próxima etapa (revisão final).
+            {missingFields.length > 0 && (
+              <div className="bg-red-500/20 border border-red-500/40 rounded-xl px-4 py-3 flex items-start gap-2 mb-4">
+                <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-red-300">
+                  Dados incompletos para emissão: {missingFields.join(', ')}.
+                </p>
+              </div>
+            )}
+
+            <p className="text-xs text-white/40 mb-3 text-center">
+              O XML será gerado ao clicar em "Emitir Nota Fiscal".
             </p>
 
-            <div className="mt-auto pt-6">
+            <div className="mt-auto pt-6 space-y-3">
+              <button
+                onClick={handleEmitir}
+                disabled={loading || missingFields.length > 0}
+                className={cn(
+                  'w-full rounded-xl py-4 px-6 font-bold text-lg transition-all flex items-center justify-center gap-2',
+                  loading || missingFields.length > 0
+                    ? 'bg-white/10 border-2 border-white/20 text-white/30 cursor-not-allowed'
+                    : 'bg-white border-2 border-[#A8914E] text-[#002C45] hover:brightness-95 active:scale-[0.98]',
+                )}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" /> Gerando NF-e...
+                  </>
+                ) : (
+                  'Emitir Nota Fiscal'
+                )}
+              </button>
               <button
                 onClick={() => navigate('/emitir-leite')}
                 className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white/10 border-2 border-white/20 text-white hover:bg-white/15 transition-all"
