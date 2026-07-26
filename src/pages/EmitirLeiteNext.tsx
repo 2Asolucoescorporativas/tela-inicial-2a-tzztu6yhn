@@ -7,9 +7,11 @@ import { cn } from '@/lib/utils'
 import { formatCurrency } from '@/lib/decimal-utils'
 import { maskDocumentByType } from '@/lib/client-utils'
 import { generateNfe } from '@/lib/nfe-generator'
-import { getNextInvoiceNumber } from '@/services/invoices'
+import { generateChaveNFe } from '@/lib/nfe-chave'
+import { FISCAL_CONFIG } from '@/lib/fiscal-config'
+import { getNextInvoiceNumber, createInvoice } from '@/services/invoices'
 import { useToast } from '@/hooks/use-toast'
-import { ArrowLeft, Check, FileCode2, Loader2, Download, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Check, FileCode2, Loader2, AlertCircle } from 'lucide-react'
 
 export default function EmitirLeiteNext() {
   const navigate = useNavigate()
@@ -19,7 +21,7 @@ export default function EmitirLeiteNext() {
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [generatedXml, setGeneratedXml] = useState('')
+  const [savedNumber, setSavedNumber] = useState('')
 
   const hasData = !!draftInvoice && !!selectedClient
 
@@ -42,13 +44,19 @@ export default function EmitirLeiteNext() {
     }
     setLoading(true)
     try {
-      const nNFResult: any = await getNextInvoiceNumber()
-      const nNFStr = String(
-        typeof nNFResult === 'object' && nNFResult !== null
-          ? (nNFResult.number ?? nNFResult.nNF ?? '')
-          : nNFResult,
-      )
-      const result = generateNfe({
+      const nNFResult = await getNextInvoiceNumber()
+      const nNFStr = nNFResult.number
+      const seriesStr = nNFResult.series
+
+      const chave = generateChaveNFe({
+        uf: activeProperty!.uf || 'GO',
+        cpfCnpj: user!.cpf,
+        nNF: nNFStr,
+        serie: FISCAL_CONFIG.serie,
+        mod: FISCAL_CONFIG.mod,
+      })
+
+      generateNfe({
         userCpf: user!.cpf,
         userName: user!.name,
         property: {
@@ -77,34 +85,45 @@ export default function EmitirLeiteNext() {
         valorTotal: draftInvoice!.valorTotal,
         nNF: nNFStr,
       })
-      setDraftInvoice({ ...draftInvoice!, nNF: nNFStr, nfeXml: result.xml, nfeObject: result.data })
-      setGeneratedXml(result.xml)
+
+      const formattedQty = draftInvoice!.quantidade.toLocaleString('pt-BR', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4,
+      })
+      const itemsSummary = `${FISCAL_CONFIG.xProd} – ${formattedQty} ${draftInvoice!.unidadeComercial}`
+
+      await createInvoice({
+        user_id: user!.id,
+        number: nNFStr,
+        series: seriesStr,
+        producer_name: activeProperty!.nome || draftInvoice!.propertyName,
+        cpf_cnpj: user!.cpf,
+        ie_number: activeProperty!.inscricao_estadual || draftInvoice!.cadastroPro,
+        recipient_name: selectedClient!.nome_razao_social,
+        recipient_document: selectedClient!.cpf_cnpj,
+        operation_type: 'saida',
+        total_value: draftInvoice!.valorTotal,
+        status: 'emitida',
+        chavenfe: chave,
+        items_summary: itemsSummary,
+      })
+
+      setSavedNumber(nNFStr)
+      setDraftInvoice(null)
       setSuccess(true)
       toast({
-        title: 'NF-e gerada com sucesso!',
-        description: 'O XML foi gerado e está pronto para download.',
+        title: 'Nota fiscal emitida com sucesso!',
+        description: `NF-e ${nNFStr} foi gerada e salva.`,
       })
     } catch {
       toast({
-        title: 'Erro ao gerar NF-e',
-        description: 'Não foi possível gerar o XML. Tente novamente.',
+        title: 'Erro ao emitir NF-e',
+        description: 'Não foi possível emitir a nota fiscal. Tente novamente.',
         variant: 'destructive',
       })
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleDownloadXml = () => {
-    const blob = new Blob([generatedXml], { type: 'application/xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `nfe-${draftInvoice?.nNF || 'rascunho'}.xml`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
   }
 
   return (
@@ -124,7 +143,32 @@ export default function EmitirLeiteNext() {
       </div>
 
       <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto">
-        {!hasData ? (
+        {success ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 animate-fade-in">
+            <div className="inline-flex p-4 bg-[#A8914E]/10 rounded-2xl mb-2">
+              <Check className="w-10 h-10 text-[#A8914E]" />
+            </div>
+            <h2 className="text-xl font-bold text-white">Nota Fiscal Emitida!</h2>
+            <p className="text-sm text-white/60 max-w-xs">
+              Sua NF-e foi gerada e salva com sucesso.
+              {savedNumber ? ` Número: ${savedNumber}` : ''}
+            </p>
+            <div className="w-full space-y-3 mt-4">
+              <button
+                onClick={() => navigate('/consultar-nf')}
+                className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white border-2 border-[#A8914E] text-[#002C45] hover:brightness-95 active:scale-[0.98] transition-all"
+              >
+                Ver Notas Fiscais
+              </button>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white/10 border-2 border-white/20 text-white hover:bg-white/15 transition-all"
+              >
+                Ir para o Dashboard
+              </button>
+            </div>
+          </div>
+        ) : !hasData ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
             <FileCode2 className="w-12 h-12 text-white/30" />
             <p className="text-sm text-white/60">
@@ -136,31 +180,6 @@ export default function EmitirLeiteNext() {
             >
               Voltar para o formulário
             </button>
-          </div>
-        ) : success ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 animate-fade-in">
-            <div className="inline-flex p-4 bg-[#A8914E]/10 rounded-2xl mb-2">
-              <Check className="w-10 h-10 text-[#A8914E]" />
-            </div>
-            <h2 className="text-xl font-bold text-white">NF-e Gerada com Sucesso!</h2>
-            <p className="text-sm text-white/60 max-w-xs">
-              O XML da Nota Fiscal foi gerado.
-              {draftInvoice?.nNF ? ` Número: ${draftInvoice.nNF}` : ''}
-            </p>
-            <div className="w-full space-y-3 mt-4">
-              <button
-                onClick={handleDownloadXml}
-                className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white border-2 border-[#A8914E] text-[#002C45] hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                <Download className="w-5 h-5" /> Baixar XML
-              </button>
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="w-full rounded-xl py-4 px-6 font-bold text-lg bg-white/10 border-2 border-white/20 text-white hover:bg-white/15 transition-all"
-              >
-                Ir para o Dashboard
-              </button>
-            </div>
           </div>
         ) : (
           <>
@@ -252,7 +271,7 @@ export default function EmitirLeiteNext() {
             )}
 
             <p className="text-xs text-white/40 mb-3 text-center">
-              O XML será gerado ao clicar em "Emitir Nota Fiscal".
+              A nota fiscal será gerada e salva ao clicar em "Emitir Nota Fiscal".
             </p>
 
             <div className="mt-auto pt-6 space-y-3">
@@ -268,7 +287,7 @@ export default function EmitirLeiteNext() {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" /> Gerando NF-e...
+                    <Loader2 className="w-5 h-5 animate-spin" /> Emitindo...
                   </>
                 ) : (
                   'Emitir Nota Fiscal'

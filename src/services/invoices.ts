@@ -20,8 +20,10 @@ export interface InvoiceRecord {
 }
 
 export const getInvoices = async () => {
+  const userId = pb.authStore.record?.id || ''
   return pb.collection('invoices').getFullList<InvoiceRecord>({
     sort: '-created',
+    filter: `user_id = "${userId}"`,
   })
 }
 
@@ -29,12 +31,12 @@ export const getInvoice = async (id: string) => {
   return pb.collection('invoices').getOne<InvoiceRecord>(id)
 }
 
-export const getNextInvoiceNumber = async (): Promise<{ nextNumber: string; series: string }> => {
+export const getNextInvoiceNumber = async (): Promise<{ number: string; series: string }> => {
   try {
     const res = await pb.send('/backend/v1/invoices/next-number', { method: 'GET' })
-    return res
+    return { number: res.nextNumber, series: res.series || '1' }
   } catch (_) {
-    return { nextNumber: '000.001.206', series: '1' }
+    return { number: '000.001.206', series: '1' }
   }
 }
 
