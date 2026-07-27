@@ -13,7 +13,7 @@ export function AppHeader() {
   }
 
   return (
-    <header className="bg-[#001f31]/60 backdrop-blur-md border-b border-white/10 sticky top-0 z-30">
+    <header className="bg-[#001f31]/60 backdrop-blur-md border-b border-white/10 sticky top-0 z-30 safe-area-pt flex-shrink-0">
       <div className="max-w-md mx-auto sm:max-w-xl px-5 py-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex flex-col gap-0.5 min-w-0 flex-1">

@@ -24,7 +24,7 @@ export function AppFooter() {
   }
 
   return (
-    <footer className="border-t border-white/10 bg-[#001f31]/60 backdrop-blur-md">
+    <footer className="border-t border-white/10 bg-[#001f31]/60 backdrop-blur-md safe-area-pb flex-shrink-0">
       <div className="max-w-md mx-auto sm:max-w-xl px-5 py-3 flex justify-center">
         <button
           onClick={handleSair}

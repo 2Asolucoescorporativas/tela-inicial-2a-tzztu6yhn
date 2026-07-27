@@ -60,4 +60,101 @@
     font-weight: 600;
     font-size: 18px;
   }
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .menu-btn {
+    width: 85%;
+    max-width: 400px;
+    height: clamp(64px, 12dvh, 105px);
+    border-radius: 1rem;
+    padding-left: clamp(16px, 4dvh, 24px);
+    padding-right: clamp(16px, 4dvh, 24px);
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2dvh, 16px);
+    min-height: 48px;
+  }
+  .menu-btn-icon-wrap {
+    padding: clamp(8px, 1.5dvh, 10px);
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+  }
+  .menu-btn-icon {
+    width: clamp(24px, 4dvh, 28px);
+    height: clamp(24px, 4dvh, 28px);
+  }
+  .menu-btn-text {
+    font-size: clamp(15px, 2.5dvh, 18px);
+  }
+  .menu-gap {
+    gap: clamp(12px, 3dvh, 24px);
+  }
+  .menu-page-pad {
+    padding-top: clamp(8px, 2dvh, 24px);
+    padding-bottom: clamp(8px, 2dvh, 20px);
+  }
+  .menu-info-gap {
+    margin-bottom: clamp(8px, 2dvh, 24px);
+  }
+  .menu-title-gap {
+    margin-bottom: clamp(8px, 2dvh, 20px);
+  }
+}
+
+@media (max-height: 750px) {
+  .menu-btn {
+    height: clamp(56px, 10dvh, 80px);
+  }
+  .menu-btn-icon {
+    width: clamp(20px, 3.5dvh, 24px);
+    height: clamp(20px, 3.5dvh, 24px);
+  }
+  .menu-btn-icon-wrap {
+    padding: clamp(6px, 1dvh, 8px);
+  }
+  .menu-gap {
+    gap: clamp(8px, 2dvh, 16px);
+  }
+  .menu-btn-text {
+    font-size: clamp(13px, 2dvh, 16px);
+  }
+  .menu-info-gap {
+    margin-bottom: clamp(6px, 1.5dvh, 12px);
+  }
+  .menu-title-gap {
+    margin-bottom: clamp(6px, 1.5dvh, 12px);
+  }
+}
+
+@media (max-height: 650px) {
+  .menu-btn {
+    height: clamp(48px, 8dvh, 64px);
+  }
+  .menu-btn-icon {
+    width: clamp(18px, 3dvh, 20px);
+    height: clamp(18px, 3dvh, 20px);
+  }
+  .menu-btn-icon-wrap {
+    padding: clamp(5px, 0.8dvh, 6px);
+  }
+  .menu-gap {
+    gap: clamp(6px, 1.5dvh, 10px);
+  }
+  .menu-btn-text {
+    font-size: clamp(12px, 1.8dvh, 14px);
+  }
+  .menu-page-pad {
+    padding-top: clamp(4px, 1dvh, 8px);
+    padding-bottom: clamp(4px, 1dvh, 8px);
+  }
+  .menu-info-gap {
+    margin-bottom: clamp(4px, 1dvh, 8px);
+  }
+  .menu-title-gap {
+    margin-bottom: clamp(4px, 1dvh, 8px);
+  }
 }
