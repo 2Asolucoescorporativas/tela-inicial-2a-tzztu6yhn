@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import logoImage from '@/assets/icone-invertido-2a-solucoes-1b349.jpg'
+import logoImage from '@/assets/chatgpt-image-27-de-jul.de-2026-202036-6ec94.png'
 
 interface Logo2AProps {
   className?: string
@@ -13,40 +13,31 @@ interface Logo2AProps {
 export function Logo2A({
   className,
   size = 'md',
-  showTagline = true,
   linkTo,
-  altText = '2A RURAL Logo',
+  altText = '2A RURAL - Gestão que gera confiança',
 }: Logo2AProps) {
   const sizeClasses = {
-    xs: { imgHeight: 'h-16', textTagline: 'text-[8px]' },
-    sm: { imgHeight: 'h-20', textTagline: 'text-[10px]' },
-    md: { imgHeight: 'h-28', textTagline: 'text-xs' },
-    lg: { imgHeight: 'h-36', textTagline: 'text-sm' },
-    xl: { imgHeight: 'h-44', textTagline: 'text-base' },
+    xs: 'h-16',
+    sm: 'h-24',
+    md: 'h-32',
+    lg: 'h-44',
+    xl: 'h-56',
   }
 
-  const currentSize = sizeClasses[size]
+  const currentSizeClass = sizeClasses[size]
 
   const content = (
-    <div className={cn('flex flex-col items-center select-none group text-center', className)}>
-      <div className="relative flex flex-col items-center">
-        <img
-          src={logoImage}
-          alt={altText}
-          className={cn('w-auto drop-shadow-md object-contain', currentSize.imgHeight)}
-        />
-        {showTagline && (
-          <span
-            className={cn(
-              'font-sans font-medium tracking-wide mt-2 drop-shadow-sm',
-              currentSize.textTagline,
-            )}
-            style={{ color: '#D0A85C' }}
-          >
-            Gestão que gera confiança
-          </span>
-        )}
-      </div>
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center select-none group text-center',
+        className,
+      )}
+    >
+      <img
+        src={logoImage}
+        alt={altText}
+        className={cn('w-auto object-contain drop-shadow-md rounded-2xl', currentSizeClass)}
+      />
     </div>
   )
 
