@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { FileText, Settings } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
+import { AppHeader } from '@/components/AppHeader'
 
 export default function Dashboard() {
   const navigate = useNavigate()
 
   return (
     <MenuPageLayout>
+      <AppHeader />
       <div className="menu-page__content items-center justify-center px-5 menu-page-pad menu-gap animate-fade-in">
         <button
           onClick={() => navigate('/nota-fiscal')}

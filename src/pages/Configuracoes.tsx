@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useSession } from '@/stores/session'
-import { Logo2A } from '@/components/Logo2A'
-import { ArrowLeft, Settings } from 'lucide-react'
+import { AppHeader } from '@/components/AppHeader'
+import { Settings } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function Configuracoes() {
@@ -10,15 +10,7 @@ export default function Configuracoes() {
 
   return (
     <MenuPageLayout className="text-white">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md flex-shrink-0 z-30">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
-      </div>
+      <AppHeader />
 
       <div className="menu-page__content px-5 py-6 gap-8 animate-fade-in">
         <div className="flex flex-col items-center gap-3 text-center pt-4">

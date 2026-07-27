@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/use-auth'
+import { AppHeader } from '@/components/AppHeader'
 import { BottomNav } from '@/components/BottomNav'
 import { User, MapPin, Building, Award, CheckCircle2 } from 'lucide-react'
 import { FormPageLayout } from '@/components/FormPageLayout'
@@ -8,9 +9,7 @@ export default function ProducerProfile() {
 
   return (
     <FormPageLayout className="text-white pb-24 md:max-w-2xl relative">
-      <div className="p-5 border-b border-white/10 bg-[#001f31]/80 backdrop-blur-md sticky top-0 z-30">
-        <h2 className="text-lg font-bold text-[#F9E27D]">Perfil do Produtor Rural</h2>
-      </div>
+      <AppHeader />
 
       <div className="p-5 space-y-4 animate-fade-in">
         <div className="bg-[#001f31] p-4 rounded-2xl border border-white/10 flex items-center gap-4">

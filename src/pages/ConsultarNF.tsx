@@ -2,11 +2,11 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getInvoices, type InvoiceRecord } from '@/services/invoices'
 import { useRealtime } from '@/hooks/use-realtime'
-import { Logo2A } from '@/components/Logo2A'
+import { AppHeader } from '@/components/AppHeader'
 import { normalizeForSearch } from '@/lib/search-utils'
 import { formatCurrency } from '@/lib/decimal-utils'
 import { cn } from '@/lib/utils'
-import { ArrowLeft, Search, FileText, ChevronDown, Plus, MapPin, Building2 } from 'lucide-react'
+import { Search, FileText, ChevronDown, Plus, MapPin, Building2 } from 'lucide-react'
 import { FormPageLayout } from '@/components/FormPageLayout'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -83,19 +83,7 @@ export default function ConsultarNF() {
 
   return (
     <FormPageLayout className="text-white">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30 flex-shrink-0">
-        <button
-          onClick={() => navigate('/nota-fiscal')}
-          className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">Voltar</span>
-        </button>
-        <div className="flex-1 flex justify-center">
-          <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
-        </div>
-        <div className="w-[60px]" />
-      </div>
+      <AppHeader />
 
       <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
         <h1 className="text-xl font-bold text-white text-center mb-1">Consultar Notas Fiscais</h1>

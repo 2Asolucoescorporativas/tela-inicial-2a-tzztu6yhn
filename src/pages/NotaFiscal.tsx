@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
-import { Logo2A } from '@/components/Logo2A'
-import { ArrowLeft, FilePlus2, Search } from 'lucide-react'
+import { AppHeader } from '@/components/AppHeader'
+import { FilePlus2, Search } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function NotaFiscal() {
@@ -12,19 +12,7 @@ export default function NotaFiscal() {
 
   return (
     <MenuPageLayout className="text-white">
-      <div className="p-4 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md flex-shrink-0">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">Voltar</span>
-        </button>
-        <div className="flex-1 flex justify-center">
-          <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
-        </div>
-        <div className="w-[60px]" />
-      </div>
+      <AppHeader />
 
       <div className="menu-page__content px-5 menu-page-pad animate-fade-in">
         <div className="text-center space-y-0.5 menu-info-gap">

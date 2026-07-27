@@ -1,31 +1,14 @@
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/use-auth'
+import { AppHeader } from '@/components/AppHeader'
 import { useSession } from '@/stores/session'
-import { Logo2A } from '@/components/Logo2A'
-import { ArrowLeft, Beef } from 'lucide-react'
+import { Beef } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function EmitirGado() {
-  const navigate = useNavigate()
-  const { user } = useAuth()
   const { activeProperty, operationType } = useSession()
 
   return (
     <MenuPageLayout className="text-white">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md flex-shrink-0 z-30">
-        <button
-          onClick={() => navigate('/emitir-nf')}
-          className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">Voltar</span>
-        </button>
-        <div className="flex-1 flex justify-center">
-          <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
-        </div>
-        <div className="w-[60px]" />
-      </div>
-
+      <AppHeader />
       <div className="menu-page__content items-center justify-center px-5 text-center gap-4 animate-fade-in">
         <div className="p-4 bg-[#A8914E]/10 rounded-2xl">
           <Beef className="w-12 h-12 text-[#A8914E]" />
@@ -34,7 +17,7 @@ export default function EmitirGado() {
         <p className="text-sm text-white/60">Página em construção</p>
         {activeProperty && (
           <p className="text-xs text-white/40">
-            {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estadual}
+            {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estatual}
           </p>
         )}
         {operationType && <p className="text-xs text-[#A8914E]/60">Operação: {operationType}</p>}

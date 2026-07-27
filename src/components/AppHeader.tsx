@@ -1,46 +1,42 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
-import { ArrowLeftRight } from 'lucide-react'
+import { ArrowLeft, ArrowLeftRight } from 'lucide-react'
 
 export function AppHeader() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { activeProperty } = useSession()
 
-  const handleTrocarPropriedade = () => {
-    navigate('/selecionar-propriedade')
-  }
-
   return (
-    <header className="bg-[#001f31]/60 backdrop-blur-md border-b border-white/10 sticky top-0 z-30 safe-area-pt flex-shrink-0">
-      <div className="max-w-md mx-auto sm:max-w-xl px-5 py-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-mont-medium text-white/70">Produtor Rural:</span>
-              <span className="text-mont-semibold text-white truncate">{user?.name || '—'}</span>
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-mont-medium text-white/70">Propriedade:</span>
-              <span className="text-mont-semibold-lg text-[#F9E27D] truncate">
-                {activeProperty?.nome || '—'}
-              </span>
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-mont-medium text-white/70">CAD/PRO:</span>
-              <span className="text-mont-semibold text-white">
-                {activeProperty?.inscricao_estadual || '—'}
-              </span>
-            </div>
-          </div>
+    <header className="bg-[#002C45] border-b border-white/10 sticky top-0 z-30 safe-area-pt flex-shrink-0">
+      <div className="max-w-md mx-auto sm:max-w-xl px-5 py-2.5">
+        <div className="flex items-center justify-between gap-3">
           <button
-            onClick={handleTrocarPropriedade}
-            className="flex items-center gap-1.5 text-xs text-white/80 hover:text-[#F9E27D] bg-white/5 hover:bg-white/10 rounded-lg px-3 py-2 transition-colors whitespace-nowrap flex-shrink-0 self-start sm:self-auto"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 text-sm text-white/80 hover:text-[#F9E27D] transition-colors"
           >
-            <ArrowLeftRight className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" />
+            <span className="font-mont font-medium">Voltar</span>
+          </button>
+          <button
+            onClick={() => navigate('/selecionar-propriedade')}
+            className="flex items-center gap-1.5 text-xs text-white/80 hover:text-[#F9E27D] bg-white/5 hover:bg-white/10 rounded-lg px-3 py-1.5 transition-colors whitespace-nowrap"
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5" />
             <span className="font-mont font-medium">Trocar propriedade</span>
           </button>
+        </div>
+        <div className="mt-1.5 flex flex-col gap-0.5 min-w-0">
+          <span className="font-mont font-bold text-white text-sm truncate">
+            {user?.name || '—'}
+          </span>
+          <span className="font-mont font-normal text-white text-sm truncate">
+            {activeProperty?.nome || '—'}
+          </span>
+          <span className="font-mont text-xs text-[#A8914E] truncate">
+            CAD/PRO: {activeProperty?.inscricao_estatual || '—'}
+          </span>
         </div>
       </div>
     </header>
