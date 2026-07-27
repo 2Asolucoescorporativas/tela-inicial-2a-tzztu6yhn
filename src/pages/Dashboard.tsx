@@ -1,35 +1,29 @@
 import { useNavigate } from 'react-router-dom'
 import { FileText, Settings } from 'lucide-react'
-import { MenuPageLayout } from '@/components/MenuPageLayout'
-import { AppHeader } from '@/components/AppHeader'
+import { AppScreen } from '@/components/AppScreen'
+import { AppButton } from '@/components/AppButton'
 
 export default function Dashboard() {
   const navigate = useNavigate()
 
   return (
-    <MenuPageLayout>
-      <AppHeader exibirBotaoVoltar={false} />
-      <div className="menu-page__content items-center justify-center px-5 menu-page-pad menu-gap animate-fade-in">
-        <button
-          onClick={() => navigate('/nota-fiscal')}
-          className="menu-btn bg-white border-2 border-[#A8914E] text-[#002C45] font-bold rounded-2xl shadow-md hover:brightness-95 active:scale-[0.98] transition-all"
-        >
-          <div className="menu-btn-icon-wrap bg-[#A8914E]/10">
-            <FileText className="menu-btn-icon text-[#A8914E]" />
-          </div>
-          <span className="menu-btn-text tracking-wide">NOTA FISCAL</span>
-        </button>
-
-        <button
-          onClick={() => navigate('/configuracoes')}
-          className="menu-btn bg-white border-2 border-[#A8914E] text-[#002C45] font-bold rounded-2xl shadow-md hover:brightness-95 active:scale-[0.98] transition-all"
-        >
-          <div className="menu-btn-icon-wrap bg-[#A8914E]/10">
-            <Settings className="menu-btn-icon text-[#A8914E]" />
-          </div>
-          <span className="menu-btn-text tracking-wide">CONFIGURAÇÕES</span>
-        </button>
-      </div>
-    </MenuPageLayout>
+    <AppScreen
+      exibirBotaoVoltar={false}
+      permitirRolagem={false}
+      contentClassName="items-center justify-center px-5 menu-gap animate-fade-in"
+    >
+      <AppButton variant="primary" onClick={() => navigate('/nota-fiscal')}>
+        <div className="p-2 rounded-xl bg-[#A8914E]/10 flex-shrink-0">
+          <FileText className="w-6 h-6 text-[#A8914E]" />
+        </div>
+        <span className="tracking-wide">NOTA FISCAL</span>
+      </AppButton>
+      <AppButton variant="primary" onClick={() => navigate('/configuracoes')}>
+        <div className="p-2 rounded-xl bg-[#A8914E]/10 flex-shrink-0">
+          <Settings className="w-6 h-6 text-[#A8914E]" />
+        </div>
+        <span className="tracking-wide">CONFIGURAÇÕES</span>
+      </AppButton>
+    </AppScreen>
   )
 }

@@ -41,9 +41,10 @@
   body,
   #root {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden;
   }
 
   *,
@@ -221,5 +222,237 @@
   }
   .menu-title-gap {
     margin-bottom: clamp(4px, 1dvh, 8px);
+  }
+}
+
+@layer components {
+  .app-shell {
+    max-width: 28rem;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .app-header {
+    flex: 0 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 1000;
+    overflow: hidden;
+    background-color: #002c45;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+  }
+
+  .app-header__inner {
+    padding: 8px 20px 6px 20px;
+  }
+
+  .app-header--no-property .app-header__inner {
+    min-height: 48px;
+  }
+
+  .app-header--with-property .app-header__inner {
+    min-height: 88px;
+  }
+
+  .app-header__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .app-header__line {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .app-header__label {
+    color: rgba(255, 255, 255, 0.6);
+    flex-shrink: 0;
+  }
+
+  .app-header__value {
+    color: #fff;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-header__line--gold .app-header__value {
+    color: #a8914e;
+    font-weight: 600;
+  }
+
+  .app-header__nav {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 24px;
+  }
+
+  .app-header__back {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 150ms;
+    padding: 0;
+  }
+
+  .app-header__back:hover {
+    color: #f9e27d;
+  }
+
+  .app-header__step {
+    font-size: 12px;
+    color: #a8914e;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .main-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .screen-title {
+    flex: 0 0 auto;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+  }
+
+  .screen-title__text {
+    margin: 0;
+    padding: 0;
+    line-height: 1.25;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+  }
+
+  .screen-scroll-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen-content-static {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-button {
+    height: 52px;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 20px;
+    line-height: 1;
+    width: 100%;
+    border-radius: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    transition:
+      filter 150ms,
+      transform 150ms,
+      background-color 150ms;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .app-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .app-button--multiline {
+    min-height: 64px;
+    height: auto;
+  }
+
+  .app-button--primary {
+    background-color: #fff;
+    border: 2px solid #a8914e;
+    color: #002c45;
+  }
+
+  .app-button--primary:not(:disabled):hover {
+    filter: brightness(0.95);
+  }
+
+  .app-button--primary:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  .app-button--secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  .app-button--secondary:not(:disabled):hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .app-button--gold {
+    background-color: #a8914e;
+    border: none;
+    color: #fff;
+  }
+
+  .app-button--gold:not(:disabled):hover {
+    filter: brightness(1.05);
+  }
+
+  .app-button--danger {
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+  }
+
+  .app-button--danger:not(:disabled):hover {
+    background-color: rgba(239, 68, 68, 0.25);
+  }
+
+  .app-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
   }
 }

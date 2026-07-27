@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useSession, type OperationType } from '@/stores/session'
-import { AppHeader } from '@/components/AppHeader'
+import { AppScreen } from '@/components/AppScreen'
+import { AppButton } from '@/components/AppButton'
 import { Milk, Beef } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 interface OperationOption {
   id: OperationType
@@ -32,32 +32,23 @@ export default function EmitirNF() {
   }
 
   return (
-    <MenuPageLayout className="text-white">
-      <AppHeader />
-
-      <div className="menu-page__content px-5 menu-page-pad animate-fade-in">
-        <div className="text-center menu-title-gap pt-4">
-          <h2 className="text-lg font-bold text-white">Emitir Nota Fiscal</h2>
-          <p className="text-xs text-white/60 mt-0.5">Selecione o tipo de operação.</p>
-        </div>
-        <div className="flex-1 flex flex-col items-center justify-center menu-gap min-h-0">
-          {OPERATION_OPTIONS.map((op) => {
-            const Icon = op.icon
-            return (
-              <button
-                key={op.id}
-                onClick={() => handleSelect(op)}
-                className="menu-btn bg-white border-2 border-[#A8914E] text-[#002C45] font-bold rounded-2xl shadow-md hover:brightness-95 active:scale-[0.98] transition-all"
-              >
-                <div className="menu-btn-icon-wrap bg-[#A8914E]/10">
-                  <Icon className="menu-btn-icon text-[#A8914E]" />
-                </div>
-                <span className="menu-btn-text tracking-wide">{op.label}</span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-    </MenuPageLayout>
+    <AppScreen
+      titulo="Emitir Nota Fiscal"
+      permitirRolagem={false}
+      contentClassName="items-center justify-center px-5 menu-gap animate-fade-in"
+    >
+      <p className="text-xs text-white/60 text-center">Selecione o tipo de operação.</p>
+      {OPERATION_OPTIONS.map((op) => {
+        const Icon = op.icon
+        return (
+          <AppButton key={op.id} variant="primary" onClick={() => handleSelect(op)}>
+            <div className="p-2 rounded-xl bg-[#A8914E]/10 flex-shrink-0">
+              <Icon className="w-6 h-6 text-[#A8914E]" />
+            </div>
+            <span className="tracking-wide">{op.label}</span>
+          </AppButton>
+        )
+      })}
+    </AppScreen>
   )
 }

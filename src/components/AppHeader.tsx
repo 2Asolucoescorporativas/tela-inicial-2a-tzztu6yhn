@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
+import { cn } from '@/lib/utils'
 import { ArrowLeft } from 'lucide-react'
 
 interface AppHeaderProps {
@@ -36,38 +37,42 @@ export function AppHeader({
   const handleBack = acaoVoltar ?? (() => navigate(-1))
 
   return (
-    <header className="bg-[#002C45] border-b border-white/10 relative flex-shrink-0 safe-area-pt z-30">
-      <div className="max-w-md mx-auto sm:max-w-xl px-5 py-2.5">
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <p className="text-xs text-white/60 font-mont">
-            Usuário: <span className="text-white font-medium">{userName}</span>
+    <header
+      className={cn(
+        'app-header safe-area-pt',
+        exibirPropriedade ? 'app-header--with-property' : 'app-header--no-property',
+      )}
+    >
+      <div className="app-header__inner">
+        <div className="app-header__info">
+          <p className="app-header__line">
+            <span className="app-header__label">Usuário:</span>
+            <span className="app-header__value">{userName}</span>
           </p>
           {exibirPropriedade && (
             <>
-              <p className="text-xs text-white/60 font-mont flex min-w-0">
-                <span className="flex-shrink-0">Propriedade Selecionada:</span>
-                <span className="text-white font-medium truncate ml-1">{propertyName}</span>
+              <p className="app-header__line">
+                <span className="app-header__label">Propriedade Selecionada:</span>
+                <span className="app-header__value">{propertyName}</span>
               </p>
-              <p className="text-xs text-[#A8914E] font-mont font-medium whitespace-nowrap">
-                CAD/PRO: {cadProValue}
+              <p className="app-header__line app-header__line--gold">
+                <span className="app-header__label">CAD/PRO:</span>
+                <span className="app-header__value">{cadProValue}</span>
               </p>
             </>
           )}
         </div>
-        <div className="mt-1.5 flex items-center justify-between">
+        <div className="app-header__nav">
           {exibirBotaoVoltar ? (
-            <button
-              onClick={handleBack}
-              className="flex items-center gap-1 text-sm text-white/80 hover:text-[#F9E27D] transition-colors"
-            >
+            <button onClick={handleBack} className="app-header__back">
               <ArrowLeft className="w-4 h-4" />
-              <span className="font-mont font-medium">Voltar</span>
+              <span>Voltar</span>
             </button>
           ) : (
             <span />
           )}
           {showStep && (
-            <span className="text-xs text-[#A8914E] font-mont font-medium">
+            <span className="app-header__step">
               Etapa {etapaAtual} de {totalEtapas}
             </span>
           )}
