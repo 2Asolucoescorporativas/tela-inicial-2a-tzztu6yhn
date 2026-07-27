@@ -49,7 +49,8 @@ export default function EmitirNF() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 menu-page-pad animate-fade-in min-h-0">
+      <div className="menu-page__content px-5 menu-page-pad animate-fade-in">
+        {' '}
         <div className="text-center space-y-0.5 menu-info-gap">
           <h2 className="text-sm font-semibold text-white/80 tracking-wide">
             {user?.name || 'Usuário'}
@@ -61,12 +62,10 @@ export default function EmitirNF() {
             CAD/PRO: {activeProperty?.inscricao_estadual || '—'}
           </p>
         </div>
-
         <div className="text-center menu-title-gap">
           <h2 className="text-lg font-bold text-white">Emitir Nota Fiscal</h2>
           <p className="text-xs text-white/60 mt-0.5">Selecione o tipo de operação.</p>
         </div>
-
         <div className="flex-1 flex flex-col items-center justify-center menu-gap min-h-0">
           {OPERATION_OPTIONS.map((op) => {
             const Icon = op.icon

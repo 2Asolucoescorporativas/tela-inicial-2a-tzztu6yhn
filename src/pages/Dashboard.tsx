@@ -7,7 +7,7 @@ export default function Dashboard() {
 
   return (
     <MenuPageLayout>
-      <div className="flex-1 flex flex-col items-center justify-center px-5 menu-page-pad menu-gap animate-fade-in">
+      <div className="menu-page__content items-center justify-center px-5 menu-page-pad menu-gap animate-fade-in">
         <button
           onClick={() => navigate('/nota-fiscal')}
           className="menu-btn bg-white border-2 border-[#A8914E] text-[#002C45] font-bold rounded-2xl shadow-md hover:brightness-95 active:scale-[0.98] transition-all"

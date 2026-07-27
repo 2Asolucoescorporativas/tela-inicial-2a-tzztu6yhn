@@ -20,7 +20,7 @@ export default function Configuracoes() {
         <Logo2A size="xs" showTagline={false} linkTo="/dashboard" />
       </div>
 
-      <div className="flex-1 px-5 py-6 space-y-8 animate-fade-in">
+      <div className="menu-page__content px-5 py-6 gap-8 animate-fade-in">
         <div className="flex flex-col items-center gap-3 text-center pt-4">
           <div className="p-4 bg-[#A8914E]/10 rounded-2xl">
             <Settings className="w-12 h-12 text-[#A8914E]" />

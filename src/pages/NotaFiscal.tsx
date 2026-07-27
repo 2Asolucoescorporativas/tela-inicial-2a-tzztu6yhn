@@ -26,7 +26,7 @@ export default function NotaFiscal() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 menu-page-pad animate-fade-in min-h-0">
+      <div className="menu-page__content px-5 menu-page-pad animate-fade-in">
         <div className="text-center space-y-0.5 menu-info-gap">
           <h2 className="text-sm font-semibold text-white/80 tracking-wide">
             {user?.name || 'Usuário'}

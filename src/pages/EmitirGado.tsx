@@ -26,7 +26,7 @@ export default function EmitirGado() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-5 text-center gap-4 animate-fade-in">
+      <div className="menu-page__content items-center justify-center px-5 text-center gap-4 animate-fade-in">
         <div className="p-4 bg-[#A8914E]/10 rounded-2xl">
           <Beef className="w-12 h-12 text-[#A8914E]" />
         </div>

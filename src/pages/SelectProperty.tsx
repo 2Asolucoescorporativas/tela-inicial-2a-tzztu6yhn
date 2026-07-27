@@ -5,6 +5,7 @@ import { useSession } from '@/stores/session'
 import { getPropriedades, type PropriedadeRecord } from '@/services/propriedades'
 import { maskCpf } from '@/lib/cpf-utils'
 import { cn } from '@/lib/utils'
+import { FormPageLayout } from '@/components/FormPageLayout'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -58,7 +59,7 @@ export default function SelectProperty() {
   }
 
   return (
-    <div className="h-[100dvh] bg-[#002C45] text-white max-w-md mx-auto sm:max-w-xl flex flex-col overflow-y-auto safe-area-pt">
+    <FormPageLayout className="text-white safe-area-pt">
       <div className="p-5 flex items-center justify-between border-b border-white/10 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gold-gradient text-[#002C45] font-bold flex items-center justify-center text-lg">
@@ -160,6 +161,6 @@ export default function SelectProperty() {
           CONTINUAR
         </button>
       </div>
-    </div>
+    </FormPageLayout>
   )
 }
