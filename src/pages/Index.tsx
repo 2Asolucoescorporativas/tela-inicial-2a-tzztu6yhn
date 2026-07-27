@@ -12,10 +12,11 @@ export default function Index() {
     <div className="min-h-screen w-full relative flex flex-col items-center justify-between p-6 select-none overflow-hidden bg-[#071c33]">
       {/* Official 2A Rural Brand Background Image Layer */}
       <div
-        className="absolute inset-0 z-0 bg-top bg-no-repeat bg-cover transition-all duration-300 pointer-events-none"
+        className="absolute inset-0 z-0 bg-no-repeat bg-cover transition-all duration-300 pointer-events-none"
         style={{
           backgroundImage: `url(${brandBgImage})`,
           backgroundColor: '#071c33',
+          backgroundPosition: 'center -17.6vh',
         }}
       />
 
