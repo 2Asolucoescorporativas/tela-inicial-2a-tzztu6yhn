@@ -85,7 +85,7 @@ export default function ConsultarNF() {
     <FormPageLayout className="text-white">
       <AppHeader />
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
+      <div className="form-page__content px-5 pt-6 pb-8 animate-fade-in">
         <h1 className="text-xl font-bold text-white text-center mb-1">Consultar Notas Fiscais</h1>
         <p className="text-xs text-white/50 text-center mb-5">
           {filtered.length} {filtered.length === 1 ? 'nota encontrada' : 'notas encontradas'}

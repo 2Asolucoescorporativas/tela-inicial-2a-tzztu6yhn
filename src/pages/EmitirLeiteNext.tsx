@@ -131,7 +131,7 @@ export default function EmitirLeiteNext() {
     <FormPageLayout className="text-white">
       <AppHeader etapaAtual={3} totalEtapas={3} />
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
+      <div className="form-page__content px-5 pt-6 pb-8 animate-fade-in">
         {success ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 animate-fade-in">
             <div className="inline-flex p-4 bg-[#A8914E]/10 rounded-2xl mb-2">
@@ -230,22 +230,6 @@ export default function EmitirLeiteNext() {
                 <span className="text-[#A8914E] font-bold">
                   {formatCurrency(draftInvoice!.valorTotal)}
                 </span>
-              </div>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 mb-4">
-              <p className="text-sm font-semibold text-[#A8914E] uppercase tracking-wide">
-                Emitente
-              </p>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/60">Propriedade</span>
-                <span className="text-white font-semibold text-right max-w-[60%] truncate">
-                  {activeProperty?.nome || draftInvoice!.propertyName}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/60">CAD/PRO</span>
-                <span className="text-white font-semibold">{draftInvoice!.cadastroPro}</span>
               </div>
             </div>
 

@@ -1,17 +1,20 @@
 import { useAuth } from '@/hooks/use-auth'
+import { useSession } from '@/stores/session'
 import { AppHeader } from '@/components/AppHeader'
 import { BottomNav } from '@/components/BottomNav'
-import { User, MapPin, Building, Award, CheckCircle2 } from 'lucide-react'
+import { MapPin, Building } from 'lucide-react'
 import { FormPageLayout } from '@/components/FormPageLayout'
+import { maskCpf } from '@/lib/cpf-utils'
 
 export default function ProducerProfile() {
   const { user } = useAuth()
+  const { activeProperty } = useSession()
 
   return (
-    <FormPageLayout className="text-white pb-24 md:max-w-2xl relative">
+    <FormPageLayout className="text-white md:max-w-2xl relative">
       <AppHeader />
 
-      <div className="p-5 space-y-4 animate-fade-in">
+      <div className="form-page__content p-5 space-y-4 animate-fade-in pb-24">
         <div className="bg-[#001f31] p-4 rounded-2xl border border-white/10 flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-gold-gradient text-[#002C45] font-bold text-2xl flex items-center justify-center">
             {user?.name ? user.name[0] : 'A'}
@@ -32,7 +35,9 @@ export default function ProducerProfile() {
           <div className="space-y-2 text-white/80">
             <div className="flex justify-between border-b border-white/10 pb-1.5">
               <span className="text-white/50">CPF/CNPJ:</span>
-              <span className="font-semibold text-white">123.456.789-00</span>
+              <span className="font-semibold text-white">
+                {user?.cpf ? maskCpf(user.cpf) : '—'}
+              </span>
             </div>
             <div className="flex justify-between border-b border-white/10 pb-1.5">
               <span className="text-white/50">Regime Tributário:</span>
@@ -47,8 +52,12 @@ export default function ProducerProfile() {
           </h4>
 
           <div className="p-3 bg-[#002C45] rounded-xl border border-white/10 space-y-1">
-            <p className="text-white/60">CAR: SP-3526071-8819283749281</p>
-            <p className="text-white/60">Município: Ribeirão Preto - SP</p>
+            <p className="text-white/60">
+              Município: {activeProperty?.municipio || '—'} - {activeProperty?.uf || '—'}
+            </p>
+            {activeProperty?.endereco && (
+              <p className="text-white/60">Endereço: {activeProperty.endereco}</p>
+            )}
           </div>
         </div>
       </div>

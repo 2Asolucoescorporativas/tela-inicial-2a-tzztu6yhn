@@ -98,7 +98,7 @@ export default function EmitirLeite() {
     <FormPageLayout className="text-white">
       <AppHeader etapaAtual={2} totalEtapas={3} />
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
+      <div className="form-page__content px-5 pt-6 pb-8 animate-fade-in">
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold text-white">VENDA DE LEITE</h2>
           <p className="text-sm text-white/60 mt-1">Informe os dados do produto.</p>

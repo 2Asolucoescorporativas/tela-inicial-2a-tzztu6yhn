@@ -9,6 +9,7 @@ interface AppHeaderProps {
   cadPro?: string
   etapaAtual?: number
   totalEtapas?: number
+  exibirPropriedade?: boolean
   exibirBotaoVoltar?: boolean
   acaoVoltar?: () => void
 }
@@ -19,6 +20,7 @@ export function AppHeader({
   cadPro,
   etapaAtual,
   totalEtapas,
+  exibirPropriedade = true,
   exibirBotaoVoltar = true,
   acaoVoltar,
 }: AppHeaderProps) {
@@ -34,19 +36,23 @@ export function AppHeader({
   const handleBack = acaoVoltar ?? (() => navigate(-1))
 
   return (
-    <header className="bg-[#002C45] border-b border-white/10 sticky top-0 z-30 safe-area-pt flex-shrink-0">
+    <header className="bg-[#002C45] border-b border-white/10 relative flex-shrink-0 safe-area-pt z-30">
       <div className="max-w-md mx-auto sm:max-w-xl px-5 py-2.5">
         <div className="flex flex-col gap-0.5 min-w-0">
           <p className="text-xs text-white/60 font-mont">
             Usuário: <span className="text-white font-medium">{userName}</span>
           </p>
-          <p className="text-xs text-white/60 font-mont flex min-w-0">
-            <span className="flex-shrink-0">Propriedade Selecionada:</span>
-            <span className="text-white font-medium truncate ml-1">{propertyName}</span>
-          </p>
-          <p className="text-xs text-[#A8914E] font-mont font-medium whitespace-nowrap">
-            CAD/PRO: {cadProValue}
-          </p>
+          {exibirPropriedade && (
+            <>
+              <p className="text-xs text-white/60 font-mont flex min-w-0">
+                <span className="flex-shrink-0">Propriedade Selecionada:</span>
+                <span className="text-white font-medium truncate ml-1">{propertyName}</span>
+              </p>
+              <p className="text-xs text-[#A8914E] font-mont font-medium whitespace-nowrap">
+                CAD/PRO: {cadProValue}
+              </p>
+            </>
+          )}
         </div>
         <div className="mt-1.5 flex items-center justify-between">
           {exibirBotaoVoltar ? (

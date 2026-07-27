@@ -90,7 +90,7 @@ export default function CadastrarCliente() {
   return (
     <FormPageLayout className="text-white">
       <AppHeader />
-      <div className="flex-1 p-5 space-y-6 animate-fade-in">
+      <div className="form-page__content p-5 space-y-6 animate-fade-in">
         <h1 className="text-xl font-bold text-white">Cadastrar Cliente</h1>
         <ClientForm
           key={formKey}

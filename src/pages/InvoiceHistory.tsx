@@ -25,9 +25,9 @@ export default function InvoiceHistory() {
   )
 
   return (
-    <FormPageLayout className="text-white pb-24 md:max-w-2xl relative">
+    <FormPageLayout className="text-white md:max-w-2xl relative">
       <AppHeader />
-      <div className="px-5 py-3 border-b border-white/10 space-y-3">
+      <div className="flex-shrink-0 px-5 py-3 border-b border-white/10 space-y-3">
         <div className="relative">
           <Search className="w-4 h-4 text-white/50 absolute left-3 top-3.5" />
           <Input
@@ -39,7 +39,7 @@ export default function InvoiceHistory() {
         </div>
       </div>
 
-      <div className="p-5 space-y-3 animate-fade-in">
+      <div className="form-page__content p-5 space-y-3 animate-fade-in pb-24">
         {filtered.length === 0 ? (
           <div className="py-12 text-center text-white/50 text-xs">
             Nenhuma nota fiscal encontrada.
