@@ -29,6 +29,7 @@ import Configuracoes from './pages/Configuracoes'
 import CadastrarCliente from './pages/CadastrarCliente'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
+import ProtectedLayout from './components/ProtectedLayout'
 
 function ProtectedRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth()
@@ -72,6 +73,9 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+            </Route>
+
+            <Route element={<ProtectedLayout />}>
               <Route
                 path="/dashboard"
                 element={
@@ -177,6 +181,7 @@ const App = () => (
                 }
               />
             </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>

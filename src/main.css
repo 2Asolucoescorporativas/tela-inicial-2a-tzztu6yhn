@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -41,5 +41,23 @@
 @layer utilities {
   .bg-gold-gradient {
     background: linear-gradient(135deg, #d4af37 0%, #f9e27d 50%, #c59b27 100%);
+  }
+  .font-mont {
+    font-family: 'Montserrat', sans-serif;
+  }
+  .text-mont-medium {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .text-mont-semibold {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .text-mont-semibold-lg {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
   }
 }
