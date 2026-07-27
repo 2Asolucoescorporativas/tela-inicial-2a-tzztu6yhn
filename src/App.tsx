@@ -4,6 +4,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import { SessionProvider, useSession } from '@/stores/session'
+import { BrandedSplashScreen } from '@/components/BrandedSplashScreen'
 
 import Index from './pages/Index'
 import Login from './pages/Login'
@@ -33,17 +34,35 @@ import ProtectedLayout from './components/ProtectedLayout'
 
 function ProtectedRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth()
-  if (loading) return null
-  if (!isAuthenticated) return <Navigate to="/login" replace />
+  const { isLoadingSession } = useSession()
+
+  if (loading || isLoadingSession) {
+    return <BrandedSplashScreen message="Validando acesso..." />
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
   return children
 }
 
 function RequireProperty({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth()
-  const { activeProperty } = useSession()
-  if (loading) return null
-  if (!isAuthenticated) return <Navigate to="/login" replace />
-  if (!activeProperty) return <Navigate to="/selecionar-propriedade" replace />
+  const { activeProperty, isLoadingSession } = useSession()
+
+  if (loading || isLoadingSession) {
+    return <BrandedSplashScreen message="Carregando propriedade..." />
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+
+  if (!activeProperty) {
+    return <Navigate to="/selecionar-propriedade" replace />
+  }
+
   return children
 }
 

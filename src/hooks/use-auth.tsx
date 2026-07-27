@@ -1,20 +1,11 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import pb from '@/lib/pocketbase/client'
 
-interface AuthUser {
-  id: string
-  email: string
-  name?: string
-  avatar?: string
-  cpf?: string
-}
-
 interface AuthContextType {
-  user: AuthUser | null
+  user: any
   isAuthenticated: boolean
   signUp: (email: string, password: string) => Promise<{ error: any }>
   signIn: (email: string, password: string) => Promise<{ error: any }>
-  signInWithCpf: (cpf: string, password: string) => Promise<{ error: any }>
   signOut: () => void
   loading: boolean
 }
@@ -28,27 +19,41 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(
-    pb.authStore.isValid ? (pb.authStore.record as unknown as AuthUser) : null,
-  )
+  const [user, setUser] = useState<any>(pb.authStore.isValid ? pb.authStore.record : null)
   const [isAuthenticated, setIsAuthenticated] = useState(pb.authStore.isValid)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const unsubscribe = pb.authStore.onChange((_token, record) => {
-      setUser(pb.authStore.isValid ? (record as unknown as AuthUser) : null)
+      setUser(pb.authStore.isValid ? record : null)
       setIsAuthenticated(pb.authStore.isValid)
     })
 
-    if (pb.authStore.isValid) {
-      pb.collection('users')
-        .authRefresh()
-        .catch(() => pb.authStore.clear())
-        .finally(() => setLoading(false))
-    } else {
-      if (pb.authStore.record) pb.authStore.clear()
-      setLoading(false)
+    const initAuth = async () => {
+      if (pb.authStore.isValid) {
+        try {
+          const refreshed = await pb.collection('users').authRefresh()
+          setUser(refreshed.record)
+          setIsAuthenticated(true)
+        } catch (error) {
+          console.warn('Auth refresh failed, clearing store:', error)
+          pb.authStore.clear()
+          setUser(null)
+          setIsAuthenticated(false)
+        } finally {
+          setLoading(false)
+        }
+      } else {
+        if (pb.authStore.record) {
+          pb.authStore.clear()
+        }
+        setUser(null)
+        setIsAuthenticated(false)
+        setLoading(false)
+      }
     }
+
+    initAuth()
 
     return () => {
       unsubscribe()
@@ -74,27 +79,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const signInWithCpf = async (cpf: string, password: string) => {
-    try {
-      const cleanCpf = cpf.replace(/\D/g, '')
-      const result = await pb.send('/backend/v1/auth/cpf', {
-        method: 'POST',
-        body: JSON.stringify({ cpf: cleanCpf, password }),
-        headers: { 'Content-Type': 'application/json' },
-      })
-      pb.authStore.save(result.token, result.record)
-      return { error: null }
-    } catch (error) {
-      return { error }
-    }
-  }
-
   const signOut = () => {
-    sessionStorage.removeItem('2a-rural-active-property')
-    sessionStorage.removeItem('2a-rural-draft-invoice')
-    sessionStorage.removeItem('2a-rural-recipient')
-    sessionStorage.removeItem('2a-rural-selected-client')
     pb.authStore.clear()
+    setUser(null)
+    setIsAuthenticated(false)
+    try {
+      localStorage.removeItem('2a_rural_active_property')
+    } catch (e) {
+      // ignore
+    }
   }
 
   return (
@@ -104,7 +97,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated,
         signUp,
         signIn,
-        signInWithCpf,
         signOut,
         loading,
       }}

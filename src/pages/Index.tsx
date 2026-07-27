@@ -1,50 +1,71 @@
 import { useNavigate } from 'react-router-dom'
-import brandBgImage from '@/assets/chatgpt-image-26-de-jul.de-2026-205909-bd54e.png'
+import { LogIn, LogOut } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
+import { useSession } from '@/stores/session'
+import { Logo2A } from '@/components/Logo2A'
+import { useToast } from '@/hooks/use-toast'
 
 export default function Index() {
   const navigate = useNavigate()
+  const { isAuthenticated, signOut } = useAuth()
+  const { activeProperty, clearSession } = useSession()
+  const { toast } = useToast()
 
   const handleEntrar = () => {
-    navigate('/login')
+    if (isAuthenticated) {
+      if (activeProperty) {
+        navigate('/dashboard')
+      } else {
+        navigate('/selecionar-propriedade')
+      }
+    } else {
+      navigate('/login')
+    }
+  }
+
+  const handleSair = () => {
+    signOut()
+    clearSession()
+    toast({
+      title: 'Sessão encerrada',
+      description: 'Você saiu do aplicativo com sucesso.',
+    })
   }
 
   return (
-    <div className="min-h-screen w-full relative flex flex-col items-center justify-between p-6 select-none overflow-hidden bg-[#071c33]">
-      {/* Official 2A Rural Brand Background Image Layer */}
-      <div
-        className="absolute inset-0 z-0 bg-no-repeat bg-cover transition-all duration-300 pointer-events-none"
-        style={{
-          backgroundImage: `url(${brandBgImage})`,
-          backgroundColor: '#071c33',
-          backgroundPosition: 'center -17.6vh',
-        }}
-      />
+    <div className="h-[100dvh] min-h-[100dvh] w-full bg-[#071C33] flex flex-col items-center justify-between p-6 select-none relative overflow-hidden">
+      {/* Background radial glow effect */}
+      <div className="absolute inset-0 bg-radial from-[#0e2a4a]/50 via-transparent to-transparent pointer-events-none" />
 
-      {/* Subtle overlay gradients for depth and visual contrast */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#071c33]/30 via-transparent to-[#071c33]/85 pointer-events-none" />
+      {/* Top spacer */}
+      <div className="w-full pt-4" />
 
-      {/* Central hero area showcasing the brand logo within the background */}
-      <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center py-12">
-        {/* Keeps center space clear for the 2A Rural emblem in the background image */}
+      {/* Centered official 2A RURAL logo */}
+      <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center my-auto animate-fade-in">
+        <Logo2A size="xl" showTagline={true} />
       </div>
 
-      {/* Footer CTA & Tagline */}
-      <div className="relative z-10 w-full max-w-sm flex flex-col items-center mb-8 space-y-4 animate-fade-in-up">
+      {/* Action buttons matching design image */}
+      <div className="relative z-10 w-full max-w-sm flex flex-col items-center pb-6 space-y-3.5 animate-fade-in-up">
+        {/* Solid Gold/Tan "Entrar" Button */}
         <button
           onClick={handleEntrar}
           type="button"
-          style={{ backgroundColor: '#FFFFFF', color: '#071c33' }}
-          className="w-[85%] sm:w-[80%] h-14 rounded-2xl font-sans font-bold text-xl tracking-wide shadow-2xl hover:bg-amber-50 active:scale-95 transition-all duration-150 flex items-center justify-center border border-white/20"
+          className="w-full h-14 rounded-xl font-sans font-bold text-lg tracking-wide text-white bg-[#C89B51] hover:bg-[#b88a41] active:scale-[0.98] shadow-lg shadow-[#071C33]/50 transition-all duration-150 flex items-center justify-center space-x-2.5 border border-[#d2a963]/30 cursor-pointer"
         >
-          ENTRAR
+          <LogIn className="w-5 h-5 text-white" />
+          <span>Entrar</span>
         </button>
 
-        <span className="text-white/85 text-xs sm:text-sm font-light tracking-wider text-center drop-shadow-sm px-2">
-          Emissão Digital de Nota Fiscal Produtor{' '}
-          <span style={{ color: '#D4AF37' }} className="font-semibold">
-            Rural
-          </span>
-        </span>
+        {/* Outlined Gold/Blue "Sair do aplicativo" Button */}
+        <button
+          onClick={handleSair}
+          type="button"
+          className="w-full h-14 rounded-xl font-sans font-medium text-base tracking-wide text-[#D0A85C] border border-[#C89B51]/70 bg-[#071C33]/80 hover:bg-[#C89B51]/10 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2.5 cursor-pointer"
+        >
+          <LogOut className="w-5 h-5 text-[#D0A85C]" />
+          <span>Sair do aplicativo</span>
+        </button>
       </div>
     </div>
   )
