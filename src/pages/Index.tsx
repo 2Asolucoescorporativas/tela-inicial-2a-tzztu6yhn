@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import brandBgImage from '@/assets/chatgpt-image-26-de-jul.de-2026-204722-95cd6.png'
+import brandBgImage from '@/assets/chatgpt-image-26-de-jul.de-2026-205909-bd54e.png'
 
 export default function Index() {
   const navigate = useNavigate()
