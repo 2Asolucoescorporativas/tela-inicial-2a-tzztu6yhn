@@ -4,6 +4,7 @@ import { useSession, type OperationType } from '@/stores/session'
 import { Logo2A } from '@/components/Logo2A'
 import { ArrowLeft, Milk, Beef } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 interface OperationOption {
   id: OperationType
@@ -33,7 +34,7 @@ export default function EmitirNF() {
   }
 
   return (
-    <div className="h-full overflow-hidden text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
+    <MenuPageLayout className="text-white">
       <div className="p-4 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md flex-shrink-0">
         <button
           onClick={() => navigate('/nota-fiscal')}
@@ -84,6 +85,6 @@ export default function EmitirNF() {
           })}
         </div>
       </div>
-    </div>
+    </MenuPageLayout>
   )
 }

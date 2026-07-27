@@ -4,6 +4,7 @@ import { BottomNav } from '@/components/BottomNav'
 import { InvoiceDetailModal } from '@/components/InvoiceDetailModal'
 import { Input } from '@/components/ui/input'
 import { Search, Filter, Calendar } from 'lucide-react'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 export default function InvoiceHistory() {
   const [invoices, setInvoices] = useState<InvoiceRecord[]>([])
@@ -23,7 +24,7 @@ export default function InvoiceHistory() {
   )
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white pb-24 max-w-md mx-auto sm:max-w-xl md:max-w-2xl relative">
+    <FormPageLayout className="text-white pb-24 md:max-w-2xl relative">
       <div className="p-5 border-b border-white/10 bg-[#001f31]/80 backdrop-blur-md sticky top-0 z-30 space-y-3">
         <h2 className="text-lg font-bold text-[#F9E27D]">Histórico de Notas Fiscais</h2>
 
@@ -79,6 +80,6 @@ export default function InvoiceHistory() {
       />
 
       <BottomNav />
-    </div>
+    </FormPageLayout>
   )
 }

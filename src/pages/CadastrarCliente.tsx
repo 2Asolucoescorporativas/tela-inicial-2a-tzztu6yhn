@@ -18,6 +18,7 @@ import {
 } from '@/services/clientes'
 import { unmaskDocument, type ClientFormData } from '@/lib/client-utils'
 import { getErrorMessage } from '@/lib/pocketbase/errors'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 export default function CadastrarCliente() {
   const navigate = useNavigate()
@@ -92,8 +93,8 @@ export default function CadastrarCliente() {
   const handleCancel = () => navigate(returnTo || '/configuracoes')
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30">
+    <FormPageLayout className="text-white">
+      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30 flex-shrink-0">
         <button
           onClick={() => navigate('/configuracoes')}
           className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors"
@@ -121,6 +122,6 @@ export default function CadastrarCliente() {
         />
         <ClientList clients={clients} onEdit={handleEdit} onDelete={handleDelete} />
       </div>
-    </div>
+    </FormPageLayout>
   )
 }

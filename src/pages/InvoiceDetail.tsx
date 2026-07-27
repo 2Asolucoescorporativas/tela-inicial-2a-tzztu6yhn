@@ -30,6 +30,7 @@ import {
   Hash,
   FileCheck,
 } from 'lucide-react'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 const STATUS_LABELS: Record<string, string> = {
   emitida: 'Emitida',
@@ -75,7 +76,7 @@ export default function InvoiceDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#002C45] text-white flex items-center justify-center max-w-md mx-auto sm:max-w-xl">
+      <div className="h-full bg-[#002C45] text-white flex items-center justify-center max-w-md mx-auto sm:max-w-xl">
         <p className="text-sm text-white/50">Carregando nota fiscal...</p>
       </div>
     )
@@ -115,8 +116,8 @@ export default function InvoiceDetail() {
     })
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30">
+    <FormPageLayout className="text-white">
+      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30 flex-shrink-0">
         <button
           onClick={() => navigate('/consultar-nf')}
           className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
@@ -130,7 +131,7 @@ export default function InvoiceDetail() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto">
+      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-bold text-white">Detalhes da NFe</h1>
           <span
@@ -326,6 +327,6 @@ export default function InvoiceDetail() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </FormPageLayout>
   )
 }

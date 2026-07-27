@@ -7,6 +7,7 @@ import { normalizeForSearch } from '@/lib/search-utils'
 import { formatCurrency } from '@/lib/decimal-utils'
 import { cn } from '@/lib/utils'
 import { ArrowLeft, Search, FileText, ChevronDown, Plus, MapPin, Building2 } from 'lucide-react'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 const STATUS_LABELS: Record<string, string> = {
   emitida: 'Emitida',
@@ -81,8 +82,8 @@ export default function ConsultarNF() {
   }
 
   return (
-    <div className="h-full overflow-hidden bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md flex-shrink-0 z-30">
+    <FormPageLayout className="text-white">
+      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30 flex-shrink-0">
         <button
           onClick={() => navigate('/nota-fiscal')}
           className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
@@ -96,7 +97,7 @@ export default function ConsultarNF() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto min-h-0">
+      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
         <h1 className="text-xl font-bold text-white text-center mb-1">Consultar Notas Fiscais</h1>
         <p className="text-xs text-white/50 text-center mb-5">
           {filtered.length} {filtered.length === 1 ? 'nota encontrada' : 'notas encontradas'}
@@ -203,6 +204,6 @@ export default function ConsultarNF() {
           </>
         )}
       </div>
-    </div>
+    </FormPageLayout>
   )
 }

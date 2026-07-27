@@ -1,12 +1,13 @@
 import { useAuth } from '@/hooks/use-auth'
 import { BottomNav } from '@/components/BottomNav'
 import { User, MapPin, Building, Award, CheckCircle2 } from 'lucide-react'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 export default function ProducerProfile() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white pb-24 max-w-md mx-auto sm:max-w-xl md:max-w-2xl relative">
+    <FormPageLayout className="text-white pb-24 md:max-w-2xl relative">
       <div className="p-5 border-b border-white/10 bg-[#001f31]/80 backdrop-blur-md sticky top-0 z-30">
         <h2 className="text-lg font-bold text-[#F9E27D]">Perfil do Produtor Rural</h2>
       </div>
@@ -60,6 +61,6 @@ export default function ProducerProfile() {
       </div>
 
       <BottomNav />
-    </div>
+    </FormPageLayout>
   )
 }

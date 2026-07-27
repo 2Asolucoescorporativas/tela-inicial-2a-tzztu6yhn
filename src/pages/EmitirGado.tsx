@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
 import { Logo2A } from '@/components/Logo2A'
 import { ArrowLeft, Beef } from 'lucide-react'
+import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function EmitirGado() {
   const navigate = useNavigate()
@@ -10,8 +11,8 @@ export default function EmitirGado() {
   const { activeProperty, operationType } = useSession()
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30">
+    <MenuPageLayout className="text-white">
+      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md flex-shrink-0 z-30">
         <button
           onClick={() => navigate('/emitir-nf')}
           className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
@@ -38,6 +39,6 @@ export default function EmitirGado() {
         )}
         {operationType && <p className="text-xs text-[#A8914E]/60">Operação: {operationType}</p>}
       </div>
-    </div>
+    </MenuPageLayout>
   )
 }

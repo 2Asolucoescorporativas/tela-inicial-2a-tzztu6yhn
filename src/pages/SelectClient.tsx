@@ -9,6 +9,7 @@ import { maskDocumentByType } from '@/lib/client-utils'
 import { filterClientsBySearch } from '@/lib/search-utils'
 import { cn } from '@/lib/utils'
 import { ArrowLeft, Search, UserPlus, Check, Users } from 'lucide-react'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 export default function SelectClient() {
   const navigate = useNavigate()
@@ -85,8 +86,8 @@ export default function SelectClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30">
+    <FormPageLayout className="text-white">
+      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30 flex-shrink-0">
         <button
           onClick={() => navigate('/emitir-nf')}
           className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
@@ -100,7 +101,7 @@ export default function SelectClient() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto">
+      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
         <div className="text-center space-y-1 mb-6">
           <h2 className="text-base font-semibold text-white/80">{user?.name || 'Usuário'}</h2>
           <h1 className="text-2xl font-extrabold text-white leading-tight">
@@ -225,6 +226,6 @@ export default function SelectClient() {
           </>
         )}
       </div>
-    </div>
+    </FormPageLayout>
   )
 }

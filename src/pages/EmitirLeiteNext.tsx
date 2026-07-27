@@ -12,6 +12,7 @@ import { FISCAL_CONFIG } from '@/lib/fiscal-config'
 import { getNextInvoiceNumber, createInvoice } from '@/services/invoices'
 import { useToast } from '@/hooks/use-toast'
 import { ArrowLeft, Check, FileCode2, Loader2, AlertCircle } from 'lucide-react'
+import { FormPageLayout } from '@/components/FormPageLayout'
 
 export default function EmitirLeiteNext() {
   const navigate = useNavigate()
@@ -127,8 +128,8 @@ export default function EmitirLeiteNext() {
   }
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white flex flex-col max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30">
+    <FormPageLayout className="text-white">
+      <div className="p-5 flex items-center gap-3 border-b border-white/10 bg-[#001f31]/60 backdrop-blur-md sticky top-0 z-30 flex-shrink-0">
         <button
           onClick={() => navigate('/emitir-leite')}
           className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
@@ -142,7 +143,7 @@ export default function EmitirLeiteNext() {
         <div className="w-[60px]" />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in overflow-y-auto">
+      <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
         {success ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 animate-fade-in">
             <div className="inline-flex p-4 bg-[#A8914E]/10 rounded-2xl mb-2">
@@ -303,6 +304,6 @@ export default function EmitirLeiteNext() {
           </>
         )}
       </div>
-    </div>
+    </FormPageLayout>
   )
 }

@@ -58,8 +58,8 @@ export default function SelectProperty() {
   }
 
   return (
-    <div className="min-h-screen bg-[#002C45] text-white max-w-md mx-auto sm:max-w-xl">
-      <div className="p-5 flex items-center justify-between border-b border-white/10">
+    <div className="h-[100dvh] bg-[#002C45] text-white max-w-md mx-auto sm:max-w-xl flex flex-col overflow-y-auto safe-area-pt">
+      <div className="p-5 flex items-center justify-between border-b border-white/10 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gold-gradient text-[#002C45] font-bold flex items-center justify-center text-lg">
             {user?.name ? user.name[0] : 'A'}
@@ -90,7 +90,7 @@ export default function SelectProperty() {
         </DropdownMenu>
       </div>
 
-      <div className="p-5 space-y-5 animate-fade-in pb-10">
+      <div className="p-5 space-y-5 animate-fade-in pb-10 flex-1">
         <div className="text-center space-y-1">
           <h1 className="text-xl font-bold" style={{ color: '#A8914E' }}>
             Selecione a propriedade
