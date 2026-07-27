@@ -3,11 +3,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Um incrível projeto do Skip</title>
-    <meta name="description" content="Projeto gerado usando Skip (https://goskip.dev)" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>2A Rural</title>
+    <meta name="description" content="Aplicativo para emissão de Nota Fiscal de Produtor Rural" />
     <meta name="author" content="Skip (https://goskip.dev)" />
     <meta property="og:image" content="/og-image.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icon-192x192.svg" />
+    <link rel="icon" type="image/svg+xml" href="/icon-192x192.svg" />
+    <meta name="theme-color" content="#002C45" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="2A Rural" />
   </head>
 
   <body>
@@ -16,5 +24,10 @@
     <script src="https://goskip.dev/skip.js"></script>
     <!-- @skip-protected: Do not remove. App entrypoint. -->
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
   </body>
 </html>
