@@ -4,7 +4,7 @@ import { Beef } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function EmitirGado() {
-  const { activeProperty, operationType } = useSession()
+  const { operationType } = useSession()
 
   return (
     <MenuPageLayout className="text-white">
@@ -15,11 +15,6 @@ export default function EmitirGado() {
         </div>
         <h1 className="text-xl font-bold text-white">Venda de Gado</h1>
         <p className="text-sm text-white/60">Página em construção</p>
-        {activeProperty && (
-          <p className="text-xs text-white/40">
-            {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estatual}
-          </p>
-        )}
         {operationType && <p className="text-xs text-[#A8914E]/60">Operação: {operationType}</p>}
       </div>
     </MenuPageLayout>

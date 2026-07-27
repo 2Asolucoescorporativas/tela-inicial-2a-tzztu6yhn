@@ -96,23 +96,12 @@ export default function EmitirLeite() {
 
   return (
     <FormPageLayout className="text-white">
-      <AppHeader />
+      <AppHeader etapaAtual={2} totalEtapas={3} />
 
       <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
-        <div className="text-center space-y-1 mb-6">
-          <h2 className="text-base font-semibold text-white/80">{user?.name || 'Usuário'}</h2>
-          <h1 className="text-2xl font-extrabold text-white leading-tight">
-            {activeProperty?.nome || 'Propriedade'}
-          </h1>
-          <p className="text-sm text-[#A8914E] font-medium">
-            CAD/PRO: {activeProperty?.inscricao_estadual || '—'}
-          </p>
-        </div>
-
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold text-white">VENDA DE LEITE</h2>
           <p className="text-sm text-white/60 mt-1">Informe os dados do produto.</p>
-          <p className="text-xs text-[#A8914E] mt-2 font-medium">Etapa 2 – Produto</p>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">

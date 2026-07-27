@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { useSession } from '@/stores/session'
 import { AppHeader } from '@/components/AppHeader'
 import { Settings } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function Configuracoes() {
   const navigate = useNavigate()
-  const { activeProperty } = useSession()
 
   return (
     <MenuPageLayout className="text-white">
@@ -18,11 +16,6 @@ export default function Configuracoes() {
             <Settings className="w-12 h-12 text-[#A8914E]" />
           </div>
           <h1 className="text-xl font-bold text-white">Configurações</h1>
-          {activeProperty && (
-            <p className="text-xs text-white/40">
-              {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estadual}
-            </p>
-          )}
         </div>
         <div className="space-y-3 max-w-sm mx-auto w-full">
           <button

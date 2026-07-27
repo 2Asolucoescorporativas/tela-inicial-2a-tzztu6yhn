@@ -4,8 +4,6 @@ import { toast } from 'sonner'
 import { AppHeader } from '@/components/AppHeader'
 import { ClientForm } from '@/components/ClientForm'
 import { ClientList } from '@/components/ClientList'
-import { useAuth } from '@/hooks/use-auth'
-import { useSession } from '@/stores/session'
 import { useRealtime } from '@/hooks/use-realtime'
 import {
   getClientes,
@@ -23,8 +21,6 @@ export default function CadastrarCliente() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const returnTo = searchParams.get('returnTo')
-  const { user } = useAuth()
-  const { activeProperty } = useSession()
   const [clients, setClients] = useState<ClienteRecord[]>([])
   const [editingClient, setEditingClient] = useState<ClienteRecord | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -94,14 +90,6 @@ export default function CadastrarCliente() {
   return (
     <FormPageLayout className="text-white">
       <AppHeader />
-      <div className="px-5 py-3 border-b border-white/10">
-        <p className="text-sm font-medium text-white">{user?.name || 'Usuário'}</p>
-        {activeProperty && (
-          <p className="text-xs text-white/60">
-            {activeProperty.nome} • CAD/PRO: {activeProperty.inscricao_estadual}
-          </p>
-        )}
-      </div>
       <div className="flex-1 p-5 space-y-6 animate-fade-in">
         <h1 className="text-xl font-bold text-white">Cadastrar Cliente</h1>
         <ClientForm

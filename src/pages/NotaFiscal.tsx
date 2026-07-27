@@ -1,33 +1,17 @@
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/use-auth'
-import { useSession } from '@/stores/session'
 import { AppHeader } from '@/components/AppHeader'
 import { FilePlus2, Search } from 'lucide-react'
 import { MenuPageLayout } from '@/components/MenuPageLayout'
 
 export default function NotaFiscal() {
   const navigate = useNavigate()
-  const { user } = useAuth()
-  const { activeProperty } = useSession()
 
   return (
     <MenuPageLayout className="text-white">
       <AppHeader />
 
       <div className="menu-page__content px-5 menu-page-pad animate-fade-in">
-        <div className="text-center space-y-0.5 menu-info-gap">
-          <h2 className="text-sm font-semibold text-white/80 tracking-wide">
-            {user?.name || 'Usuário'}
-          </h2>
-          <h1 className="text-xl font-extrabold text-white leading-tight">
-            {activeProperty?.nome || 'Propriedade'}
-          </h1>
-          <p className="text-xs text-[#A8914E] font-medium">
-            CAD/PRO: {activeProperty?.inscricao_estadual || '—'}
-          </p>
-        </div>
-
-        <div className="text-center menu-title-gap">
+        <div className="text-center menu-title-gap pt-4">
           <h2 className="text-lg font-bold text-white">Nota Fiscal</h2>
           <p className="text-xs text-white/60 mt-0.5">Selecione a operação desejada.</p>
         </div>

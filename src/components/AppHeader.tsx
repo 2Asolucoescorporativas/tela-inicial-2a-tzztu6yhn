@@ -1,42 +1,70 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
-import { ArrowLeft, ArrowLeftRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
-export function AppHeader() {
+interface AppHeaderProps {
+  nomeUsuario?: string
+  nomePropriedade?: string
+  cadPro?: string
+  etapaAtual?: number
+  totalEtapas?: number
+  exibirBotaoVoltar?: boolean
+  acaoVoltar?: () => void
+}
+
+export function AppHeader({
+  nomeUsuario,
+  nomePropriedade,
+  cadPro,
+  etapaAtual,
+  totalEtapas,
+  exibirBotaoVoltar = true,
+  acaoVoltar,
+}: AppHeaderProps) {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { activeProperty } = useSession()
 
+  const userName = nomeUsuario ?? user?.name ?? '—'
+  const propertyName = nomePropriedade ?? activeProperty?.nome ?? '—'
+  const cadProValue = cadPro ?? activeProperty?.inscricao_estadual ?? '—'
+  const showStep = etapaAtual != null && totalEtapas != null
+
+  const handleBack = acaoVoltar ?? (() => navigate(-1))
+
   return (
     <header className="bg-[#002C45] border-b border-white/10 sticky top-0 z-30 safe-area-pt flex-shrink-0">
       <div className="max-w-md mx-auto sm:max-w-xl px-5 py-2.5">
-        <div className="flex items-center justify-between gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1 text-sm text-white/80 hover:text-[#F9E27D] transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-mont font-medium">Voltar</span>
-          </button>
-          <button
-            onClick={() => navigate('/selecionar-propriedade')}
-            className="flex items-center gap-1.5 text-xs text-white/80 hover:text-[#F9E27D] bg-white/5 hover:bg-white/10 rounded-lg px-3 py-1.5 transition-colors whitespace-nowrap"
-          >
-            <ArrowLeftRight className="w-3.5 h-3.5" />
-            <span className="font-mont font-medium">Trocar propriedade</span>
-          </button>
+        <div className="flex flex-col gap-0.5 min-w-0">
+          <p className="text-xs text-white/60 font-mont">
+            Usuário: <span className="text-white font-medium">{userName}</span>
+          </p>
+          <p className="text-xs text-white/60 font-mont flex min-w-0">
+            <span className="flex-shrink-0">Propriedade Selecionada:</span>
+            <span className="text-white font-medium truncate ml-1">{propertyName}</span>
+          </p>
+          <p className="text-xs text-[#A8914E] font-mont font-medium whitespace-nowrap">
+            CAD/PRO: {cadProValue}
+          </p>
         </div>
-        <div className="mt-1.5 flex flex-col gap-0.5 min-w-0">
-          <span className="font-mont font-bold text-white text-sm truncate">
-            {user?.name || '—'}
-          </span>
-          <span className="font-mont font-normal text-white text-sm truncate">
-            {activeProperty?.nome || '—'}
-          </span>
-          <span className="font-mont text-xs text-[#A8914E] truncate">
-            CAD/PRO: {activeProperty?.inscricao_estatual || '—'}
-          </span>
+        <div className="mt-1.5 flex items-center justify-between">
+          {exibirBotaoVoltar ? (
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-1 text-sm text-white/80 hover:text-[#F9E27D] transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="font-mont font-medium">Voltar</span>
+            </button>
+          ) : (
+            <span />
+          )}
+          {showStep && (
+            <span className="text-xs text-[#A8914E] font-mont font-medium">
+              Etapa {etapaAtual} de {totalEtapas}
+            </span>
+          )}
         </div>
       </div>
     </header>

@@ -17,7 +17,6 @@ export default function ProducerProfile() {
             {user?.name ? user.name[0] : 'A'}
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">{user?.name || 'Alexandre Silva'}</h3>
             <span className="text-xs text-white/60 block">{user?.email}</span>
             <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
               Produtor Verificado SEFAZ
@@ -36,10 +35,6 @@ export default function ProducerProfile() {
               <span className="font-semibold text-white">123.456.789-00</span>
             </div>
             <div className="flex justify-between border-b border-white/10 pb-1.5">
-              <span className="text-white/50">Inscrição Estadual (IE):</span>
-              <span className="font-semibold text-white">209/0123456</span>
-            </div>
-            <div className="flex justify-between border-b border-white/10 pb-1.5">
               <span className="text-white/50">Regime Tributário:</span>
               <span className="font-semibold text-white">Isento / Diferido (Rural)</span>
             </div>
@@ -52,7 +47,6 @@ export default function ProducerProfile() {
           </h4>
 
           <div className="p-3 bg-[#002C45] rounded-xl border border-white/10 space-y-1">
-            <span className="font-bold text-white block">Fazenda Santa Luzia</span>
             <p className="text-white/60">CAR: SP-3526071-8819283749281</p>
             <p className="text-white/60">Município: Ribeirão Preto - SP</p>
           </div>

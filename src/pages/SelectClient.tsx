@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/use-auth'
 import { useSession, type SelectedClient } from '@/stores/session'
 import { AppHeader } from '@/components/AppHeader'
 import { getClientes, type ClienteRecord } from '@/services/clientes'
@@ -13,14 +12,7 @@ import { FormPageLayout } from '@/components/FormPageLayout'
 
 export default function SelectClient() {
   const navigate = useNavigate()
-  const { user } = useAuth()
-  const {
-    activeProperty,
-    selectedClient,
-    setSelectedClient,
-    clearSelectedClient,
-    clearDraftInvoice,
-  } = useSession()
+  const { selectedClient, setSelectedClient, clearSelectedClient, clearDraftInvoice } = useSession()
   const [clients, setClients] = useState<ClienteRecord[]>([])
   const [search, setSearch] = useState('')
   const [localSelectedId, setLocalSelectedId] = useState<string | null>(selectedClient?.id || null)
@@ -87,23 +79,12 @@ export default function SelectClient() {
 
   return (
     <FormPageLayout className="text-white">
-      <AppHeader />
+      <AppHeader etapaAtual={1} totalEtapas={3} />
 
       <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
-        <div className="text-center space-y-1 mb-6">
-          <h2 className="text-base font-semibold text-white/80">{user?.name || 'Usuário'}</h2>
-          <h1 className="text-2xl font-extrabold text-white leading-tight">
-            {activeProperty?.nome || 'Propriedade'}
-          </h1>
-          <p className="text-sm text-[#A8914E] font-medium">
-            CAD/PRO: {activeProperty?.inscricao_estadual || '—'}
-          </p>
-        </div>
-
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold text-white">Selecionar Cliente</h2>
           <p className="text-sm text-white/60 mt-1">Escolha o cliente destinatário da nota.</p>
-          <p className="text-xs text-[#A8914E] mt-2 font-medium">Etapa 1 – Cliente</p>
         </div>
 
         {loading ? (

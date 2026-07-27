@@ -129,7 +129,7 @@ export default function EmitirLeiteNext() {
 
   return (
     <FormPageLayout className="text-white">
-      <AppHeader />
+      <AppHeader etapaAtual={3} totalEtapas={3} />
 
       <div className="flex-1 flex flex-col px-5 pt-6 pb-8 animate-fade-in">
         {success ? (
@@ -177,7 +177,6 @@ export default function EmitirLeiteNext() {
                 <Check className="w-8 h-8 text-[#A8914E]" />
               </div>
               <h1 className="text-xl font-bold text-white">Dados da Emissão</h1>
-              <p className="text-xs text-[#A8914E] mt-2 font-medium">Etapa 2 – Revisão dos dados</p>
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 mb-4">
