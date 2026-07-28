@@ -14,13 +14,16 @@ export default function Dashboard() {
   return (
     <AppScaffold>
       <SafeContent className="overflow-hidden">
-        <AppHeader exibirPropriedade={true} exibirBotaoVoltar={false} exibirCpf />
+        <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
         <div className="flex-shrink-0 py-4 px-6 bg-white">
           <p className="text-center font-semibold text-[18px]" style={{ color: '#002C45' }}>
-            CAD/PRO: {activeProperty?.inscricao_estadual || '—'}
+            CAD/PRO
+          </p>
+          <p className="text-center text-sm mt-1" style={{ color: '#A8914E' }}>
+            {activeProperty?.inscricao_estadual || '—'}
           </p>
         </div>
 
