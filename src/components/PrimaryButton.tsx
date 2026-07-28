@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 
 interface PrimaryButtonProps {
   children: ReactNode
@@ -8,7 +9,8 @@ interface PrimaryButtonProps {
   loading?: boolean
   onClick?: () => void
   className?: string
-  variant?: 'solid' | 'outlined' | 'dark'
+  variant?: 'solid' | 'secondary' | 'outlined' | 'dark'
+  type?: 'button' | 'submit'
 }
 
 export function PrimaryButton({
@@ -18,53 +20,21 @@ export function PrimaryButton({
   onClick,
   className,
   variant = 'solid',
+  type = 'button',
 }: PrimaryButtonProps) {
-  const isOutlined = variant === 'outlined'
-
-  const solidStyle =
-    variant === 'dark'
-      ? {
-          backgroundColor: '#002C45',
-          border: '2px solid #A8914E',
-          color: '#fff',
-          borderRadius: '14px',
-          height: '56px',
-          fontWeight: 700,
-          fontSize: '18px',
-        }
-      : {
-          backgroundColor: '#A8914E',
-          border: 'none',
-          color: '#fff',
-          borderRadius: '14px',
-          height: '56px',
-          fontWeight: 700,
-          fontSize: '18px',
-        }
+  const isPrimary = variant === 'solid' || variant === 'dark'
 
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled || loading}
       className={cn(
-        'w-full flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 active:scale-95 min-h-[48px]',
-        !isOutlined && 'shadow-md hover:brightness-105',
+        'w-full flex items-center justify-center transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 active:scale-95 min-h-[48px] cursor-pointer',
+        isPrimary ? 'shadow-md hover:brightness-105' : 'hover:bg-[#C89B51]/10',
         className,
       )}
-      style={
-        isOutlined
-          ? {
-              backgroundColor: 'transparent',
-              border: '2px solid #002C45',
-              color: '#002C45',
-              borderRadius: '14px',
-              height: '56px',
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 700,
-              fontSize: '18px',
-            }
-          : solidStyle
-      }
+      style={isPrimary ? primaryButtonStyle : secondaryButtonStyle}
     >
       {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : children}
     </button>

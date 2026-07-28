@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 import { InvoiceRecord } from '@/services/invoices'
 import { Download, Printer, CheckCircle, FileText, Share2 } from 'lucide-react'
 
@@ -71,14 +72,16 @@ export function InvoiceDetailModal({ invoice, open, onOpenChange }: InvoiceDetai
           <div className="grid grid-cols-2 gap-2 pt-2">
             <Button
               onClick={handleSimulateDownload}
-              className="bg-[#001f31] hover:bg-[#00263f] text-white border border-white/15 h-10 flex items-center justify-center gap-1.5 rounded-xl"
+              className="hover:bg-[#C89B51]/10 transition-colors flex items-center justify-center gap-1.5"
+              style={{ ...secondaryButtonStyle, height: '48px', fontSize: '14px' }}
             >
-              <Download className="w-4 h-4 text-[#F9E27D]" />
+              <Download className="w-4 h-4" />
               <span>Baixar PDF</span>
             </Button>
             <Button
               onClick={handleSimulateDownload}
-              className="bg-gold-gradient text-[#002C45] font-bold h-10 flex items-center justify-center gap-1.5 rounded-xl"
+              className="hover:brightness-105 transition-all flex items-center justify-center gap-1.5"
+              style={{ ...primaryButtonStyle, height: '48px', fontSize: '14px' }}
             >
               <Share2 className="w-4 h-4" />
               <span>Compartilhar</span>

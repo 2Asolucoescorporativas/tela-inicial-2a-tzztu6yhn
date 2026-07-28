@@ -7,6 +7,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 
 interface ConfirmationDialogProps {
   open: boolean
@@ -35,13 +36,17 @@ export function ConfirmationDialog({
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex gap-2 sm:gap-2">
-          <Button variant="outline" onClick={onCancel} className="flex-1 min-h-[48px]">
+          <Button
+            onClick={onCancel}
+            className="flex-1 hover:bg-[#C89B51]/10 transition-colors"
+            style={secondaryButtonStyle}
+          >
             {cancelLabel}
           </Button>
           <Button
             onClick={onConfirm}
-            className="flex-1 min-h-[48px]"
-            style={{ backgroundColor: '#A8914E' }}
+            className="flex-1 hover:brightness-105 transition-all"
+            style={primaryButtonStyle}
           >
             {confirmLabel}
           </Button>

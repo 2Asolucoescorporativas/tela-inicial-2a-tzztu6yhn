@@ -150,14 +150,9 @@ export default function SelectProperty() {
             >
               Selecionar
             </PrimaryButton>
-            <button
-              onClick={() => navigate(-1)}
-              type="button"
-              className="w-full h-14 rounded-xl font-sans font-bold text-lg tracking-wide text-[#D0A85C] border bg-[#071C33] hover:bg-[#C89B51]/10 active:scale-[0.98] transition-all duration-150 flex items-center justify-center cursor-pointer"
-              style={{ borderColor: 'rgba(200, 155, 81, 0.7)' }}
-            >
+            <PrimaryButton variant="secondary" onClick={() => navigate(-1)}>
               Cancelar
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       </SafeContent>

@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Search, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 import {
   maskCnpj,
   maskCep,
@@ -231,7 +232,8 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
               type="button"
               onClick={handleConsult}
               disabled={consulting}
-              className="rounded-[14px] bg-[#A8914E] hover:bg-[#A8914E]/90 text-white"
+              className="rounded-[14px] hover:brightness-105 transition-all"
+              style={{ ...primaryButtonStyle, height: 'auto', minHeight: '48px', fontSize: '14px' }}
             >
               {consulting ? (
                 <Loader2 className="w-4 h-4 mr-1 animate-spin" />
@@ -244,9 +246,9 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
         </Field>
         <Button
           type="button"
-          variant="outline"
           onClick={onCancel}
-          className="w-full rounded-[14px] h-12 border-gray-300 text-gray-700"
+          className="w-full hover:bg-[#C89B51]/10 transition-colors"
+          style={secondaryButtonStyle}
         >
           Cancelar
         </Button>
@@ -263,14 +265,14 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
           <Input value={form.cpf_cnpj} disabled className={cn(cls, 'flex-1', ro)} />
           <Button
             type="button"
-            variant="outline"
             onClick={() => {
               setHasData(false)
               setCnpjInput(form.cpf_cnpj)
               setIsDirty(false)
               setActiveIes([])
             }}
-            className="rounded-[14px]"
+            className="hover:bg-[#C89B51]/10 transition-colors"
+            style={{ ...secondaryButtonStyle, height: 'auto', minHeight: '40px', fontSize: '14px' }}
           >
             <Search className="w-4 h-4 mr-1" />
             Nova consulta
@@ -347,9 +349,9 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
       <div className="flex gap-3 pt-4">
         <Button
           type="button"
-          variant="outline"
           onClick={handleCancelClick}
-          className="flex-1 rounded-[14px] h-12 border-gray-300 text-gray-700"
+          className="flex-1 hover:bg-[#C89B51]/10 transition-colors"
+          style={secondaryButtonStyle}
         >
           Cancelar
         </Button>
@@ -357,7 +359,8 @@ export function ClientForm({ initialData, onSubmit, onCancel, submitting }: Prop
           type="button"
           onClick={handleSubmit}
           disabled={submitting}
-          className="flex-1 rounded-[14px] h-12 bg-[#A8914E] hover:bg-[#A8914E]/90 text-white font-bold"
+          className="flex-1 hover:brightness-105 transition-all"
+          style={primaryButtonStyle}
         >
           {submitting ? 'Salvando...' : 'Salvar Cliente'}
         </Button>

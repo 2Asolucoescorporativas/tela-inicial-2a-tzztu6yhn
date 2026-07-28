@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select'
 import { getNextInvoiceNumber, createInvoice } from '@/services/invoices'
 import { Loader2, Plus, Trash2, CheckCircle2 } from 'lucide-react'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 
 interface NewInvoiceModalProps {
   open: boolean
@@ -179,10 +180,16 @@ export function NewInvoiceModal({ open, onOpenChange, onSuccess }: NewInvoiceMod
               </h4>
               <Button
                 type="button"
-                variant="ghost"
                 size="sm"
                 onClick={handleAddItem}
-                className="text-[#F9E27D] hover:bg-white/5 h-7 text-xs flex items-center gap-1"
+                className="hover:bg-[#C89B51]/10 transition-colors flex items-center gap-1"
+                style={{
+                  ...secondaryButtonStyle,
+                  height: 'auto',
+                  minHeight: '32px',
+                  fontSize: '12px',
+                  padding: '0 12px',
+                }}
               >
                 <Plus className="w-3.5 h-3.5" /> Adicionar
               </Button>
@@ -264,7 +271,8 @@ export function NewInvoiceModal({ open, onOpenChange, onSuccess }: NewInvoiceMod
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 bg-gold-gradient text-[#002C45] font-bold text-base rounded-xl hover:brightness-105 active:scale-95 transition-all"
+            className="w-full hover:brightness-105 active:scale-95 transition-all"
+            style={primaryButtonStyle}
           >
             {loading ? (
               <span className="flex items-center gap-2">

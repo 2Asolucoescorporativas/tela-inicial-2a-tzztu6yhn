@@ -1,4 +1,5 @@
 import { AlertCircle } from 'lucide-react'
+import { secondaryButtonStyle } from '@/lib/button-styles'
 
 interface ErrorStateProps {
   message: string
@@ -13,7 +14,8 @@ export function ErrorState({ message, retryLabel = 'Tentar novamente', onRetry }
       <p className="text-white/70 text-sm mb-4">{message}</p>
       <button
         onClick={onRetry}
-        className="text-[#A8914E] font-medium text-sm border border-[#A8914E]/30 rounded-[14px] px-6 min-h-[48px] hover:bg-[#A8914E]/10 transition-colors"
+        className="px-6 hover:bg-[#C89B51]/10 transition-colors cursor-pointer"
+        style={secondaryButtonStyle}
       >
         {retryLabel}
       </button>

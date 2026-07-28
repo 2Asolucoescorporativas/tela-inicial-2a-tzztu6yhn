@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { Inbox } from 'lucide-react'
+import { secondaryButtonStyle } from '@/lib/button-styles'
 
 interface EmptyStateProps {
   title: string
@@ -18,7 +19,8 @@ export function EmptyState({ title, description, actionLabel, onAction, icon }: 
       {actionLabel && (
         <button
           onClick={onAction}
-          className="text-[#A8914E] font-medium text-sm border border-[#A8914E]/30 rounded-[14px] px-6 min-h-[48px] hover:bg-[#A8914E]/10 transition-colors"
+          className="px-6 hover:bg-[#C89B51]/10 transition-colors cursor-pointer"
+          style={secondaryButtonStyle}
         >
           {actionLabel}
         </button>
