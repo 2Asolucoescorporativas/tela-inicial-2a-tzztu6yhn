@@ -15,6 +15,7 @@ import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { maskCpf } from '@/lib/cpf-utils'
+import { cn } from '@/lib/utils'
 
 function formatEndereco(prop: PropriedadeRecord): string {
   const parts: string[] = []
@@ -108,7 +109,10 @@ export default function SelectProperty() {
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
         <ScreenContent
-          className={showCenteredState ? 'flex flex-col items-center justify-center' : ''}
+          className={cn(
+            'flex-1 min-h-0 overflow-y-auto',
+            showCenteredState && 'flex flex-col items-center justify-center',
+          )}
         >
           {error ? (
             <ErrorState
