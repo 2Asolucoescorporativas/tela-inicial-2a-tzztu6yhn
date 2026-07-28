@@ -6,7 +6,6 @@ interface PropertyCardProps {
   cpf?: string
   endereco?: string
   cadPro?: string
-  inscricaoEstadual?: string
   municipio?: string
   uf?: string
   situacaoIE?: string
@@ -19,7 +18,6 @@ export function PropertyCard({
   cpf,
   endereco,
   cadPro,
-  inscricaoEstadual,
   municipio,
   uf,
   situacaoIE,
@@ -56,31 +54,25 @@ export function PropertyCard({
       </div>
       <div className="space-y-1.5 text-sm">
         {cpf && (
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-gray-600 uppercase">
             <CreditCard className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <span>CPF: {cpf}</span>
           </div>
         )}
         {endereco && (
-          <div className="flex items-start gap-2 text-gray-600">
+          <div className="flex items-start gap-2 text-gray-600 uppercase">
             <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
             <span>Endereço: {endereco}</span>
           </div>
         )}
         {cadPro && (
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-gray-600 uppercase">
             <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <span>CAD/PRO: {cadPro}</span>
           </div>
         )}
-        {inscricaoEstadual && (
-          <div className="flex items-center gap-2 text-gray-600">
-            <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            <span>IE: {inscricaoEstadual}</span>
-          </div>
-        )}
         {municipio && !endereco && (
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-gray-600 uppercase">
             <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <span>
               {municipio}

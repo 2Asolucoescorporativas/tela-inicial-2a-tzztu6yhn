@@ -8,6 +8,7 @@ interface PrimaryButtonProps {
   loading?: boolean
   onClick?: () => void
   className?: string
+  variant?: 'solid' | 'outlined'
 }
 
 export function PrimaryButton({
@@ -16,16 +17,41 @@ export function PrimaryButton({
   loading,
   onClick,
   className,
+  variant = 'solid',
 }: PrimaryButtonProps) {
+  const isOutlined = variant === 'outlined'
+
   return (
     <button
       onClick={onClick}
       disabled={disabled || loading}
       className={cn(
-        'w-full text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 min-h-[48px] flex items-center justify-center',
+        'w-full flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 active:scale-95 min-h-[48px]',
+        !isOutlined && 'shadow-md hover:brightness-105',
         className,
       )}
-      style={{ backgroundColor: '#A8914E', height: '56px' }}
+      style={
+        isOutlined
+          ? {
+              backgroundColor: 'transparent',
+              border: '2px solid #002C45',
+              color: '#002C45',
+              borderRadius: '12px',
+              height: '52px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 600,
+              fontSize: '16px',
+            }
+          : {
+              backgroundColor: '#A8914E',
+              border: 'none',
+              color: '#fff',
+              borderRadius: '14px',
+              height: '56px',
+              fontWeight: 700,
+              fontSize: '18px',
+            }
+      }
     >
       {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : children}
     </button>

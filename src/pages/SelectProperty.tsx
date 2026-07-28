@@ -9,9 +9,7 @@ import { SafeContent } from '@/components/SafeContent'
 import { AppHeader } from '@/components/AppHeader'
 import { ScreenContent } from '@/components/ScreenContent'
 import { PropertyCard } from '@/components/PropertyCard'
-import { BottomActions } from '@/components/BottomActions'
 import { PrimaryButton } from '@/components/PrimaryButton'
-import { TextButton } from '@/components/TextButton'
 import { LoadingOverlay } from '@/components/LoadingOverlay'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
@@ -133,7 +131,6 @@ export default function SelectProperty() {
                   cpf={userCpf}
                   endereco={formatEndereco(prop)}
                   cadPro={prop.inscricao_estadual}
-                  inscricaoEstadual={prop.inscricao_estadual}
                   municipio={prop.municipio}
                   uf={prop.uf}
                   situacaoIE={prop.situacao_ie || undefined}
@@ -145,14 +142,25 @@ export default function SelectProperty() {
           )}
         </ScreenContent>
 
-        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
-
-        <BottomActions>
-          <PrimaryButton disabled={isButtonDisabled} loading={continuing} onClick={handleContinue}>
-            Selecionar
-          </PrimaryButton>
-          <TextButton onClick={() => setShowConfirm(true)}>Sair</TextButton>
-        </BottomActions>
+        <div className="flex-shrink-0">
+          <div style={{ height: '24px' }} />
+          <div className="h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+          <div
+            className="px-5 flex flex-col"
+            style={{ paddingTop: '24px', paddingBottom: '24px', gap: '16px' }}
+          >
+            <PrimaryButton
+              disabled={isButtonDisabled}
+              loading={continuing}
+              onClick={handleContinue}
+            >
+              Selecionar
+            </PrimaryButton>
+            <PrimaryButton variant="outlined" onClick={() => setShowConfirm(true)}>
+              Sair
+            </PrimaryButton>
+          </div>
+        </div>
       </SafeContent>
 
       {loading && <LoadingOverlay message="Carregando propriedades..." />}

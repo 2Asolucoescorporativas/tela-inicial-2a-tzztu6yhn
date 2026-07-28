@@ -253,6 +253,9 @@
 
   .app-header--no-property .app-header__inner {
     min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .app-header--with-property .app-header__inner {
