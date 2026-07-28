@@ -36,11 +36,11 @@ export function PrimaryButton({
               backgroundColor: 'transparent',
               border: '2px solid #002C45',
               color: '#002C45',
-              borderRadius: '12px',
-              height: '52px',
+              borderRadius: '14px',
+              height: '56px',
               fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 600,
-              fontSize: '16px',
+              fontWeight: 700,
+              fontSize: '18px',
             }
           : {
               backgroundColor: '#A8914E',
