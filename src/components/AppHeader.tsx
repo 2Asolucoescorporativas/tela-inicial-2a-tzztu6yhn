@@ -1,9 +1,6 @@
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
-import { useSession } from '@/stores/session'
-import { cn } from '@/lib/utils'
 import { maskCpf } from '@/lib/cpf-utils'
-import { ArrowLeft } from 'lucide-react'
+import logoImage from '@/assets/chatgpt-image-27-de-jul-de-2026-202036-6ec94.png'
 
 interface AppHeaderProps {
   nomeUsuario?: string
@@ -18,83 +15,26 @@ interface AppHeaderProps {
   acaoVoltar?: () => void
 }
 
-export function AppHeader({
-  nomeUsuario,
-  nomePropriedade,
-  cadPro,
-  etapaAtual,
-  totalEtapas,
-  exibirPropriedade = true,
-  exibirBotaoVoltar = true,
-  exibirCpf = false,
-  exibirCadPro = false,
-  acaoVoltar,
-}: AppHeaderProps) {
-  const navigate = useNavigate()
+export function AppHeader({ nomeUsuario }: AppHeaderProps) {
   const { user } = useAuth()
-  const { activeProperty } = useSession()
 
-  const userName = nomeUsuario ?? user?.name ?? '—'
-  const userCpf = maskCpf(user?.cpf || '')
-  const propertyName = nomePropriedade ?? activeProperty?.nome ?? '—'
-  const cadProValue = cadPro ?? activeProperty?.inscricao_estadual ?? '—'
-  const showStep = etapaAtual != null && totalEtapas != null
-
-  const handleBack = acaoVoltar ?? (() => navigate(-1))
+  const userName = nomeUsuario ?? user?.name ?? 'João da Silva'
+  const userCpf = maskCpf(user?.cpf || '00000000000')
 
   return (
-    <header
-      className={cn(
-        'app-header safe-area-pt',
-        exibirPropriedade ? 'app-header--with-property' : 'app-header--no-property',
-      )}
-    >
+    <header className="app-header safe-area-pt">
       <div className="app-header__inner">
         <div className="app-header__info">
           <p className="app-header__line">
-            <span className="app-header__label">Usuário:</span>
+            <span className="app-header__label">NOME:</span>
             <span className="app-header__value">{userName}</span>
           </p>
-          {exibirCpf && userCpf && (
-            <p className="app-header__line">
-              <span className="app-header__label">CPF:</span>
-              <span className="app-header__value">{userCpf}</span>
-            </p>
-          )}
-          {exibirCadPro && (
-            <p className="app-header__line app-header__line--gold">
-              <span className="app-header__label">CAD/PRO:</span>
-              <span className="app-header__value">{cadProValue}</span>
-            </p>
-          )}
-          {exibirPropriedade && (
-            <>
-              <p className="app-header__line">
-                <span className="app-header__label">Propriedade Selecionada:</span>
-                <span className="app-header__value">{propertyName}</span>
-              </p>
-              <p className="app-header__line app-header__line--gold">
-                <span className="app-header__label">CAD/PRO:</span>
-                <span className="app-header__value">{cadProValue}</span>
-              </p>
-            </>
-          )}
+          <p className="app-header__line">
+            <span className="app-header__label">CPF:</span>
+            <span className="app-header__value">{userCpf}</span>
+          </p>
         </div>
-        <div className="app-header__nav">
-          {exibirBotaoVoltar ? (
-            <button onClick={handleBack} className="app-header__back">
-              <ArrowLeft className="w-4 h-4" />
-              <span>Voltar</span>
-            </button>
-          ) : (
-            <span />
-          )}
-          {showStep && (
-            <span className="app-header__step">
-              Etapa {etapaAtual} de {totalEtapas}
-            </span>
-          )}
-        </div>
+        <img src={logoImage} alt="2A RURAL" className="app-header__logo" />
       </div>
     </header>
   )

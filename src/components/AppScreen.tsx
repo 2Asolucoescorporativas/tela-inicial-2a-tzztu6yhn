@@ -21,31 +21,14 @@ interface AppScreenProps {
 
 export function AppScreen({
   titulo,
-  etapaAtual,
-  totalEtapas,
-  exibirPropriedade = true,
-  exibirBotaoVoltar = true,
-  acaoVoltar,
   permitirRolagem = true,
   children,
   contentClassName,
   footer,
-  nomeUsuario,
-  nomePropriedade,
-  cadPro,
 }: AppScreenProps) {
   return (
     <div className="app-shell">
-      <AppHeader
-        exibirPropriedade={exibirPropriedade}
-        exibirBotaoVoltar={exibirBotaoVoltar}
-        acaoVoltar={acaoVoltar}
-        etapaAtual={etapaAtual}
-        totalEtapas={totalEtapas}
-        nomeUsuario={nomeUsuario}
-        nomePropriedade={nomePropriedade}
-        cadPro={cadPro}
-      />
+      <AppHeader />
       <div className="main-content">
         {titulo && <ScreenTitle>{titulo}</ScreenTitle>}
         <div

@@ -241,25 +241,21 @@
     width: 100%;
     position: relative;
     z-index: 1000;
-    overflow: hidden;
-    background-color: #002c45;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #a8914e;
+    border-bottom: 1.5px solid #002c45;
     box-sizing: border-box;
+    box-shadow: none;
+    border-radius: 0;
   }
 
   .app-header__inner {
-    padding: 8px 20px 6px 20px;
-  }
-
-  .app-header--no-property .app-header__inner {
-    min-height: 48px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .app-header--with-property .app-header__inner {
-    min-height: 88px;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
   }
 
   .app-header__info {
@@ -271,64 +267,32 @@
   .app-header__line {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12px;
+    gap: 8px;
+    font-size: 18px;
     font-family: 'Montserrat', sans-serif;
     margin: 0;
     min-width: 0;
   }
 
   .app-header__label {
-    color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+    font-weight: 400;
     flex-shrink: 0;
   }
 
   .app-header__value {
-    color: #fff;
-    font-weight: 500;
+    color: #ffffff;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .app-header__line--gold .app-header__value {
-    color: #a8914e;
-    font-weight: 600;
-  }
-
-  .app-header__nav {
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 24px;
-  }
-
-  .app-header__back {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 150ms;
-    padding: 0;
-  }
-
-  .app-header__back:hover {
-    color: #f9e27d;
-  }
-
-  .app-header__step {
-    font-size: 12px;
-    color: #a8914e;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    white-space: nowrap;
+  .app-header__logo {
+    height: 56px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
   }
 
   .main-content {
@@ -341,10 +305,11 @@
 
   .screen-title {
     flex: 0 0 auto;
-    min-height: 64px;
     display: flex;
     align-items: center;
-    padding: 12px 20px;
+    justify-content: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .screen-title__text {
@@ -352,9 +317,11 @@
     padding: 0;
     line-height: 1.25;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    color: #fff;
+    font-weight: 600;
+    font-size: 20px;
+    color: #a8914e;
+    text-transform: uppercase;
+    text-align: center;
   }
 
   .screen-scroll-area {
