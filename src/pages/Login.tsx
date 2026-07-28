@@ -11,7 +11,7 @@ import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { signInWithCpf } = useAuth()
+  const { signInWithCpf, signOut } = useAuth()
 
   const [cpf, setCpf] = useState('')
   const [password, setPassword] = useState('')
@@ -24,6 +24,7 @@ export default function Login() {
   )
 
   const handleCancel = () => {
+    signOut()
     setCpf('')
     setPassword('')
     setCpfError('')

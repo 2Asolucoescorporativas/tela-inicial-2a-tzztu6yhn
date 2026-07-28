@@ -27,9 +27,14 @@ export default function Index() {
   const handleSair = () => {
     signOut()
     clearSession()
+    try {
+      window.close()
+    } catch (e) {
+      // ignore
+    }
     toast({
       title: 'Sessão encerrada',
-      description: 'Você saiu do aplicativo com sucesso.',
+      description: 'Você saiu do aplicativo. Se a janela não fechou, feche-a manualmente.',
     })
   }
 
