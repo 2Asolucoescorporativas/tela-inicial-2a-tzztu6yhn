@@ -1,8 +1,10 @@
 import { cn } from '@/lib/utils'
-import { Check, Home, FileText, MapPin, BadgeCheck } from 'lucide-react'
+import { Check, Home, FileText, MapPin, BadgeCheck, CreditCard } from 'lucide-react'
 
 interface PropertyCardProps {
   nome: string
+  cpf?: string
+  endereco?: string
   cadPro?: string
   inscricaoEstadual?: string
   municipio?: string
@@ -14,6 +16,8 @@ interface PropertyCardProps {
 
 export function PropertyCard({
   nome,
+  cpf,
+  endereco,
   cadPro,
   inscricaoEstadual,
   municipio,
@@ -35,7 +39,7 @@ export function PropertyCard({
         }
       }}
       className={cn(
-        'bg-white rounded-2xl p-4 cursor-pointer transition-all relative min-h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A8914E]/50',
+        'bg-white rounded-2xl p-4 cursor-pointer transition-all relative min-h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A8914E]/50 w-full text-left',
         selected
           ? 'border-2 border-[#A8914E] shadow-lg'
           : 'border border-gray-200 hover:border-gray-300',
@@ -51,6 +55,18 @@ export function PropertyCard({
         <span className="font-bold text-gray-900 text-base">{nome}</span>
       </div>
       <div className="space-y-1.5 text-sm">
+        {cpf && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <CreditCard className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <span>CPF: {cpf}</span>
+          </div>
+        )}
+        {endereco && (
+          <div className="flex items-start gap-2 text-gray-600">
+            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+            <span>Endereço: {endereco}</span>
+          </div>
+        )}
         {cadPro && (
           <div className="flex items-center gap-2 text-gray-600">
             <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -63,7 +79,7 @@ export function PropertyCard({
             <span>IE: {inscricaoEstadual}</span>
           </div>
         )}
-        {municipio && (
+        {municipio && !endereco && (
           <div className="flex items-center gap-2 text-gray-600">
             <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <span>

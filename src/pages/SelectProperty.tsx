@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
@@ -8,8 +8,6 @@ import { AppScaffold } from '@/components/AppScaffold'
 import { SafeContent } from '@/components/SafeContent'
 import { AppHeader } from '@/components/AppHeader'
 import { ScreenContent } from '@/components/ScreenContent'
-import { ScreenTitle } from '@/components/ScreenTitle'
-import { BodyText } from '@/components/BodyText'
 import { PropertyCard } from '@/components/PropertyCard'
 import { BottomActions } from '@/components/BottomActions'
 import { PrimaryButton } from '@/components/PrimaryButton'
@@ -18,12 +16,23 @@ import { LoadingOverlay } from '@/components/LoadingOverlay'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
-import { LogOut } from 'lucide-react'
+import { maskCpf } from '@/lib/cpf-utils'
+
+function formatEndereco(prop: PropriedadeRecord): string {
+  const parts: string[] = []
+  if (prop.endereco) parts.push(prop.endereco)
+  if (prop.numero) parts.push(prop.numero)
+  if (prop.bairro) parts.push(prop.bairro)
+  if (prop.municipio) parts.push(prop.municipio)
+  if (prop.uf) parts.push(prop.uf)
+  if (prop.cep) parts.push(`CEP: ${prop.cep}`)
+  return parts.join(', ')
+}
 
 export default function SelectProperty() {
   const navigate = useNavigate()
-  const { signOut } = useAuth()
-  const { setActiveProperty } = useSession()
+  const { user, signOut } = useAuth()
+  const { setActiveProperty, clearSession } = useSession()
 
   const [properties, setProperties] = useState<PropriedadeRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -31,6 +40,8 @@ export default function SelectProperty() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [continuing, setContinuing] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+
+  const userCpf = maskCpf(user?.cpf || '')
 
   const loadProperties = useCallback(() => {
     setSelectedId(null)
@@ -42,54 +53,13 @@ export default function SelectProperty() {
       .finally(() => setLoading(false))
   }, [])
 
+  useEffect(() => {
+    loadProperties()
+  }, [loadProperties])
+
   useRealtime('propriedades', () => {
     loadProperties()
   })
-
-  if (loading && properties.length === 0 && !error) {
-    return (
-      <AppScaffold>
-        <SafeContent>
-          <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
-        </SafeContent>
-        <LoadingOverlay message="Carregando propriedades..." />
-      </AppScaffold>
-    )
-  }
-
-  if (error) {
-    return (
-      <AppScaffold>
-        <SafeContent>
-          <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
-          <ScreenContent className="flex items-center">
-            <ErrorState
-              message="Não foi possível carregar as propriedades."
-              onRetry={loadProperties}
-            />
-          </ScreenContent>
-        </SafeContent>
-      </AppScaffold>
-    )
-  }
-
-  if (!loading && properties.length === 0) {
-    return (
-      <AppScaffold>
-        <SafeContent>
-          <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
-          <ScreenContent className="flex items-center">
-            <EmptyState
-              title="Nenhuma propriedade encontrada."
-              description="Não existem propriedades rurais vinculadas ao seu CPF."
-              actionLabel="Atualizar"
-              onAction={loadProperties}
-            />
-          </ScreenContent>
-        </SafeContent>
-      </AppScaffold>
-    )
-  }
 
   const handleSelect = (id: string) => {
     setSelectedId(id)
@@ -116,48 +86,72 @@ export default function SelectProperty() {
 
   const handleConfirmSair = () => {
     setShowConfirm(false)
+    clearSession()
     signOut()
     navigate('/login')
   }
+
+  const isButtonDisabled = !selectedId || error || properties.length === 0
+  const showCenteredState = error || (!loading && properties.length === 0)
 
   return (
     <AppScaffold>
       <SafeContent>
         <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
 
-        <ScreenContent>
-          <div className="space-y-1 mb-4">
-            <ScreenTitle className="text-center">Selecione a propriedade</ScreenTitle>
-            <BodyText>Escolha a propriedade que será utilizada nesta sessão.</BodyText>
-          </div>
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
-          <div className="space-y-3">
-            {properties.map((prop) => (
-              <PropertyCard
-                key={prop.id}
-                nome={prop.nome}
-                cadPro={prop.inscricao_estadual}
-                inscricaoEstadual={prop.inscricao_estadual}
-                municipio={prop.municipio}
-                uf={prop.uf}
-                situacaoIE={prop.situacao_ie || undefined}
-                selected={selectedId === prop.id}
-                onSelect={() => handleSelect(prop.id)}
-              />
-            ))}
-          </div>
+        <div className="flex-shrink-0 py-4 px-6 bg-white">
+          <p className="text-center font-semibold text-[18px]" style={{ color: '#002C45' }}>
+            Selecione a Propriedade Ativa do Usuário
+          </p>
+        </div>
+
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+
+        <ScreenContent
+          className={showCenteredState ? 'flex flex-col items-center justify-center' : ''}
+        >
+          {error ? (
+            <ErrorState
+              message="Não foi possível carregar as propriedades."
+              onRetry={loadProperties}
+            />
+          ) : !loading && properties.length === 0 ? (
+            <EmptyState
+              title="Nenhuma propriedade encontrada."
+              description="Não existem propriedades rurais vinculadas ao seu CPF."
+              actionLabel="Atualizar"
+              onAction={loadProperties}
+            />
+          ) : (
+            <div className="space-y-3">
+              {properties.map((prop) => (
+                <PropertyCard
+                  key={prop.id}
+                  nome={prop.nome}
+                  cpf={userCpf}
+                  endereco={formatEndereco(prop)}
+                  cadPro={prop.inscricao_estadual}
+                  inscricaoEstadual={prop.inscricao_estadual}
+                  municipio={prop.municipio}
+                  uf={prop.uf}
+                  situacaoIE={prop.situacao_ie || undefined}
+                  selected={selectedId === prop.id}
+                  onSelect={() => handleSelect(prop.id)}
+                />
+              ))}
+            </div>
+          )}
         </ScreenContent>
 
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+
         <BottomActions>
-          <PrimaryButton disabled={!selectedId} loading={continuing} onClick={handleContinue}>
-            CONTINUAR
+          <PrimaryButton disabled={isButtonDisabled} loading={continuing} onClick={handleContinue}>
+            Selecionar
           </PrimaryButton>
-          <TextButton onClick={() => setShowConfirm(true)}>
-            <span className="flex items-center gap-1.5">
-              <LogOut className="w-4 h-4" />
-              Sair do aplicativo
-            </span>
-          </TextButton>
+          <TextButton onClick={() => setShowConfirm(true)}>Sair</TextButton>
         </BottomActions>
       </SafeContent>
 
