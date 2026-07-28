@@ -8,7 +8,7 @@ interface PrimaryButtonProps {
   loading?: boolean
   onClick?: () => void
   className?: string
-  variant?: 'solid' | 'outlined'
+  variant?: 'solid' | 'outlined' | 'dark'
 }
 
 export function PrimaryButton({
@@ -20,6 +20,27 @@ export function PrimaryButton({
   variant = 'solid',
 }: PrimaryButtonProps) {
   const isOutlined = variant === 'outlined'
+
+  const solidStyle =
+    variant === 'dark'
+      ? {
+          backgroundColor: '#002C45',
+          border: 'none',
+          color: '#fff',
+          borderRadius: '14px',
+          height: '56px',
+          fontWeight: 700,
+          fontSize: '18px',
+        }
+      : {
+          backgroundColor: '#A8914E',
+          border: 'none',
+          color: '#fff',
+          borderRadius: '14px',
+          height: '56px',
+          fontWeight: 700,
+          fontSize: '18px',
+        }
 
   return (
     <button
@@ -42,15 +63,7 @@ export function PrimaryButton({
               fontWeight: 700,
               fontSize: '18px',
             }
-          : {
-              backgroundColor: '#A8914E',
-              border: 'none',
-              color: '#fff',
-              borderRadius: '14px',
-              height: '56px',
-              fontWeight: 700,
-              fontSize: '18px',
-            }
+          : solidStyle
       }
     >
       {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : children}

@@ -159,7 +159,7 @@ export default function SelectProperty() {
             >
               Selecionar
             </PrimaryButton>
-            <PrimaryButton variant="outlined" onClick={() => setShowConfirm(true)}>
+            <PrimaryButton variant="dark" onClick={() => setShowConfirm(true)}>
               Sair
             </PrimaryButton>
           </div>
