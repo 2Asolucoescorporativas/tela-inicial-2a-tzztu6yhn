@@ -29,7 +29,7 @@ export default function Login() {
     setCpfError('')
     setErrorMsg('')
     setShowSuccessBanner(false)
-    navigate('/index')
+    navigate('/')
   }
 
   const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
