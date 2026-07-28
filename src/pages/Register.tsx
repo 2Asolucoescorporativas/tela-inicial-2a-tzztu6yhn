@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { maskCpf, unmaskCpf, isValidCpf } from '@/lib/cpf-utils'
 import { getCadastroProvider } from '@/providers/cadastro-provider'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -74,15 +75,15 @@ export default function Register() {
           <div className="w-full space-y-3">
             <button
               onClick={() => navigate('/login')}
-              className="w-full text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all"
-              style={{ backgroundColor: '#A8914E', height: '56px' }}
+              className="w-full flex items-center justify-center shadow-md hover:brightness-105 active:scale-95 transition-all"
+              style={primaryButtonStyle}
             >
               IR PARA LOGIN
             </button>
             <button
               onClick={() => navigate('/forgot-password')}
-              className="w-full text-white/80 font-bold text-lg rounded-[14px] border border-white/20 hover:bg-white/5 active:scale-95 transition-all"
-              style={{ height: '56px' }}
+              className="w-full flex items-center justify-center hover:bg-[#C89B51]/10 active:scale-95 transition-all"
+              style={secondaryButtonStyle}
             >
               RECUPERAR SENHA
             </button>
@@ -134,8 +135,8 @@ export default function Register() {
           <button
             type="submit"
             disabled={!isCpfValid || loading}
-            className="w-[80%] mx-auto block text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-            style={{ backgroundColor: '#A8914E', height: '56px' }}
+            className="w-[80%] mx-auto block flex items-center justify-center shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+            style={{ ...primaryButtonStyle, width: '80%' }}
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : 'CONSULTAR CADASTRO'}
           </button>

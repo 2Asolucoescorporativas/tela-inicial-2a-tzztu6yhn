@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
 import { Logo2A } from '@/components/Logo2A'
 import { useToast } from '@/hooks/use-toast'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 
 export default function Index() {
   const navigate = useNavigate()
@@ -51,7 +52,8 @@ export default function Index() {
         <button
           onClick={handleEntrar}
           type="button"
-          className="w-full h-14 rounded-xl font-sans font-bold text-lg tracking-wide text-white bg-[#C89B51] hover:bg-[#b88a41] active:scale-[0.98] shadow-lg shadow-[#071C33]/50 transition-all duration-150 flex items-center justify-center space-x-2.5 border border-[#d2a963]/30 cursor-pointer"
+          className="w-full flex items-center justify-center space-x-2.5 shadow-md hover:brightness-105 active:scale-95 transition-all duration-150 cursor-pointer"
+          style={primaryButtonStyle}
         >
           <LogIn className="w-5 h-5 text-white" />
           <span>Entrar</span>
@@ -61,7 +63,8 @@ export default function Index() {
         <button
           onClick={handleSair}
           type="button"
-          className="w-full h-14 rounded-xl font-sans font-medium text-base tracking-wide text-[#D0A85C] border border-[#C89B51]/70 bg-[#071C33]/80 hover:bg-[#C89B51]/10 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2.5 cursor-pointer"
+          className="w-full flex items-center justify-center space-x-2.5 hover:bg-[#C89B51]/10 active:scale-95 transition-all duration-150 cursor-pointer"
+          style={secondaryButtonStyle}
         >
           <LogOut className="w-5 h-5 text-[#D0A85C]" />
           <span>Sair do aplicativo</span>

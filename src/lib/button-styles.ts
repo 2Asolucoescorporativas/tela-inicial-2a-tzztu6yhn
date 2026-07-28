@@ -8,16 +8,16 @@ export const primaryButtonStyle: CSSProperties = {
   height: '56px',
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: 700,
-  fontSize: '18px',
+  fontSize: '14pt',
 }
 
 export const secondaryButtonStyle: CSSProperties = {
   backgroundColor: '#071C33',
-  border: '1px solid rgba(200, 155, 81, 0.7)',
+  border: '2px solid rgba(200, 155, 81, 0.7)',
   color: '#D0A85C',
   borderRadius: '14px',
   height: '56px',
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: 700,
-  fontSize: '18px',
+  fontSize: '14pt',
 }
