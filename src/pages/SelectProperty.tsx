@@ -13,7 +13,6 @@ import { PrimaryButton } from '@/components/PrimaryButton'
 import { LoadingOverlay } from '@/components/LoadingOverlay'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
-import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { maskCpf } from '@/lib/cpf-utils'
 import { cn } from '@/lib/utils'
 
@@ -30,15 +29,14 @@ function formatEndereco(prop: PropriedadeRecord): string {
 
 export default function SelectProperty() {
   const navigate = useNavigate()
-  const { user, signOut } = useAuth()
-  const { setActiveProperty, clearSession } = useSession()
+  const { user } = useAuth()
+  const { setActiveProperty } = useSession()
 
   const [properties, setProperties] = useState<PropriedadeRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [continuing, setContinuing] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
 
   const userCpf = maskCpf(user?.cpf || '')
 
@@ -71,7 +69,7 @@ export default function SelectProperty() {
     setActiveProperty({
       id: selected.id,
       nome: selected.nome,
-      inscricao_estadual: selected.inscricao_estadual,
+      inscricao_estatual: selected.inscricao_estatual,
       municipio: selected.municipio,
       uf: selected.uf,
       codigo_ibge: selected.codigo_ibge || '',
@@ -81,13 +79,6 @@ export default function SelectProperty() {
       cep: selected.cep || '',
     })
     navigate('/dashboard')
-  }
-
-  const handleConfirmSair = () => {
-    setShowConfirm(false)
-    clearSession()
-    signOut()
-    navigate('/login')
   }
 
   const isButtonDisabled = !selectedId || error || properties.length === 0
@@ -159,23 +150,19 @@ export default function SelectProperty() {
             >
               Selecionar
             </PrimaryButton>
-            <PrimaryButton variant="dark" onClick={() => setShowConfirm(true)}>
-              Sair
-            </PrimaryButton>
+            <button
+              onClick={() => navigate(-1)}
+              type="button"
+              className="w-full h-14 rounded-xl font-sans font-bold text-lg tracking-wide text-[#D0A85C] border bg-[#071C33] hover:bg-[#C89B51]/10 active:scale-[0.98] transition-all duration-150 flex items-center justify-center cursor-pointer"
+              style={{ borderColor: 'rgba(200, 155, 81, 0.7)' }}
+            >
+              Cancelar
+            </button>
           </div>
         </div>
       </SafeContent>
 
       {loading && <LoadingOverlay message="Carregando propriedades..." />}
-
-      <ConfirmationDialog
-        open={showConfirm}
-        message="Deseja realmente sair do aplicativo?"
-        cancelLabel="Cancelar"
-        confirmLabel="Sair"
-        onConfirm={handleConfirmSair}
-        onCancel={() => setShowConfirm(false)}
-      />
     </AppScaffold>
   )
 }
