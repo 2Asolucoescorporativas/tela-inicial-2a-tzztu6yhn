@@ -69,7 +69,7 @@ export default function SelectProperty() {
     setActiveProperty({
       id: selected.id,
       nome: selected.nome,
-      inscricao_estatual: selected.inscricao_estatual,
+      inscricao_estadual: selected.inscricao_estadual,
       municipio: selected.municipio,
       uf: selected.uf,
       codigo_ibge: selected.codigo_ibge || '',
