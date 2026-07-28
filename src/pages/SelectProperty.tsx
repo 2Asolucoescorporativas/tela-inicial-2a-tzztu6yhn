@@ -13,6 +13,7 @@ import { PrimaryButton } from '@/components/PrimaryButton'
 import { LoadingOverlay } from '@/components/LoadingOverlay'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
+import { ScreenTitle } from '@/components/ScreenTitle'
 import { maskCpf } from '@/lib/cpf-utils'
 import { cn } from '@/lib/utils'
 
@@ -91,11 +92,7 @@ export default function SelectProperty() {
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
-        <div className="flex-shrink-0 py-4 px-6 bg-white">
-          <p className="text-center font-semibold text-[18px]" style={{ color: '#002C45' }}>
-            Selecione a Propriedade Ativa do Usuário
-          </p>
-        </div>
+        <ScreenTitle>SELECIONE A PROPRIEDADE</ScreenTitle>
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 

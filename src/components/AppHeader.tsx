@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/use-auth'
+import { useSession } from '@/stores/session'
 import { maskCpf } from '@/lib/cpf-utils'
 import logoImage from '@/assets/chatgpt-image-27-de-jul.de-2026-202036-6ec94.png'
 
@@ -15,11 +16,14 @@ interface AppHeaderProps {
   acaoVoltar?: () => void
 }
 
-export function AppHeader({ nomeUsuario }: AppHeaderProps) {
+export function AppHeader({ nomeUsuario, nomePropriedade, exibirPropriedade }: AppHeaderProps) {
   const { user } = useAuth()
+  const { activeProperty } = useSession()
 
   const userName = nomeUsuario ?? user?.name ?? 'João da Silva'
   const userCpf = maskCpf(user?.cpf || '00000000000')
+  const propertyName = nomePropriedade ?? activeProperty?.nome ?? ''
+  const showPropertyLine = exibirPropriedade !== false && propertyName.length > 0
 
   return (
     <header className="app-header safe-area-pt">
@@ -33,6 +37,12 @@ export function AppHeader({ nomeUsuario }: AppHeaderProps) {
             <span className="app-header__label">CPF:</span>
             <span className="app-header__value">{userCpf}</span>
           </p>
+          {showPropertyLine && (
+            <p className="app-header__line">
+              <span className="app-header__label">PROPRIEDADE:</span>
+              <span className="app-header__value">{propertyName}</span>
+            </p>
+          )}
         </div>
         <img src={logoImage} alt="2A RURAL" className="app-header__logo" />
       </div>
