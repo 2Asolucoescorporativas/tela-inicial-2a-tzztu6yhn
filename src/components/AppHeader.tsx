@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/use-auth'
 import { maskCpf } from '@/lib/cpf-utils'
-import logoImage from '@/assets/chatgpt-image-27-de-jul-de-2026-202036-6ec94.png'
+import logoImage from '@/assets/chatgpt-image-27-de-jul.de-2026-202036-6ec94.png'
 
 interface AppHeaderProps {
   nomeUsuario?: string
