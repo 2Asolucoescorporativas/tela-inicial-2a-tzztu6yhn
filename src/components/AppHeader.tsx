@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
 import { cn } from '@/lib/utils'
+import { maskCpf } from '@/lib/cpf-utils'
 import { ArrowLeft } from 'lucide-react'
 
 interface AppHeaderProps {
@@ -12,6 +13,7 @@ interface AppHeaderProps {
   totalEtapas?: number
   exibirPropriedade?: boolean
   exibirBotaoVoltar?: boolean
+  exibirCpf?: boolean
   acaoVoltar?: () => void
 }
 
@@ -23,6 +25,7 @@ export function AppHeader({
   totalEtapas,
   exibirPropriedade = true,
   exibirBotaoVoltar = true,
+  exibirCpf = false,
   acaoVoltar,
 }: AppHeaderProps) {
   const navigate = useNavigate()
@@ -30,6 +33,7 @@ export function AppHeader({
   const { activeProperty } = useSession()
 
   const userName = nomeUsuario ?? user?.name ?? '—'
+  const userCpf = maskCpf(user?.cpf || '')
   const propertyName = nomePropriedade ?? activeProperty?.nome ?? '—'
   const cadProValue = cadPro ?? activeProperty?.inscricao_estadual ?? '—'
   const showStep = etapaAtual != null && totalEtapas != null
@@ -49,6 +53,12 @@ export function AppHeader({
             <span className="app-header__label">Usuário:</span>
             <span className="app-header__value">{userName}</span>
           </p>
+          {exibirCpf && userCpf && (
+            <p className="app-header__line">
+              <span className="app-header__label">CPF:</span>
+              <span className="app-header__value">{userCpf}</span>
+            </p>
+          )}
           {exibirPropriedade && (
             <>
               <p className="app-header__line">

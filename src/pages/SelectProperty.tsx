@@ -1,31 +1,104 @@
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
 import { getPropriedades, type PropriedadeRecord } from '@/services/propriedades'
-import { cn } from '@/lib/utils'
-import { FormPageLayout } from '@/components/FormPageLayout'
+import { useRealtime } from '@/hooks/use-realtime'
+import { AppScaffold } from '@/components/AppScaffold'
+import { SafeContent } from '@/components/SafeContent'
 import { AppHeader } from '@/components/AppHeader'
-import { Check, Loader2, MapPin, FileText, Home, LogOut } from 'lucide-react'
+import { ScreenContent } from '@/components/ScreenContent'
+import { ScreenTitle } from '@/components/ScreenTitle'
+import { BodyText } from '@/components/BodyText'
+import { PropertyCard } from '@/components/PropertyCard'
+import { BottomActions } from '@/components/BottomActions'
+import { PrimaryButton } from '@/components/PrimaryButton'
+import { TextButton } from '@/components/TextButton'
+import { LoadingOverlay } from '@/components/LoadingOverlay'
+import { EmptyState } from '@/components/EmptyState'
+import { ErrorState } from '@/components/ErrorState'
+import { ConfirmationDialog } from '@/components/ConfirmationDialog'
+import { LogOut } from 'lucide-react'
 
 export default function SelectProperty() {
   const navigate = useNavigate()
   const { signOut } = useAuth()
   const { setActiveProperty } = useSession()
+
   const [properties, setProperties] = useState<PropriedadeRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [continuing, setContinuing] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  useEffect(() => {
+  const loadProperties = useCallback(() => {
+    setSelectedId(null)
+    setLoading(true)
+    setError(false)
     getPropriedades()
       .then(setProperties)
-      .catch(() => {})
+      .catch(() => setError(true))
       .finally(() => setLoading(false))
   }, [])
+
+  useRealtime('propriedades', () => {
+    loadProperties()
+  })
+
+  if (loading && properties.length === 0 && !error) {
+    return (
+      <AppScaffold>
+        <SafeContent>
+          <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
+        </SafeContent>
+        <LoadingOverlay message="Carregando propriedades..." />
+      </AppScaffold>
+    )
+  }
+
+  if (error) {
+    return (
+      <AppScaffold>
+        <SafeContent>
+          <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
+          <ScreenContent className="flex items-center">
+            <ErrorState
+              message="Não foi possível carregar as propriedades."
+              onRetry={loadProperties}
+            />
+          </ScreenContent>
+        </SafeContent>
+      </AppScaffold>
+    )
+  }
+
+  if (!loading && properties.length === 0) {
+    return (
+      <AppScaffold>
+        <SafeContent>
+          <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
+          <ScreenContent className="flex items-center">
+            <EmptyState
+              title="Nenhuma propriedade encontrada."
+              description="Não existem propriedades rurais vinculadas ao seu CPF."
+              actionLabel="Atualizar"
+              onAction={loadProperties}
+            />
+          </ScreenContent>
+        </SafeContent>
+      </AppScaffold>
+    )
+  }
+
+  const handleSelect = (id: string) => {
+    setSelectedId(id)
+  }
 
   const handleContinue = () => {
     const selected = properties.find((p) => p.id === selectedId)
     if (!selected) return
+    setContinuing(true)
     setActiveProperty({
       id: selected.id,
       nome: selected.nome,
@@ -41,90 +114,63 @@ export default function SelectProperty() {
     navigate('/dashboard')
   }
 
-  const handleSair = () => {
+  const handleConfirmSair = () => {
+    setShowConfirm(false)
     signOut()
     navigate('/login')
   }
 
   return (
-    <FormPageLayout className="text-white">
-      <AppHeader exibirPropriedade={false} />
+    <AppScaffold>
+      <SafeContent>
+        <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
 
-      <div className="form-page__content p-5 space-y-5 animate-fade-in pb-10">
-        <div className="text-center space-y-1">
-          <h1 className="text-xl font-bold" style={{ color: '#A8914E' }}>
-            Selecione a propriedade
-          </h1>
-          <p className="text-white/70 text-sm">
-            Escolha a propriedade que deseja utilizar nesta sessão.
-          </p>
-        </div>
+        <ScreenContent>
+          <div className="space-y-1 mb-4">
+            <ScreenTitle className="text-center">Selecione a propriedade</ScreenTitle>
+            <BodyText>Escolha a propriedade que será utilizada nesta sessão.</BodyText>
+          </div>
 
-        {loading ? (
-          <div className="py-12 text-center">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#A8914E]" />
-          </div>
-        ) : properties.length === 0 ? (
-          <div className="py-12 text-center text-white/50 text-sm">
-            Nenhuma propriedade encontrada. Entre em contato com o suporte.
-          </div>
-        ) : (
           <div className="space-y-3">
-            {properties.map((prop) => {
-              const isSelected = selectedId === prop.id
-              return (
-                <div
-                  key={prop.id}
-                  onClick={() => setSelectedId(prop.id)}
-                  className={cn(
-                    'bg-white rounded-2xl p-4 cursor-pointer transition-all relative',
-                    isSelected ? 'border-2 border-[#A8914E] shadow-lg' : 'border border-gray-200',
-                  )}
-                >
-                  {isSelected && (
-                    <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[#A8914E] flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" strokeWidth={3} />
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 mb-3">
-                    <Home className="w-5 h-5 text-[#A8914E]" />
-                    <span className="font-bold text-gray-900 text-base">{prop.nome}</span>
-                  </div>
-                  <div className="space-y-1.5 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <FileText className="w-4 h-4 text-gray-400" />
-                      <span>IE: {prop.inscricao_estadual}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span>
-                        {prop.municipio} - {prop.uf}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+            {properties.map((prop) => (
+              <PropertyCard
+                key={prop.id}
+                nome={prop.nome}
+                cadPro={prop.inscricao_estadual}
+                inscricaoEstadual={prop.inscricao_estadual}
+                municipio={prop.municipio}
+                uf={prop.uf}
+                situacaoIE={prop.situacao_ie || undefined}
+                selected={selectedId === prop.id}
+                onSelect={() => handleSelect(prop.id)}
+              />
+            ))}
           </div>
-        )}
+        </ScreenContent>
 
-        <button
-          onClick={handleContinue}
-          disabled={!selectedId}
-          className="w-[85%] mx-auto block text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-          style={{ backgroundColor: '#A8914E', height: '56px' }}
-        >
-          CONTINUAR
-        </button>
+        <BottomActions>
+          <PrimaryButton disabled={!selectedId} loading={continuing} onClick={handleContinue}>
+            CONTINUAR
+          </PrimaryButton>
+          <TextButton onClick={() => setShowConfirm(true)}>
+            <span className="flex items-center gap-1.5">
+              <LogOut className="w-4 h-4" />
+              Sair do aplicativo
+            </span>
+          </TextButton>
+        </BottomActions>
+      </SafeContent>
 
-        <button
-          onClick={handleSair}
-          className="w-[85%] mx-auto block text-white/60 font-medium text-sm hover:text-white transition-colors py-2 flex items-center justify-center gap-1.5"
-        >
-          <LogOut className="w-4 h-4" />
-          Sair do aplicativo
-        </button>
-      </div>
-    </FormPageLayout>
+      {loading && <LoadingOverlay message="Carregando propriedades..." />}
+
+      <ConfirmationDialog
+        open={showConfirm}
+        message="Deseja realmente sair do aplicativo?"
+        cancelLabel="Cancelar"
+        confirmLabel="Sair"
+        onConfirm={handleConfirmSair}
+        onCancel={() => setShowConfirm(false)}
+      />
+    </AppScaffold>
   )
 }
