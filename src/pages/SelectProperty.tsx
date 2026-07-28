@@ -95,7 +95,7 @@ export default function SelectProperty() {
 
   return (
     <AppScaffold>
-      <SafeContent>
+      <SafeContent className="overflow-hidden">
         <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf />
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
@@ -147,7 +147,6 @@ export default function SelectProperty() {
         </ScreenContent>
 
         <div className="flex-shrink-0">
-          <div style={{ height: '24px' }} />
           <div className="h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
           <div
             className="px-5 flex flex-col"
