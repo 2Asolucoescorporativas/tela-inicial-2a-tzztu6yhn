@@ -25,7 +25,7 @@ export function PrimaryButton({
     variant === 'dark'
       ? {
           backgroundColor: '#002C45',
-          border: 'none',
+          border: '2px solid #A8914E',
           color: '#fff',
           borderRadius: '14px',
           height: '56px',
