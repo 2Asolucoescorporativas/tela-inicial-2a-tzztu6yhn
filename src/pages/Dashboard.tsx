@@ -3,6 +3,7 @@ import { FileText, Settings } from 'lucide-react'
 import { AppScaffold } from '@/components/AppScaffold'
 import { SafeContent } from '@/components/SafeContent'
 import { AppHeader } from '@/components/AppHeader'
+import { ScreenTitle } from '@/components/ScreenTitle'
 import { ScreenContent } from '@/components/ScreenContent'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { useSession } from '@/stores/session'
@@ -14,15 +15,11 @@ export default function Dashboard() {
   return (
     <AppScaffold>
       <SafeContent className="overflow-hidden">
-        <AppHeader exibirPropriedade={false} exibirBotaoVoltar={false} exibirCpf exibirCadPro />
+        <AppHeader exibirBotaoVoltar={false} exibirCpf exibirCadPro />
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
-        <div className="flex-shrink-0 pt-4 pb-2 px-6 bg-white">
-          <p className="text-center font-semibold text-[14px]" style={{ color: '#002C45' }}>
-            Selecione uma Opção
-          </p>
-        </div>
+        <ScreenTitle>Selecione uma Opção</ScreenTitle>
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 

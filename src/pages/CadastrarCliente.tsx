@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { AppHeader } from '@/components/AppHeader'
+import { ScreenTitle } from '@/components/ScreenTitle'
 import { ClientForm } from '@/components/ClientForm'
 import { ClientList } from '@/components/ClientList'
 import { useRealtime } from '@/hooks/use-realtime'
@@ -91,7 +92,7 @@ export default function CadastrarCliente() {
     <FormPageLayout className="text-white">
       <AppHeader />
       <div className="form-page__content p-5 space-y-6 animate-fade-in">
-        <h1 className="text-xl font-bold text-white">Cadastrar Cliente</h1>
+        <ScreenTitle>Cadastrar Cliente</ScreenTitle>
         <ClientForm
           key={formKey}
           initialData={editingClient}

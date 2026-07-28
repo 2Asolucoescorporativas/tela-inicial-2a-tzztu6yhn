@@ -293,6 +293,7 @@
     width: auto;
     object-fit: contain;
     flex-shrink: 0;
+    transform: translateY(-6px);
   }
 
   .main-content {
@@ -323,7 +324,7 @@
     text-transform: uppercase;
     text-align: center;
     white-space: nowrap;
-    max-width: 320px;
+    max-width: 260px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
