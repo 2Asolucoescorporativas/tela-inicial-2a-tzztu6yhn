@@ -2,8 +2,12 @@ import { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession, type DraftInvoice } from '@/stores/session'
-import { AppScreen } from '@/components/AppScreen'
-import { AppButton } from '@/components/AppButton'
+import { AppScaffold } from '@/components/AppScaffold'
+import { SafeContent } from '@/components/SafeContent'
+import { AppHeader } from '@/components/AppHeader'
+import { ScreenTitle } from '@/components/ScreenTitle'
+import { ScreenContent } from '@/components/ScreenContent'
+import { PrimaryButton } from '@/components/PrimaryButton'
 import { cn } from '@/lib/utils'
 import {
   parseCommaDecimal,
@@ -94,108 +98,125 @@ export default function EmitirLeite() {
     navigate('/emitir-leite/next')
   }
 
+  const handleCancelar = () => {
+    navigate('/emitir-nf')
+  }
+
   return (
-    <AppScreen
-      titulo="Venda de Leite"
-      etapaAtual={2}
-      totalEtapas={3}
-      contentClassName="px-5 pt-6 pb-8 animate-fade-in"
-    >
-      <p className="text-sm text-white/60 text-center mb-6">Informe os dados do produto.</p>
+    <AppScaffold>
+      <SafeContent className="overflow-hidden">
+        <AppHeader exibirBotaoVoltar={false} exibirCpf exibirCadPro />
 
-      <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-[#A8914E] uppercase tracking-wide">
-            Cliente
-          </span>
-          <button
-            onClick={handleAlterarCliente}
-            className="flex items-center gap-1 text-xs bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 transition-colors"
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+
+        <ScreenTitle>Dados do Produto</ScreenTitle>
+
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+
+        <ScreenContent className="flex-1 min-h-0 overflow-y-auto px-5 py-6">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-semibold text-[#A8914E] uppercase tracking-wide">
+                Cliente
+              </span>
+              <button
+                onClick={handleAlterarCliente}
+                className="flex items-center gap-1 text-xs bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 transition-colors"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+                Alterar Cliente
+              </button>
+            </div>
+            <div className="space-y-1">
+              <p className="text-white font-semibold text-sm">{selectedClient.nome_razao_social}</p>
+              <p className="text-white/60 text-xs">
+                {selectedClient.tipo_pessoa === 'FISICA' ? 'CPF' : 'CNPJ'}:{' '}
+                {maskDocumentByType(selectedClient.cpf_cnpj, selectedClient.tipo_pessoa)}
+              </p>
+              <p className="text-white/50 text-xs">
+                {selectedClient.municipio}/{selectedClient.uf}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm text-white/70 mb-1.5 block">Descrição do Produto</label>
+              <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 text-base">
+                LEITE CRU
+              </div>
+            </div>
+            <div>
+              <label className="text-sm text-white/70 mb-1.5 block">Unidade de Medida</label>
+              <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 text-base">
+                L – Litro
+              </div>
+            </div>
+            <div>
+              <label className="text-sm text-white/70 mb-1.5 block">Quantidade (L) *</label>
+              <input
+                type="text"
+                inputMode="decimal"
+                value={quantidade}
+                onChange={(e) => setQuantidade(sanitizeNumericInput(e.target.value))}
+                onBlur={() => setTouched((p) => ({ ...p, quantidade: true }))}
+                placeholder="0,00"
+                className="w-full bg-white text-[#002C45] rounded-xl px-4 py-3 text-base outline-none focus:ring-2 focus:ring-[#A8914E]"
+              />
+              {qtyError && <p className="text-sm text-red-400 mt-1">{qtyError}</p>}
+            </div>
+            <div>
+              <label className="text-sm text-white/70 mb-1.5 block">Valor Unitário (R$/L) *</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#002C45]/60 font-medium pointer-events-none">
+                  R$
+                </span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={valorUnitario}
+                  onChange={(e) => setValorUnitario(sanitizeNumericInput(e.target.value, 4))}
+                  onBlur={() => setTouched((p) => ({ ...p, valorUnitario: true }))}
+                  placeholder="0,0000"
+                  className="w-full bg-white text-[#002C45] rounded-xl pl-12 pr-4 py-3 text-base outline-none focus:ring-2 focus:ring-[#A8914E]"
+                />
+              </div>
+              {priceError && <p className="text-sm text-red-400 mt-1">{priceError}</p>}
+            </div>
+            <div className="bg-white rounded-xl border-l-4 border-[#A8914E] px-5 py-4 mt-6">
+              <p className="text-sm font-bold text-[#002C45] tracking-wide">VALOR TOTAL</p>
+              <p className="text-3xl font-extrabold text-[#002C45] mt-1">{formatCurrency(total)}</p>
+            </div>
+          </div>
+
+          {!isClientValid && (
+            <div className="mt-4 bg-red-500/20 border border-red-500/40 rounded-xl px-4 py-3">
+              <p className="text-sm text-red-300">
+                O cliente selecionado possui dados incompletos. Selecione outro cliente.
+              </p>
+            </div>
+          )}
+        </ScreenContent>
+
+        <div className="flex-shrink-0">
+          <div className="h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+          <div
+            className="px-5 flex flex-col"
+            style={{ paddingTop: '24px', paddingBottom: '24px', gap: '16px' }}
           >
-            <Pencil className="w-3.5 h-3.5" />
-            Alterar Cliente
-          </button>
-        </div>
-        <div className="space-y-1">
-          <p className="text-white font-semibold text-sm">{selectedClient.nome_razao_social}</p>
-          <p className="text-white/60 text-xs">
-            {selectedClient.tipo_pessoa === 'FISICA' ? 'CPF' : 'CNPJ'}:{' '}
-            {maskDocumentByType(selectedClient.cpf_cnpj, selectedClient.tipo_pessoa)}
-          </p>
-          <p className="text-white/50 text-xs">
-            {selectedClient.municipio}/{selectedClient.uf}
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <label className="text-sm text-white/70 mb-1.5 block">Descrição do Produto</label>
-          <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 text-base">
-            LEITE CRU
+            <PrimaryButton
+              onClick={handleContinuar}
+              disabled={!isFormValid || !isClientValid}
+              className={cn(!isFormValid || !isClientValid ? 'opacity-40' : '')}
+            >
+              Continuar
+            </PrimaryButton>
+            <PrimaryButton variant="secondary" onClick={handleCancelar}>
+              Cancelar
+            </PrimaryButton>
           </div>
         </div>
-        <div>
-          <label className="text-sm text-white/70 mb-1.5 block">Unidade de Medida</label>
-          <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 text-base">
-            L – Litro
-          </div>
-        </div>
-        <div>
-          <label className="text-sm text-white/70 mb-1.5 block">Quantidade (L) *</label>
-          <input
-            type="text"
-            inputMode="decimal"
-            value={quantidade}
-            onChange={(e) => setQuantidade(sanitizeNumericInput(e.target.value))}
-            onBlur={() => setTouched((p) => ({ ...p, quantidade: true }))}
-            placeholder="0,00"
-            className="w-full bg-white text-[#002C45] rounded-xl px-4 py-3 text-base outline-none focus:ring-2 focus:ring-[#A8914E]"
-          />
-          {qtyError && <p className="text-sm text-red-400 mt-1">{qtyError}</p>}
-        </div>
-        <div>
-          <label className="text-sm text-white/70 mb-1.5 block">Valor Unitário (R$/L) *</label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#002C45]/60 font-medium pointer-events-none">
-              R$
-            </span>
-            <input
-              type="text"
-              inputMode="decimal"
-              value={valorUnitario}
-              onChange={(e) => setValorUnitario(sanitizeNumericInput(e.target.value, 4))}
-              onBlur={() => setTouched((p) => ({ ...p, valorUnitario: true }))}
-              placeholder="0,0000"
-              className="w-full bg-white text-[#002C45] rounded-xl pl-12 pr-4 py-3 text-base outline-none focus:ring-2 focus:ring-[#A8914E]"
-            />
-          </div>
-          {priceError && <p className="text-sm text-red-400 mt-1">{priceError}</p>}
-        </div>
-        <div className="bg-white rounded-xl border-l-4 border-[#A8914E] px-5 py-4 mt-6">
-          <p className="text-sm font-bold text-[#002C45] tracking-wide">VALOR TOTAL</p>
-          <p className="text-3xl font-extrabold text-[#002C45] mt-1">{formatCurrency(total)}</p>
-        </div>
-      </div>
-
-      {!isClientValid && (
-        <div className="mt-4 bg-red-500/20 border border-red-500/40 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-300">
-            O cliente selecionado possui dados incompletos. Selecione outro cliente.
-          </p>
-        </div>
-      )}
-
-      <div className="mt-auto pt-6">
-        <AppButton
-          variant="primary"
-          onClick={handleContinuar}
-          disabled={!isFormValid || !isClientValid}
-          className={cn(!isFormValid || !isClientValid ? 'opacity-40' : '')}
-        >
-          Continuar
-        </AppButton>
-      </div>
-    </AppScreen>
+      </SafeContent>
+    </AppScaffold>
   )
 }

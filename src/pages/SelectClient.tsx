@@ -187,11 +187,11 @@ export default function SelectClient() {
             className="px-5 flex flex-col"
             style={{ paddingTop: '24px', paddingBottom: '24px', gap: '16px' }}
           >
-            <PrimaryButton variant="secondary" onClick={handleCancel}>
-              Cancelar
-            </PrimaryButton>
             <PrimaryButton onClick={handleContinuar} disabled={!localSelectedId}>
               Continuar
+            </PrimaryButton>
+            <PrimaryButton variant="secondary" onClick={handleCancel}>
+              Cancelar
             </PrimaryButton>
           </div>
         </div>
