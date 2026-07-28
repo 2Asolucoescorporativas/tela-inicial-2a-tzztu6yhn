@@ -50,7 +50,7 @@ export default function EmitirNF() {
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
-        <ScreenTitle>Emitir Nota Fiscal</ScreenTitle>
+        <ScreenTitle>Selecione a Operação</ScreenTitle>
 
         <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
 
