@@ -14,6 +14,7 @@ interface AppHeaderProps {
   exibirPropriedade?: boolean
   exibirBotaoVoltar?: boolean
   exibirCpf?: boolean
+  exibirCadPro?: boolean
   acaoVoltar?: () => void
 }
 
@@ -26,6 +27,7 @@ export function AppHeader({
   exibirPropriedade = true,
   exibirBotaoVoltar = true,
   exibirCpf = false,
+  exibirCadPro = false,
   acaoVoltar,
 }: AppHeaderProps) {
   const navigate = useNavigate()
@@ -57,6 +59,12 @@ export function AppHeader({
             <p className="app-header__line">
               <span className="app-header__label">CPF:</span>
               <span className="app-header__value">{userCpf}</span>
+            </p>
+          )}
+          {exibirCadPro && (
+            <p className="app-header__line app-header__line--gold">
+              <span className="app-header__label">CAD/PRO:</span>
+              <span className="app-header__value">{cadProValue}</span>
             </p>
           )}
           {exibirPropriedade && (
