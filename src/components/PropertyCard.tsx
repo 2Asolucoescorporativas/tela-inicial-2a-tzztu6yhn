@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { Check, Home, FileText, MapPin, BadgeCheck, CreditCard } from 'lucide-react'
+import { maskCadPro } from '@/lib/cadpro-utils'
 
 interface PropertyCardProps {
   nome: string
@@ -50,9 +51,17 @@ export function PropertyCard({
       )}
       <div className="flex items-center gap-2 mb-3">
         <Home className="w-5 h-5 text-[#A8914E] flex-shrink-0" />
-        <span className="font-bold text-gray-900 text-base">{nome}</span>
+        <span
+          className="text-gray-900 uppercase"
+          style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '14px', fontWeight: 700 }}
+        >
+          {nome}
+        </span>
       </div>
-      <div className="space-y-1.5 text-sm">
+      <div
+        className="space-y-1.5"
+        style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '14px', fontWeight: 400 }}
+      >
         {cpf && (
           <div className="flex items-center gap-2 text-gray-600 uppercase">
             <CreditCard className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -68,7 +77,7 @@ export function PropertyCard({
         {cadPro && (
           <div className="flex items-center gap-2 text-gray-600 uppercase">
             <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            <span>CAD/PRO: {cadPro}</span>
+            <span>CAD/PRO: {maskCadPro(cadPro)}</span>
           </div>
         )}
         {municipio && !endereco && (
@@ -81,9 +90,9 @@ export function PropertyCard({
           </div>
         )}
         {situacaoIE && (
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-gray-600 uppercase">
             <BadgeCheck className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            <span className="capitalize">{situacaoIE}</span>
+            <span>{situacaoIE}</span>
           </div>
         )}
       </div>

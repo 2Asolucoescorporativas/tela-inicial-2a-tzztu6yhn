@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react'
 import { maskCpf, isValidCpf } from '@/lib/cpf-utils'
 import { Logo2A } from '@/components/Logo2A'
+import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -28,7 +29,7 @@ export default function Login() {
     setCpfError('')
     setErrorMsg('')
     setShowSuccessBanner(false)
-    navigate('/')
+    navigate('/index')
   }
 
   const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,8 +140,8 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-[80%] mx-auto block text-white font-bold text-lg rounded-[14px] shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#A8914E', height: '56px' }}
+            className="w-[80%] mx-auto block text-white shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{ ...primaryButtonStyle, width: '80%' }}
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : 'ENTRAR'}
           </button>
@@ -148,10 +149,10 @@ export default function Login() {
           <button
             type="button"
             onClick={handleCancel}
-            className="w-[80%] mx-auto block text-white/80 font-medium text-base rounded-[14px] border border-white/20 hover:bg-white/5 active:scale-95 transition-all"
-            style={{ height: '48px' }}
+            className="w-[80%] mx-auto block shadow-md hover:brightness-110 active:scale-95 transition-all"
+            style={{ ...secondaryButtonStyle, width: '80%' }}
           >
-            Sair do aplicativo
+            Cancelar
           </button>
         </form>
 
