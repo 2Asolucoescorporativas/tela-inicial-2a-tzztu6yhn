@@ -135,8 +135,8 @@ export default function Register() {
           <button
             type="submit"
             disabled={!isCpfValid || loading}
-            className="w-[80%] mx-auto block flex items-center justify-center shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-            style={{ ...primaryButtonStyle, width: '80%' }}
+            className="w-full flex items-center justify-center shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+            style={primaryButtonStyle}
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : 'CONSULTAR CADASTRO'}
           </button>

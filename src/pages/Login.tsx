@@ -140,8 +140,8 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-[80%] mx-auto block text-white shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            style={{ ...primaryButtonStyle, width: '80%' }}
+            className="w-full block text-white shadow-md hover:brightness-105 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            style={primaryButtonStyle}
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : 'ENTRAR'}
           </button>
@@ -149,8 +149,8 @@ export default function Login() {
           <button
             type="button"
             onClick={handleCancel}
-            className="w-[80%] mx-auto block shadow-md hover:brightness-110 active:scale-95 transition-all"
-            style={{ ...secondaryButtonStyle, width: '80%' }}
+            className="w-full block shadow-md hover:brightness-110 active:scale-95 transition-all"
+            style={secondaryButtonStyle}
           >
             Cancelar
           </button>
