@@ -1,13 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import { useSession, type OperationType } from '@/stores/session'
-import { AppScreen } from '@/components/AppScreen'
-import { AppButton } from '@/components/AppButton'
 import { Milk, Beef } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { AppScaffold } from '@/components/AppScaffold'
+import { SafeContent } from '@/components/SafeContent'
+import { AppHeader } from '@/components/AppHeader'
+import { ScreenTitle } from '@/components/ScreenTitle'
+import { ScreenContent } from '@/components/ScreenContent'
+import { PrimaryButton } from '@/components/PrimaryButton'
 
 interface OperationOption {
   id: OperationType
   label: string
+  description: string
   icon: LucideIcon
   route: string
 }
@@ -15,11 +20,18 @@ interface OperationOption {
 const OPERATION_OPTIONS: OperationOption[] = [
   {
     id: 'VENDA_LEITE',
-    label: 'VENDA DE LEITE',
+    label: 'Venda de Leite',
+    description: 'Emitir nota de venda de leite',
     icon: Milk,
     route: '/emitir-leite/selecionar-cliente',
   },
-  { id: 'VENDA_GADO', label: 'VENDA DE GADO', icon: Beef, route: '/emitir-gado' },
+  {
+    id: 'VENDA_GADO',
+    label: 'Venda de Gado',
+    description: 'Emitir nota de venda de gado',
+    icon: Beef,
+    route: '/emitir-gado',
+  },
 ]
 
 export default function EmitirNF() {
@@ -32,23 +44,49 @@ export default function EmitirNF() {
   }
 
   return (
-    <AppScreen
-      titulo="Emitir Nota Fiscal"
-      permitirRolagem={false}
-      contentClassName="items-center justify-center px-5 menu-gap animate-fade-in"
-    >
-      <p className="text-xs text-white/60 text-center">Selecione o tipo de operação.</p>
-      {OPERATION_OPTIONS.map((op) => {
-        const Icon = op.icon
-        return (
-          <AppButton key={op.id} variant="primary" onClick={() => handleSelect(op)}>
-            <div className="p-2 rounded-xl bg-[#A8914E]/10 flex-shrink-0">
-              <Icon className="w-6 h-6 text-[#A8914E]" />
-            </div>
-            <span className="tracking-wide">{op.label}</span>
-          </AppButton>
-        )
-      })}
-    </AppScreen>
+    <AppScaffold>
+      <SafeContent className="overflow-hidden">
+        <AppHeader exibirBotaoVoltar={false} exibirCpf exibirCadPro />
+
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+
+        <ScreenTitle>Emitir Nota Fiscal</ScreenTitle>
+
+        <div className="flex-shrink-0 h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+
+        <ScreenContent className="flex-1 min-h-0 overflow-y-auto px-5 py-6">
+          <div className="space-y-4 max-w-sm mx-auto w-full">
+            {OPERATION_OPTIONS.map((op) => {
+              const Icon = op.icon
+              return (
+                <button
+                  key={op.id}
+                  onClick={() => handleSelect(op)}
+                  className="w-full bg-white rounded-2xl p-5 shadow-md hover:shadow-lg active:scale-95 transition-all duration-150 flex items-center gap-4 text-left cursor-pointer"
+                >
+                  <div className="p-3 rounded-xl bg-[#A8914E]/10 flex-shrink-0">
+                    <Icon className="w-7 h-7 text-[#A8914E]" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#002C45] text-lg">{op.label}</p>
+                    <p className="text-sm text-gray-500">{op.description}</p>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </ScreenContent>
+
+        <div className="flex-shrink-0">
+          <div className="h-[2px] w-full" style={{ backgroundColor: '#A8914E' }} />
+          <div
+            className="px-5 flex flex-col"
+            style={{ paddingTop: '24px', paddingBottom: '24px', gap: '16px' }}
+          >
+            <PrimaryButton onClick={() => navigate('/dashboard')}>Cancelar</PrimaryButton>
+          </div>
+        </div>
+      </SafeContent>
+    </AppScaffold>
   )
 }
