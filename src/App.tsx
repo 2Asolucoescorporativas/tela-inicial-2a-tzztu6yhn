@@ -27,6 +27,7 @@ import EmitirLeiteNext from './pages/EmitirLeiteNext'
 import ConsultarNF from './pages/ConsultarNF'
 import InvoiceDetail from './pages/InvoiceDetail'
 import Configuracoes from './pages/Configuracoes'
+import Estatistica from './pages/Estatistica'
 import CadastrarCliente from './pages/CadastrarCliente'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
@@ -116,6 +117,14 @@ const App = () => (
                 element={
                   <RequireProperty>
                     <Configuracoes />
+                  </RequireProperty>
+                }
+              />
+              <Route
+                path="/estatistica"
+                element={
+                  <RequireProperty>
+                    <Estatistica />
                   </RequireProperty>
                 }
               />
