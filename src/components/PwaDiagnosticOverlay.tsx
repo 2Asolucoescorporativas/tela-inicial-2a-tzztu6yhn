@@ -40,7 +40,11 @@ export function PwaDiagnosticOverlay() {
       <button
         onClick={() => {
           setDismissed(false)
-          try { sessionStorage.removeItem('pwa-debug-dismissed') } catch { /* ignore */ }
+          try {
+            sessionStorage.removeItem('pwa-debug-dismissed')
+          } catch {
+            /* ignore */
+          }
         }}
         className="fixed bottom-2 right-2 z-[9998] w-9 h-9 rounded-full bg-[#A8914E] flex items-center justify-center shadow-lg opacity-60 hover:opacity-100 transition-opacity"
         aria-label="Show PWA diagnostics"
@@ -53,7 +57,11 @@ export function PwaDiagnosticOverlay() {
   const handleDismiss = () => {
     setDismissed(true)
     setExpanded(false)
-    try { sessionStorage.setItem('pwa-debug-dismissed', 'true') } catch { /* ignore */ }
+    try {
+      sessionStorage.setItem('pwa-debug-dismissed', 'true')
+    } catch {
+      /* ignore */
+    }
   }
 
   const handleReport = () => {
@@ -61,7 +69,9 @@ export function PwaDiagnosticOverlay() {
     console.log(report)
     try {
       navigator.clipboard?.writeText(report)
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   return (
@@ -75,9 +85,7 @@ export function PwaDiagnosticOverlay() {
             </span>
             <span
               className={`text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
-                info.isStandalone
-                  ? 'bg-green-500/20 text-green-400'
-                  : 'bg-red-500/20 text-red-400'
+                info.isStandalone ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
               }`}
             >
               {info.isStandalone ? 'true' : 'false'}
@@ -108,22 +116,30 @@ export function PwaDiagnosticOverlay() {
         {expanded && (
           <div className="mt-2 space-y-1 text-[11px] text-white/70 font-mont max-h-[40vh] overflow-y-auto">
             <div className="font-semibold text-[#D0A85C] text-xs mb-1">Environment</div>
-            <div>OS: {info.environment.os} {info.environment.osVersion}</div>
-            <div>Browser: {info.environment.browser} {info.environment.browserVersion}</div>
+            <div>
+              OS: {info.environment.os} {info.environment.osVersion}
+            </div>
+            <div>
+              Browser: {info.environment.browser} {info.environment.browserVersion}
+            </div>
             <div>URL: {info.environment.fullUrl}</div>
             <div>Root path: {info.environment.isRootPath ? 'Yes' : 'No'}</div>
             <div>Install: {info.environment.installationMethod}</div>
             <div>Launch: {info.environment.launchMethod}</div>
 
-            <div className="font-semibold text-[#D0A85C] text-xs mb-1 mt-2">Standalone Detection</div>
+            <div className="font-semibold text-[#D0A85C] text-xs mb-1 mt-2">
+              Standalone Detection
+            </div>
             <div>matchMedia: {info.standaloneByMediaQuery ? 'true' : 'false'}</div>
             <div>navigator.standalone: {info.standaloneByNavigator ? 'true' : 'false'}</div>
             <div>Display mode: {info.displayMode}</div>
 
             <div className="font-semibold text-[#D0A85C] text-xs mb-1 mt-2">Manifest & SW</div>
-            <div>Manifest link: {info.hasManifestLink ? 'Yes' : 'No'} ({info.manifestPath})</div>
+            <div>
+              Manifest link: {info.hasManifestLink ? 'Yes' : 'No'} ({info.manifestPath})
+            </div>
             <div>SW supported: {info.hasServiceWorker ? 'Yes' : 'No'}</div>
-            <div>SW controller: {info.swControllerActive ? 'Active' : 'Inactive'}
+            <div>SW controller: {info.swControllerActive ? 'Active' : 'Inactive'}</div>
 
             <button
               onClick={handleReport}
