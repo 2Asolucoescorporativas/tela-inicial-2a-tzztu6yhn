@@ -5,7 +5,6 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import { SessionProvider, useSession } from '@/stores/session'
 import { BrandedSplashScreen } from '@/components/BrandedSplashScreen'
-import { PwaDiagnosticOverlay } from '@/components/PwaDiagnosticOverlay'
 
 import Index from './pages/Index'
 import Login from './pages/Login'
@@ -75,9 +74,7 @@ const App = () => (
       <SessionProvider>
         <NativeAppShell>
           <TooltipProvider>
-            <PwaDiagnosticOverlay />
-            <Toaster />
-            <Sonner />
+            <Toaster /> <Sonner />
             <Routes>
               {' '}
               <Route element={<Layout />}>

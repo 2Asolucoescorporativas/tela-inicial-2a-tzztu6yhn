@@ -241,7 +241,7 @@ export default function EmitirLeiteNext() {
                   variant="secondary"
                   onClick={() => navigate('/dashboard', { replace: true })}
                 >
-                  Ir para o Dashboard
+                  Voltar para o Início
                 </PrimaryButton>
               </>,
             )

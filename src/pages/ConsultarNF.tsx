@@ -6,7 +6,7 @@ import { AppHeader } from '@/components/AppHeader'
 import { normalizeForSearch } from '@/lib/search-utils'
 import { formatCurrency } from '@/lib/decimal-utils'
 import { cn } from '@/lib/utils'
-import { Search, FileText, ChevronDown, Plus, MapPin, Building2 } from 'lucide-react'
+import { Search, FileText, ChevronDown, Plus, MapPin, Building2, X } from 'lucide-react'
 import { FormPageLayout } from '@/components/FormPageLayout'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -191,6 +191,14 @@ export default function ConsultarNF() {
             )}
           </>
         )}
+
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="mt-4 w-full rounded-xl py-3 px-6 font-medium text-sm bg-white/10 border border-white/20 text-white hover:bg-white/15 transition-all flex items-center justify-center gap-2"
+        >
+          <X className="w-4 h-4" />
+          Cancelar
+        </button>
       </div>
     </FormPageLayout>
   )

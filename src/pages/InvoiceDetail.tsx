@@ -283,9 +283,17 @@ export default function InvoiceDetail() {
             )}
           >
             <XCircle className="w-5 h-5" />
-            <span className="text-xs font-medium">Cancelar</span>
+            <span className="text-xs font-medium">Cancelar Nota</span>
           </button>
         </div>
+
+        <button
+          onClick={() => navigate('/consultar-nf')}
+          className="mt-4 w-full rounded-xl py-3 px-6 font-medium text-sm bg-white/10 border border-white/20 text-white hover:bg-white/15 transition-all flex items-center justify-center gap-2"
+        >
+          <XCircle className="w-4 h-4" />
+          Cancelar
+        </button>
       </div>
 
       <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
