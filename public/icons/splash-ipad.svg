@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="834" height="1194" viewBox="0 0 834 1194">
-  <rect width="834" height="1194" fill="#002C45"/>
-  <text x="417" y="565" font-family="Arial,Helvetica,sans-serif" font-size="150" font-weight="bold" fill="#D0A85C" text-anchor="middle" dominant-baseline="middle">2A</text>
-  <rect x="317" y="628" width="200" height="6" rx="3" fill="#D0A85C" opacity="0.4"/>
-  <text x="417" y="680" font-family="Arial,Helvetica,sans-serif" font-size="42" font-weight="bold" fill="#D0A85C" text-anchor="middle" dominant-baseline="middle" letter-spacing="8">RURAL</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1366" viewBox="0 0 1024 1366">
+  <rect width="1024" height="1366" fill="#002C45"/>
+  <circle cx="512" cy="650" r="110" fill="none" stroke="#A8914E" stroke-width="7"/>
+  <text x="512" y="683" font-family="Arial, Helvetica, sans-serif" font-size="115" font-weight="bold" fill="#A8914E" text-anchor="middle" dominant-baseline="middle">2A</text>
+  <text x="512" y="800" font-family="Arial, Helvetica, sans-serif" font-size="38" fill="#FFFFFF" text-anchor="middle" letter-spacing="6" opacity="0.85">RURAL</text>
 </svg>

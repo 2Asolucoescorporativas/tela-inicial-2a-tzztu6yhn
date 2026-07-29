@@ -1,12 +1,12 @@
-var CACHE_NAME = '2a-rural-v7'
+var CACHE_NAME = '2a-rural-v8'
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
       return cache
         .addAll([
-          '/icons/app-icon-192.svg',
-          '/icons/app-icon-512.svg',
+          '/icons/2arural-192.svg',
+          '/icons/2arural-512.svg',
           '/icons/splash-iphone.svg',
           '/icons/splash-ipad.svg',
           '/manifest.json',
