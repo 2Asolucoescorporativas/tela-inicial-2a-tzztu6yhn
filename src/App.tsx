@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import { SessionProvider, useSession } from '@/stores/session'
 import { BrandedSplashScreen } from '@/components/BrandedSplashScreen'
+import { PwaDiagnosticOverlay } from '@/components/PwaDiagnosticOverlay'
 
 import Index from './pages/Index'
 import Login from './pages/Login'
@@ -74,9 +75,11 @@ const App = () => (
       <SessionProvider>
         <NativeAppShell>
           <TooltipProvider>
+            <PwaDiagnosticOverlay />
             <Toaster />
             <Sonner />
             <Routes>
+              {' '}
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
@@ -96,7 +99,6 @@ const App = () => (
                   }
                 />
               </Route>
-
               <Route element={<ProtectedLayout />}>
                 <Route
                   path="/dashboard"
@@ -211,7 +213,6 @@ const App = () => (
                   }
                 />
               </Route>
-
               <Route path="*" element={<NotFound />} />
             </Routes>
           </TooltipProvider>

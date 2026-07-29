@@ -41,7 +41,7 @@
   body,
   #root {
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -55,8 +55,9 @@
 
   html,
   body {
-    overscroll-behavior: contain;
+    overscroll-behavior: none;
     touch-action: manipulation;
+    background-color: #002c45;
   }
 
   body {

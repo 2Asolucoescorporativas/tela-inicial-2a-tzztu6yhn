@@ -1,13 +1,15 @@
 {
+  "id": "/",
   "name": "2A Rural",
   "short_name": "2A Rural",
   "description": "Emissor de documentos fiscais para produtores rurais",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone"],
   "orientation": "portrait",
   "theme_color": "#002C45",
   "background_color": "#002C45",
-  "start_url": "/",
-  "scope": "/",
   "icons": [
     {
       "src": "/src/assets/2arural192x192-6858d.png",
@@ -20,18 +22,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "/src/assets/2arural192x192-6858d.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/src/assets/2arural512x512-224ac.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
     }
   ]
 }

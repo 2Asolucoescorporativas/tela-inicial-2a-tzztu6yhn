@@ -1,36 +1,35 @@
-var CACHE_NAME = '2a-rural-v1'
-var PRECACHE_URLS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/src/assets/2arural192x192-6858d.png',
-  '/src/assets/2arural512x512-224ac.png',
-]
+var CACHE_NAME = '2a-rural-v2'
+
+var PRECACHE_URLS = ['/', '/index.html', '/manifest.json']
 
 self.addEventListener('install', function (event) {
+  self.skipWaiting()
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
-      return cache.addAll(PRECACHE_URLS)
+      return cache.addAll(PRECACHE_URLS).catch(function () {})
     }),
   )
-  self.skipWaiting()
 })
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(
-    caches.keys().then(function (keys) {
-      return Promise.all(
-        keys
-          .filter(function (key) {
-            return key !== CACHE_NAME
-          })
-          .map(function (key) {
-            return caches.delete(key)
-          }),
-      )
-    }),
+    caches
+      .keys()
+      .then(function (keys) {
+        return Promise.all(
+          keys
+            .filter(function (key) {
+              return key !== CACHE_NAME
+            })
+            .map(function (key) {
+              return caches.delete(key)
+            }),
+        )
+      })
+      .then(function () {
+        return self.clients.claim()
+      }),
   )
-  self.clients.claim()
 })
 
 self.addEventListener('fetch', function (event) {
@@ -40,39 +39,25 @@ self.addEventListener('fetch', function (event) {
   var url = new URL(request.url)
   if (url.origin !== self.location.origin) return
 
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(function (response) {
+  event.respondWith(
+    fetch(request)
+      .then(function (response) {
+        if (response.ok) {
           var clone = response.clone()
           caches.open(CACHE_NAME).then(function (cache) {
-            cache.put(request, clone)
+            cache.put(request, clone).catch(function () {})
           })
-          return response
-        })
-        .catch(function () {
-          return caches.match('/index.html')
-        }),
-    )
-    return
-  }
-
-  event.respondWith(
-    caches.match(request).then(function (cached) {
-      if (cached) return cached
-      return fetch(request)
-        .then(function (response) {
-          if (response.ok) {
-            var clone = response.clone()
-            caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(request, clone)
-            })
+        }
+        return response
+      })
+      .catch(function () {
+        return caches.match(request).then(function (cached) {
+          if (cached) return cached
+          if (request.mode === 'navigate') {
+            return caches.match('/index.html')
           }
-          return response
+          return new Response('', { status: 504, statusText: 'Offline' })
         })
-        .catch(function () {
-          return cached
-        })
-    }),
+      }),
   )
 })
