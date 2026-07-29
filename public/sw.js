@@ -1,10 +1,10 @@
-var CACHE_NAME = '2a-rural-v9'
+var CACHE_NAME = '2a-rural-v10'
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
       return cache
-        .addAll(['/icons/2A_Rural_192x192.png', '/icons/2A_Rural_512x512.png', '/manifest.json'])
+        .addAll(['/icons/2A_Rural_192x192.png', '/icons/2A_Rural_512x512.png'])
         .catch(function () {})
     }),
   )
