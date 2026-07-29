@@ -109,7 +109,8 @@ export function PwaDiagnosticOverlay() {
         </div>
 
         <div className="text-[10px] text-white/70 font-mont mt-0.5">
-          Display: {info.displayMode} · SW: {info.swControllerActive ? 'Active' : 'Inactive'}
+          Display: {info.displayMode} · SW: {info.swControllerActive ? 'Active' : 'Inactive'} ·
+          Manifest: {info.hasManifestLink ? 'OK' : 'Missing'}
         </div>
 
         {expanded && (

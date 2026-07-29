@@ -187,28 +187,19 @@ export function generatePwaReport(): string {
   lines.push(`  SW controller active: ${info.swControllerActive}`)
   lines.push('')
   lines.push('C. Root Cause:')
-  lines.push('  display_override only had ["standalone"] without "minimal-ui" fallback.')
-  lines.push(
-    '  Viewport meta had user-scalable=no and maximum-scale=1.0 (deprecated, blocks accessibility).',
-  )
-  lines.push('  Safe area insets only applied for top/bottom, not left/right.')
-  lines.push('  html/body/#root missing min-height: 100dvh and explicit box-sizing.')
-  lines.push(
-    '  Diagnostic overlay was at bottom instead of top, no green/red standalone indicator.',
-  )
+  lines.push('  manifest.json icons referenced /src/assets/*.png paths which are NOT processed')
+  lines.push('  by Vite in static public files — icons 404 in production, breaking installability.')
+  lines.push('  sw.js had complex caching that could serve stale manifests/icons.')
   lines.push('')
   lines.push('D. Corrections Made:')
-  lines.push('  - manifest.json: display_override -> ["standalone", "minimal-ui"]')
-  lines.push(
-    '  - index.html: viewport -> width=device-width, initial-scale=1, viewport-fit=cover (removed user-scalable=no)',
-  )
-  lines.push('  - sw.js: bumped cache to v3 to force refresh of cached assets')
-  lines.push('  - main.css: added min-height: 100dvh, box-sizing: border-box on html/body/#root')
-  lines.push('  - main.css: added safe-area, safe-area-pl, safe-area-pr utility classes')
-  lines.push('  - Layout.tsx: applied safe-area (all four insets) instead of just pt/pb')
-  lines.push(
-    '  - PwaDiagnosticOverlay: moved to top, green background when standalone=true, red when false',
-  )
+  lines.push('  - manifest.json: icon src changed from /src/assets/*.png to /icon-*.svg (public)')
+  lines.push('  - manifest.json: added maskable purpose icons for better splash/toolbar rendering')
+  lines.push('  - manifest.json: added categories field for improved installability metadata')
+  lines.push('  - index.html: favicon, apple-touch-icon, og:image now use public /icon-*.svg paths')
+  lines.push('  - index.html: kept PNG fallback link for legacy browsers that need PNG favicon')
+  lines.push('  - sw.js: replaced with minimal passthrough (no caching) to eliminate stale assets')
+  lines.push('  - sw.js: bumped cache to v4, activate clears ALL old caches')
+  lines.push('  - sw.js: fetch handler is pure passthrough — fetch(request) with no cache.write')
   lines.push('')
   lines.push('E. Final Result:')
   lines.push(`  Modo standalone: ${info.isStandalone ? 'true' : 'false'}`)
