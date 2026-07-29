@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" fill="#071C33"/>
+  <text x="96" y="82" font-family="Arial,Helvetica,sans-serif" font-size="56" font-weight="bold" fill="#D0A85C" text-anchor="middle">2A</text>
+  <text x="96" y="114" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="bold" fill="#D0A85C" text-anchor="middle" letter-spacing="2">RURAL</text>
+  <rect x="61" y="128" width="70" height="2" fill="#D0A85C" opacity="0.4" rx="1"/>
+</svg>
