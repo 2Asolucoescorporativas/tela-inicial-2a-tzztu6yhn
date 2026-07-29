@@ -1,7 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="2688" viewBox="0 0 1242 2688">
-  <rect width="1242" height="2688" fill="#071C33"/>
-  <text x="621" y="1200" font-family="Arial,Helvetica,sans-serif" font-size="300" font-weight="bold" fill="#D0A85C" text-anchor="middle">2A</text>
-  <text x="621" y="1400" font-family="Arial,Helvetica,sans-serif" font-size="100" font-weight="bold" fill="#D0A85C" text-anchor="middle" letter-spacing="10">RURAL</text>
-  <rect x="421" y="1480" width="400" height="5" fill="#D0A85C" opacity="0.4" rx="2"/>
-  <text x="621" y="1560" font-family="Arial,Helvetica,sans-serif" font-size="42" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Gestão que gera confiança</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#002C45"/>
+  <text x="195" y="398" font-family="Arial,Helvetica,sans-serif" font-size="105" font-weight="bold" fill="#D0A85C" text-anchor="middle" dominant-baseline="middle">2A</text>
+  <rect x="135" y="442" width="120" height="4" rx="2" fill="#D0A85C" opacity="0.4"/>
+  <text x="195" y="478" font-family="Arial,Helvetica,sans-serif" font-size="29" font-weight="bold" fill="#D0A85C" text-anchor="middle" dominant-baseline="middle" letter-spacing="5">RURAL</text>
 </svg>

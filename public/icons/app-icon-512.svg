@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#071C33"/>
-  <text x="256" y="210" font-family="Arial,Helvetica,sans-serif" font-size="150" font-weight="bold" fill="#D0A85C" text-anchor="middle">2A</text>
-  <text x="256" y="300" font-family="Arial,Helvetica,sans-serif" font-size="48" font-weight="bold" fill="#D0A85C" text-anchor="middle" letter-spacing="5">RURAL</text>
-  <rect x="161" y="335" width="190" height="4" fill="#D0A85C" opacity="0.4" rx="2"/>
-  <text x="256" y="380" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Gestão que gera confiança</text>
+  <rect width="512" height="512" fill="#002C45"/>
+  <text x="256" y="230" font-family="Arial,Helvetica,sans-serif" font-size="165" font-weight="bold" fill="#D0A85C" text-anchor="middle" dominant-baseline="middle">2A</text>
+  <rect x="176" y="282" width="160" height="5" rx="2.5" fill="#D0A85C" opacity="0.4"/>
+  <text x="256" y="335" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" fill="#D0A85C" text-anchor="middle" dominant-baseline="middle" letter-spacing="8">RURAL</text>
 </svg>

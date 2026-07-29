@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useSession } from '@/stores/session'
 
@@ -7,6 +8,7 @@ const EXTRA_SESSION_KEYS = ['pb_auth']
 export function useLogout() {
   const { signOut } = useAuth()
   const { clearSession } = useSession()
+  const navigate = useNavigate()
 
   const signOutRef = useRef(signOut)
   const clearSessionRef = useRef(clearSession)
@@ -28,7 +30,8 @@ export function useLogout() {
         /* intentionally ignored */
       }
     })
-  }, [])
+    navigate('/login', { replace: true })
+  }, [navigate])
 
   return { logout }
 }

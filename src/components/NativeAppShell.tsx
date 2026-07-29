@@ -14,7 +14,8 @@ function isFiscalPath(pathname: string): boolean {
 
 export function NativeAppShell({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading: authLoading } = useAuth()
-  const { pendingRestoration, clearPendingRestoration, isLoadingSession } = useSession()
+  const { pendingRestoration, clearPendingRestoration, isLoadingSession, activeProperty } =
+    useSession()
   const location = useLocation()
   const navigate = useNavigate()
   const { isLandscape } = useOrientationLock()
@@ -70,11 +71,15 @@ export function NativeAppShell({ children }: { children: ReactNode }) {
 
     routeRestorationHandled.current = true
 
-    if (location.pathname === '/') {
+    if (location.pathname === '/login') {
       try {
         const lastRoute = localStorage.getItem('2a_rural_last_route')
-        if (lastRoute && lastRoute !== '/') {
+        if (lastRoute && lastRoute !== '/' && lastRoute !== '/login') {
           navigate(lastRoute, { replace: true })
+        } else if (activeProperty) {
+          navigate('/dashboard', { replace: true })
+        } else {
+          navigate('/selecionar-propriedade', { replace: true })
         }
       } catch {
         // ignore
@@ -87,6 +92,7 @@ export function NativeAppShell({ children }: { children: ReactNode }) {
     pendingRestoration,
     location.pathname,
     navigate,
+    activeProperty,
   ])
 
   return (

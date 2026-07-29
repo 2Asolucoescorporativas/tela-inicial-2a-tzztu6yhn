@@ -1,4 +1,4 @@
-var CACHE_NAME = '2a-rural-v6'
+var CACHE_NAME = '2a-rural-v7'
 
 self.addEventListener('install', function (event) {
   event.waitUntil(

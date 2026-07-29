@@ -11,7 +11,7 @@ import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { signInWithCpf, signOut } = useAuth()
+  const { signInWithCpf, signOut, isAuthenticated, loading: authLoading } = useAuth()
 
   const [cpf, setCpf] = useState('')
   const [password, setPassword] = useState('')
@@ -23,6 +23,10 @@ export default function Login() {
     (location.state as { registrationSuccess?: boolean })?.registrationSuccess || false,
   )
 
+  if (authLoading || isAuthenticated) {
+    return <div className="fixed inset-0 bg-[#002C45]" />
+  }
+
   const handleCancel = () => {
     signOut()
     setCpf('')
@@ -30,7 +34,7 @@ export default function Login() {
     setCpfError('')
     setErrorMsg('')
     setShowSuccessBanner(false)
-    navigate('/')
+    navigate('/login')
   }
 
   const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {

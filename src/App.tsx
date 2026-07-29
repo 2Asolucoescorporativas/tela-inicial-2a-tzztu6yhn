@@ -4,9 +4,6 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import { SessionProvider, useSession } from '@/stores/session'
-import { BrandedSplashScreen } from '@/components/BrandedSplashScreen'
-
-import Index from './pages/Index'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import InvoiceHistory from './pages/InvoiceHistory'
@@ -34,12 +31,16 @@ import Layout from './components/Layout'
 import ProtectedLayout from './components/ProtectedLayout'
 import { NativeAppShell } from '@/components/NativeAppShell'
 
+function SplashLoader() {
+  return <div className="fixed inset-0 z-50 bg-[#002C45]" />
+}
+
 function ProtectedRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth()
   const { isLoadingSession } = useSession()
 
   if (loading || isLoadingSession) {
-    return <BrandedSplashScreen message="Validando acesso..." />
+    return <SplashLoader />
   }
 
   if (!isAuthenticated) {
@@ -54,7 +55,7 @@ function RequireProperty({ children }: { children: React.JSX.Element }) {
   const { activeProperty, isLoadingSession } = useSession()
 
   if (loading || isLoadingSession) {
-    return <BrandedSplashScreen message="Carregando propriedade..." />
+    return <SplashLoader />
   }
 
   if (!isAuthenticated) {
@@ -77,8 +78,8 @@ const App = () => (
             <Toaster /> <Sonner />
             <Routes>
               {' '}
+              <Route path="/" element={<Navigate to="/login" replace />} />
               <Route element={<Layout />}>
-                <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/register" element={<Register />} />
