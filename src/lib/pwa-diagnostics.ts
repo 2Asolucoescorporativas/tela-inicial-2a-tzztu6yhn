@@ -187,24 +187,28 @@ export function generatePwaReport(): string {
   lines.push(`  SW controller active: ${info.swControllerActive}`)
   lines.push('')
   lines.push('C. Root Cause:')
-  lines.push('  Missing display_override, missing id in manifest.')
+  lines.push('  display_override only had ["standalone"] without "minimal-ui" fallback.')
   lines.push(
-    '  apple-mobile-web-app-status-bar-style was "default" instead of "black-translucent".',
+    '  Viewport meta had user-scalable=no and maximum-scale=1.0 (deprecated, blocks accessibility).',
   )
-  lines.push('  Service worker registration lacked explicit scope.')
-  lines.push('  CSS used overscroll-behavior: contain instead of none.')
-  lines.push('  No background-color on html/body for standalone flash.')
+  lines.push('  Safe area insets only applied for top/bottom, not left/right.')
+  lines.push('  html/body/#root missing min-height: 100dvh and explicit box-sizing.')
+  lines.push(
+    '  Diagnostic overlay was at bottom instead of top, no green/red standalone indicator.',
+  )
   lines.push('')
   lines.push('D. Corrections Made:')
-  lines.push('  - index.html: status-bar-style -> black-translucent, SW scope -> { scope: "/" }')
+  lines.push('  - manifest.json: display_override -> ["standalone", "minimal-ui"]')
   lines.push(
-    '  - manifest.json: added id, display_override, removed maskable icons (no maskable-safe art)',
+    '  - index.html: viewport -> width=device-width, initial-scale=1, viewport-fit=cover (removed user-scalable=no)',
   )
-  lines.push('  - sw.js: simplified to minimal install/activate/fetch, bumped cache to v2')
+  lines.push('  - sw.js: bumped cache to v3 to force refresh of cached assets')
+  lines.push('  - main.css: added min-height: 100dvh, box-sizing: border-box on html/body/#root')
+  lines.push('  - main.css: added safe-area, safe-area-pl, safe-area-pr utility classes')
+  lines.push('  - Layout.tsx: applied safe-area (all four insets) instead of just pt/pb')
   lines.push(
-    '  - main.css: overscroll-behavior -> none, background-color -> #002C45, height -> 100dvh',
+    '  - PwaDiagnosticOverlay: moved to top, green background when standalone=true, red when false',
   )
-  lines.push('  - PwaDiagnosticOverlay: added standalone detection and environment logging')
   lines.push('')
   lines.push('E. Final Result:')
   lines.push(`  Modo standalone: ${info.isStandalone ? 'true' : 'false'}`)

@@ -1,4 +1,4 @@
-var CACHE_NAME = '2a-rural-v2'
+var CACHE_NAME = '2a-rural-v3'
 
 var PRECACHE_URLS = ['/', '/index.html', '/manifest.json']
 
