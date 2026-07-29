@@ -39,7 +39,7 @@ export default function Index() {
   }
 
   return (
-    <div className="h-[100dvh] min-h-[100dvh] w-full bg-[#071C33] flex flex-col items-center justify-between p-6 select-none relative overflow-hidden">
+    <div className="h-full min-h-full w-full bg-[#071C33] flex flex-col items-center justify-between p-6 select-none relative overflow-hidden">
       {/* Background radial glow effect */}
       <div className="absolute inset-0 bg-radial from-[#0e2a4a]/50 via-transparent to-transparent pointer-events-none" />
 

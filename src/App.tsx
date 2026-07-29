@@ -32,6 +32,7 @@ import CadastrarCliente from './pages/CadastrarCliente'
 import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 import ProtectedLayout from './components/ProtectedLayout'
+import { NativeAppShell } from '@/components/NativeAppShell'
 
 function ProtectedRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth()
@@ -71,148 +72,150 @@ const App = () => (
   <BrowserRouter>
     <AuthProvider>
       <SessionProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/register/resultados" element={<RegisterResultados />} />
-              <Route path="/register/propriedades" element={<RegisterPropriedades />} />
-              <Route path="/register/senha" element={<RegisterSenha />} />
-              <Route path="/register/revisao" element={<RegisterRevisao />} />
+        <NativeAppShell>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/register/resultados" element={<RegisterResultados />} />
+                <Route path="/register/propriedades" element={<RegisterPropriedades />} />
+                <Route path="/register/senha" element={<RegisterSenha />} />
+                <Route path="/register/revisao" element={<RegisterRevisao />} />
 
-              <Route
-                path="/selecionar-propriedade"
-                element={
-                  <ProtectedRoute>
-                    <SelectProperty />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
+                <Route
+                  path="/selecionar-propriedade"
+                  element={
+                    <ProtectedRoute>
+                      <SelectProperty />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
 
-            <Route element={<ProtectedLayout />}>
-              <Route
-                path="/dashboard"
-                element={
-                  <RequireProperty>
-                    <Dashboard />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/nota-fiscal"
-                element={
-                  <RequireProperty>
-                    <NotaFiscal />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/configuracoes"
-                element={
-                  <RequireProperty>
-                    <Configuracoes />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/estatistica"
-                element={
-                  <RequireProperty>
-                    <Estatistica />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/cadastrar-cliente"
-                element={
-                  <RequireProperty>
-                    <CadastrarCliente />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/emitir-nf"
-                element={
-                  <RequireProperty>
-                    <EmitirNF />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/emitir-leite/selecionar-cliente"
-                element={
-                  <RequireProperty>
-                    <SelectClient />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/emitir-leite"
-                element={
-                  <RequireProperty>
-                    <EmitirLeite />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/emitir-leite/next"
-                element={
-                  <RequireProperty>
-                    <EmitirLeiteNext />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/emitir-gado"
-                element={
-                  <RequireProperty>
-                    <EmitirGado />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/consultar-nf"
-                element={
-                  <RequireProperty>
-                    <ConsultarNF />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/consultar-nf/:invoiceId"
-                element={
-                  <RequireProperty>
-                    <InvoiceDetail />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/historico"
-                element={
-                  <RequireProperty>
-                    <InvoiceHistory />
-                  </RequireProperty>
-                }
-              />
-              <Route
-                path="/perfil"
-                element={
-                  <RequireProperty>
-                    <ProducerProfile />
-                  </RequireProperty>
-                }
-              />
-            </Route>
+              <Route element={<ProtectedLayout />}>
+                <Route
+                  path="/dashboard"
+                  element={
+                    <RequireProperty>
+                      <Dashboard />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/nota-fiscal"
+                  element={
+                    <RequireProperty>
+                      <NotaFiscal />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/configuracoes"
+                  element={
+                    <RequireProperty>
+                      <Configuracoes />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/estatistica"
+                  element={
+                    <RequireProperty>
+                      <Estatistica />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/cadastrar-cliente"
+                  element={
+                    <RequireProperty>
+                      <CadastrarCliente />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/emitir-nf"
+                  element={
+                    <RequireProperty>
+                      <EmitirNF />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/emitir-leite/selecionar-cliente"
+                  element={
+                    <RequireProperty>
+                      <SelectClient />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/emitir-leite"
+                  element={
+                    <RequireProperty>
+                      <EmitirLeite />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/emitir-leite/next"
+                  element={
+                    <RequireProperty>
+                      <EmitirLeiteNext />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/emitir-gado"
+                  element={
+                    <RequireProperty>
+                      <EmitirGado />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/consultar-nf"
+                  element={
+                    <RequireProperty>
+                      <ConsultarNF />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/consultar-nf/:invoiceId"
+                  element={
+                    <RequireProperty>
+                      <InvoiceDetail />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/historico"
+                  element={
+                    <RequireProperty>
+                      <InvoiceHistory />
+                    </RequireProperty>
+                  }
+                />
+                <Route
+                  path="/perfil"
+                  element={
+                    <RequireProperty>
+                      <ProducerProfile />
+                    </RequireProperty>
+                  }
+                />
+              </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </TooltipProvider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </TooltipProvider>
+        </NativeAppShell>
       </SessionProvider>
     </AuthProvider>
   </BrowserRouter>
