@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T23:59:33.252Z",
+  "generatedAt": "2026-07-29T00:17:27.474Z",
   "collections": [
     {
       "name": "users",
@@ -29,14 +29,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "cpf",
@@ -146,7 +151,10 @@
           "type": "select",
           "required": true,
           "system": false,
-          "selectValues": ["saida", "entrada"]
+          "selectValues": [
+            "saida",
+            "entrada"
+          ]
         },
         {
           "name": "total_value",
@@ -159,7 +167,12 @@
           "type": "select",
           "required": true,
           "system": false,
-          "selectValues": ["emitida", "processando", "cancelada", "rascunho"]
+          "selectValues": [
+            "emitida",
+            "processando",
+            "cancelada",
+            "rascunho"
+          ]
         },
         {
           "name": "chavenfe",
@@ -178,14 +191,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "municipio",
@@ -294,14 +312,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "numero",
@@ -368,14 +391,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "uf_consultada",
@@ -448,7 +476,10 @@
           "type": "select",
           "required": true,
           "system": false,
-          "selectValues": ["FISICA", "JURIDICA"]
+          "selectValues": [
+            "FISICA",
+            "JURIDICA"
+          ]
         },
         {
           "name": "cpf_cnpj",
@@ -557,14 +588,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "tipo_ie",
@@ -573,7 +609,9 @@
           "system": false
         }
       ],
-      "indexes": ["CREATE UNIQUE INDEX idx_clientes_user_cpf_cnpj ON clientes (user_id, cpf_cnpj)"]
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_clientes_user_cpf_cnpj ON clientes (user_id, cpf_cnpj)"
+      ]
     }
   ]
 }
