@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, type CSSProperties } from 'react'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { primaryButtonStyle, secondaryButtonStyle } from '@/lib/button-styles'
@@ -11,6 +11,7 @@ interface PrimaryButtonProps {
   className?: string
   variant?: 'solid' | 'secondary' | 'outlined' | 'dark'
   type?: 'button' | 'submit'
+  style?: CSSProperties
 }
 
 export function PrimaryButton({
@@ -21,6 +22,7 @@ export function PrimaryButton({
   className,
   variant = 'solid',
   type = 'button',
+  style,
 }: PrimaryButtonProps) {
   const isPrimary = variant === 'solid' || variant === 'dark'
 
@@ -34,7 +36,9 @@ export function PrimaryButton({
         isPrimary ? 'shadow-md hover:brightness-105' : 'hover:bg-[#C89B51]/10',
         className,
       )}
-      style={isPrimary ? primaryButtonStyle : secondaryButtonStyle}
+      style={
+        isPrimary ? { ...primaryButtonStyle, ...style } : { ...secondaryButtonStyle, ...style }
+      }
     >
       {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : children}
     </button>
