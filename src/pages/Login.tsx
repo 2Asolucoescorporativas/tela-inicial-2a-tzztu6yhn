@@ -29,12 +29,11 @@ export default function Login() {
 
   const handleCancel = () => {
     signOut()
-    setCpf('')
-    setPassword('')
-    setCpfError('')
-    setErrorMsg('')
-    setShowSuccessBanner(false)
-    navigate('/login')
+    try {
+      window.close()
+    } catch {
+      /* intentionally ignored */
+    }
   }
 
   const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
