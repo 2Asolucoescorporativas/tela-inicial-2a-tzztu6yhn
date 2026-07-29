@@ -30,6 +30,16 @@ export default function Login() {
   const handleCancel = () => {
     signOut()
     try {
+      sessionStorage.clear()
+    } catch {
+      /* intentionally ignored */
+    }
+    try {
+      localStorage.clear()
+    } catch {
+      /* intentionally ignored */
+    }
+    try {
       window.close()
     } catch {
       /* intentionally ignored */
