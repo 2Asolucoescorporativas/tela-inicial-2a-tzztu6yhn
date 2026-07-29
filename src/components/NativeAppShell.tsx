@@ -58,6 +58,37 @@ export function NativeAppShell({ children }: { children: ReactNode }) {
     clearPendingRestoration,
   ])
 
+  const routeRestorationHandled = useRef(false)
+
+  useEffect(() => {
+    if (routeRestorationHandled.current) return
+    if (!isAuthenticated || authLoading || isLoadingSession) return
+    if (pendingRestoration || restorationHandled.current) {
+      routeRestorationHandled.current = true
+      return
+    }
+
+    routeRestorationHandled.current = true
+
+    if (location.pathname === '/') {
+      try {
+        const lastRoute = localStorage.getItem('2a_rural_last_route')
+        if (lastRoute && lastRoute !== '/') {
+          navigate(lastRoute, { replace: true })
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, [
+    isAuthenticated,
+    authLoading,
+    isLoadingSession,
+    pendingRestoration,
+    location.pathname,
+    navigate,
+  ])
+
   return (
     <>
       {children}

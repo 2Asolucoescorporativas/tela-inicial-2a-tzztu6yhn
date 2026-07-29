@@ -66,6 +66,12 @@
   }
 }
 
+@media (orientation: landscape) {
+  body {
+    overflow: hidden;
+  }
+}
+
 @layer utilities {
   .bg-gold-gradient {
     background: linear-gradient(135deg, #d4af37 0%, #f9e27d 50%, #c59b27 100%);

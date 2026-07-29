@@ -40,7 +40,7 @@ export default function EmitirNF() {
 
   const handleSelect = (op: OperationOption) => {
     setOperationType(op.id)
-    navigate(op.route)
+    navigate(op.route, { replace: true })
   }
 
   return (

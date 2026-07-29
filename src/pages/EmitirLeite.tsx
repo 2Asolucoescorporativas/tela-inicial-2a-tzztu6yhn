@@ -89,17 +89,17 @@ export default function EmitirLeite() {
     if (isFormValid) {
       setDraftInvoice(buildDraft())
     }
-    navigate('/emitir-leite/selecionar-cliente')
+    navigate('/emitir-leite/selecionar-cliente', { replace: true })
   }
 
   const handleContinuar = () => {
     if (!isFormValid || !user || !activeProperty || !isClientValid) return
     setDraftInvoice(buildDraft())
-    navigate('/emitir-leite/next')
+    navigate('/emitir-leite/next', { replace: true })
   }
 
   const handleCancelar = () => {
-    navigate('/emitir-nf')
+    navigate('/emitir-nf', { replace: true })
   }
 
   return (

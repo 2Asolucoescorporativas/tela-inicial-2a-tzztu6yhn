@@ -4,9 +4,15 @@ import { useSession } from '@/stores/session'
 import { useToast } from '@/hooks/use-toast'
 
 const FISCAL_ROUTES = ['/emitir-nf', '/emitir-leite', '/emitir-gado']
+const LAST_ROUTE_KEY = '2a_rural_last_route'
+const EXCLUDED_ROUTES = ['/login', '/forgot-password', '/register']
 
 function isFiscalPath(pathname: string): boolean {
   return FISCAL_ROUTES.some((r) => pathname.startsWith(r))
+}
+
+function shouldSaveRoute(pathname: string): boolean {
+  return !EXCLUDED_ROUTES.some((r) => pathname.startsWith(r))
 }
 
 export function useNativeNavigation() {
@@ -20,6 +26,16 @@ export function useNativeNavigation() {
 
   const operationEndedRecently = useRef(false)
   const prevInProgress = useRef(!!draftInvoice)
+
+  useEffect(() => {
+    if (shouldSaveRoute(location.pathname)) {
+      try {
+        localStorage.setItem(LAST_ROUTE_KEY, location.pathname + location.search)
+      } catch {
+        // ignore storage errors
+      }
+    }
+  }, [location.pathname, location.search])
 
   useEffect(() => {
     if (prevInProgress.current && !draftInvoice) {
@@ -38,6 +54,11 @@ export function useNativeNavigation() {
       const { pathname, inProgress } = stateRef.current
       const fiscal = isFiscalPath(pathname)
       if (fiscal && inProgress) {
+        window.history.pushState(
+          { ...window.history.state, fiscalOperation: true },
+          '',
+          pathname + location.search,
+        )
         navigate(pathname, { replace: true })
         toast({
           title: 'Operação em andamento',
@@ -51,7 +72,7 @@ export function useNativeNavigation() {
 
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
-  }, [navigate, toast])
+  }, [navigate, toast, location.search])
 
   useEffect(() => {
     if (isFiscalPath(location.pathname) && draftInvoice) {

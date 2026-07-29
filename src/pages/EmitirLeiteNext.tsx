@@ -234,17 +234,20 @@ export default function EmitirLeiteNext() {
         {success
           ? renderFooter(
               <>
-                <PrimaryButton onClick={() => navigate('/consultar-nf')}>
+                <PrimaryButton onClick={() => navigate('/consultar-nf', { replace: true })}>
                   Ver Notas Fiscais
                 </PrimaryButton>
-                <PrimaryButton variant="secondary" onClick={() => navigate('/dashboard')}>
+                <PrimaryButton
+                  variant="secondary"
+                  onClick={() => navigate('/dashboard', { replace: true })}
+                >
                   Ir para o Dashboard
                 </PrimaryButton>
               </>,
             )
           : !hasData
             ? renderFooter(
-                <PrimaryButton onClick={() => navigate('/emitir-leite')}>
+                <PrimaryButton onClick={() => navigate('/emitir-leite', { replace: true })}>
                   Voltar para o formulário
                 </PrimaryButton>,
               )
@@ -263,10 +266,16 @@ export default function EmitirLeiteNext() {
                       'Emitir Nota Fiscal'
                     )}
                   </PrimaryButton>
-                  <PrimaryButton variant="secondary" onClick={() => navigate('/emitir-leite')}>
+                  <PrimaryButton
+                    variant="secondary"
+                    onClick={() => navigate('/emitir-leite', { replace: true })}
+                  >
                     Voltar para editar
                   </PrimaryButton>
-                  <PrimaryButton variant="secondary" onClick={() => navigate('/emitir-nf')}>
+                  <PrimaryButton
+                    variant="secondary"
+                    onClick={() => navigate('/emitir-nf', { replace: true })}
+                  >
                     Cancelar
                   </PrimaryButton>
                 </>,

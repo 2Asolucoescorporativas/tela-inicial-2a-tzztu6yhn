@@ -72,13 +72,13 @@ export default function SelectClient() {
       codigo_pais: client.codigo_pais,
     }
     setSelectedClient(sc)
-    navigate('/emitir-leite')
+    navigate('/emitir-leite', { replace: true })
   }
 
   const handleCancel = () => {
     clearSelectedClient()
     clearDraftInvoice()
-    navigate('/emitir-nf')
+    navigate('/emitir-nf', { replace: true })
   }
 
   return (

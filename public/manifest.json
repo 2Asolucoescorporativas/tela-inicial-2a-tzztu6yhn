@@ -1,7 +1,7 @@
 {
   "name": "2A Rural",
   "short_name": "2A Rural",
-  "description": "Aplicativo para emissão de Nota Fiscal de Produtor Rural",
+  "description": "Emissor de documentos fiscais para produtores rurais",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#002C45",

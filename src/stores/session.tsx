@@ -222,6 +222,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     try {
       localStorage.removeItem(STORAGE_KEY_PROPERTY)
       localStorage.removeItem(STORAGE_KEY_OPERATION)
+      localStorage.removeItem('2a_rural_last_route')
     } catch (e) {
       console.error('Error clearing session storage:', e)
     }
