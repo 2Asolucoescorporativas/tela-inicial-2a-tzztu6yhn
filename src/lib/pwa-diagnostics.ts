@@ -191,12 +191,10 @@ export function generatePwaReport(): string {
   lines.push('  All SVG icons have been removed; only two official PNG files remain.')
   lines.push('')
   lines.push('D. Corrections Made:')
-  lines.push(
-    '  - manifest.json: icons use /icons/2A_Rural_192x192.png and /icons/2A_Rural_512x512.png',
-  )
+  lines.push('  - manifest.json: icons use /2ARural192x192.png and /2ARural512x512.png')
   lines.push('  - manifest.json: maskable purpose icons for splash/toolbar rendering')
   lines.push('  - manifest.json: categories field for improved installability metadata')
-  lines.push('  - index.html: favicon, apple-touch-icon, og:image use /icons/2A_Rural_*.png paths')
+  lines.push('  - index.html: favicon, apple-touch-icon, og:image use /2ARural*.png paths')
   lines.push('  - index.html: no SVG or placeholder icon references remain')
   lines.push('  - sw.js: precaches icons, manifest, and login page')
   lines.push('  - sw.js: activate clears ALL old caches (prefix-based deletion)')
@@ -211,7 +209,7 @@ export function generatePwaReport(): string {
   lines.push(`  Internal routes stay in PWA: YES (react-router, same origin)`)
   lines.push(`  Orientation locked to portrait: YES (manifest + useOrientationLock)`)
   lines.push(`  Screen fully occupied: ${info.isStandalone ? 'YES' : 'PENDING'}`)
-  lines.push(`  Cache version: 2a-rural-v13`)
+  lines.push(`  Cache version: 2a-rural-v14`)
   lines.push('')
 
   return lines.join('\n')

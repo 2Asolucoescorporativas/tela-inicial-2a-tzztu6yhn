@@ -1,12 +1,7 @@
-var CACHE_NAME = '2a-rural-v13'
+var CACHE_NAME = '2a-rural-v14'
 var CACHE_PREFIX = '2a-rural-'
 
-var PRECACHE_URLS = [
-  '/icons/2A_Rural_192x192.png',
-  '/icons/2A_Rural_512x512.png',
-  '/manifest.json',
-  '/login',
-]
+var PRECACHE_URLS = ['/', '/2ARural192x192.png', '/2ARural512x512.png', '/manifest.json', '/login']
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
@@ -126,11 +121,11 @@ self.addEventListener('fetch', function (event) {
             return response
           })
           .catch(function () {
-            return new Response('', { status: 503, statusText: 'Service Unavailable' })
+            return new Response('', { status: 200, statusText: 'OK' })
           })
       })
       .catch(function () {
-        return new Response('', { status: 503, statusText: 'Service Unavailable' })
+        return new Response('', { status: 200, statusText: 'OK' })
       }),
   )
 })
