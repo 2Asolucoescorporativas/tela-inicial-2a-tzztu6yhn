@@ -30,6 +30,7 @@ import NotFound from './pages/NotFound'
 import Layout from './components/Layout'
 import ProtectedLayout from './components/ProtectedLayout'
 import { NativeAppShell } from '@/components/NativeAppShell'
+import { PwaIntegrityGuard } from '@/components/PwaIntegrityGuard'
 
 function SplashLoader() {
   return <div className="fixed inset-0 z-50 bg-[#002C45]" />
@@ -74,6 +75,7 @@ const App = () => (
     <AuthProvider>
       <SessionProvider>
         <NativeAppShell>
+          <PwaIntegrityGuard />
           <TooltipProvider>
             <Toaster /> <Sonner />
             <Routes>
