@@ -1,41 +1,32 @@
-import { copyFileSync, mkdirSync, existsSync } from 'fs'
+import { copyFileSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = dirname(__dirname)
 
-const iconsDir = join(root, 'public', 'icons')
-mkdirSync(iconsDir, { recursive: true })
-
 const publicDir = join(root, 'public')
 
-const copies = [
-  {
-    from: join(root, 'src', 'assets', '2arural192x192-6858d.png'),
-    to: join(publicDir, '2ARural192x192.png'),
-  },
-  {
-    from: join(root, 'src', 'assets', '2arural512x512-224ac.png'),
-    to: join(publicDir, '2ARural512x512.png'),
-  },
-  {
-    from: join(root, 'src', 'assets', '2arural192x192-6858d.png'),
-    to: join(iconsDir, '2ARural192x192.png'),
-  },
-  {
-    from: join(root, 'src', 'assets', '2arural512x512-224ac.png'),
-    to: join(iconsDir, '2ARural512x512.png'),
-  },
+const sources = [
+  join(root, 'src', 'assets', '2arural192x192-6858d.png'),
+  join(root, 'src', 'assets', '2arural512x512-224ac.png'),
 ]
 
-for (const { from, to } of copies) {
-  if (!existsSync(from)) {
-    console.error(`Source file not found: ${from}`)
+const targets = [join(publicDir, '2ARural192x192.png'), join(publicDir, '2ARural512x512.png')]
+
+for (let i = 0; i < sources.length; i++) {
+  if (!existsSync(sources[i])) {
+    console.error(`Source file not found: ${sources[i]}`)
     process.exit(1)
   }
-  copyFileSync(from, to)
-  console.log(`Copied: ${from} -> ${to}`)
+  copyFileSync(sources[i], targets[i])
+  console.log(`Copied: ${sources[i]} -> ${targets[i]}`)
+}
+
+const oldIconsDir = join(publicDir, 'icons')
+if (existsSync(oldIconsDir)) {
+  rmSync(oldIconsDir, { recursive: true, force: true })
+  console.log(`Removed old icons directory: ${oldIconsDir}`)
 }
 
 console.log('All icons copied successfully.')

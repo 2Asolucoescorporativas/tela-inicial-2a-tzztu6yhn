@@ -1,14 +1,24 @@
-var CACHE_NAME = '2a-rural-v14'
+var CACHE_NAME = '2a-rural-v15'
 var CACHE_PREFIX = '2a-rural-'
 
-var PRECACHE_URLS = ['/', '/2ARural192x192.png', '/2ARural512x512.png', '/manifest.json', '/login']
+var PRECACHE_URLS = [
+  '/',
+  '/index.html',
+  '/2ARural192x192.png',
+  '/2ARural512x512.png',
+  '/manifest.json',
+]
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then(function (cache) {
-        return cache.addAll(PRECACHE_URLS).catch(function () {})
+        return Promise.all(
+          PRECACHE_URLS.map(function (url) {
+            return cache.add(url).catch(function () {})
+          }),
+        )
       })
       .then(function () {
         return self.skipWaiting()
@@ -57,6 +67,8 @@ self.addEventListener('fetch', function (event) {
             .open(CACHE_NAME)
             .then(function (cache) {
               cache.put(request, copy).catch(function () {})
+              cache.put('/', copy.clone()).catch(function () {})
+              cache.put('/index.html', copy.clone()).catch(function () {})
             })
             .catch(function () {})
           return response
@@ -66,12 +78,15 @@ self.addEventListener('fetch', function (event) {
             .match(request)
             .then(function (cached) {
               if (cached) return cached
-              return caches.match('/login').then(function (loginCached) {
-                if (loginCached) return loginCached
-                return new Response(
-                  '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline</title></head><body style="font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#002C45;color:#fff;"><div style="text-align:center;"><h1>Você está offline</h1><p>Verifique sua conexão e tente novamente.</p></div></body></html>',
-                  { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
-                )
+              return caches.match('/').then(function (rootCached) {
+                if (rootCached) return rootCached
+                return caches.match('/index.html').then(function (indexCached) {
+                  if (indexCached) return indexCached
+                  return new Response(
+                    '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline</title></head><body style="font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#002C45;color:#fff;"><div style="text-align:center;"><h1>Você está offline</h1><p>Verifique sua conexão e tente novamente.</p></div></body></html>',
+                    { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+                  )
+                })
               })
             })
             .catch(function () {
@@ -121,11 +136,11 @@ self.addEventListener('fetch', function (event) {
             return response
           })
           .catch(function () {
-            return new Response('', { status: 200, statusText: 'OK' })
+            return new Response('', { status: 503, statusText: 'Offline' })
           })
       })
       .catch(function () {
-        return new Response('', { status: 200, statusText: 'OK' })
+        return new Response('', { status: 503, statusText: 'Offline' })
       }),
   )
 })
