@@ -211,7 +211,7 @@ export function generatePwaReport(): string {
   lines.push(`  Internal routes stay in PWA: YES (react-router, same origin)`)
   lines.push(`  Orientation locked to portrait: YES (manifest + useOrientationLock)`)
   lines.push(`  Screen fully occupied: ${info.isStandalone ? 'YES' : 'PENDING'}`)
-  lines.push(`  Cache version: 2a-rural-v15`)
+  lines.push(`  Cache version: 2a-rural-v16`)
   lines.push('')
 
   return lines.join('\n')

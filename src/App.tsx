@@ -77,8 +77,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster /> <Sonner />
             <Routes>
-              {' '}
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/" element={<Login />} />
               <Route element={<Layout />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />

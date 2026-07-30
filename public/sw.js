@@ -1,4 +1,4 @@
-var CACHE_NAME = '2a-rural-v15'
+var CACHE_NAME = '2a-rural-v16'
 var CACHE_PREFIX = '2a-rural-'
 
 var PRECACHE_URLS = [
