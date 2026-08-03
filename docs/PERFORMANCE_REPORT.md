@@ -204,3 +204,37 @@ Os seguintes arquivos NÃO foram modificados:
 - Refresh em rota protegida → SplashLoader com spinner → redirect para login (se sessão expirada) ou volta à tela (se sessão válida)
 - Sem congelamento ou tela em branco
 - Estado de sessão restaurado do localStorage sem chamada de rede antes do UI
+
+---
+
+## 9. Validação Prática em Dispositivo Físico
+
+### Registro de Validação
+
+> Validação prática realizada em dispositivo físico pelo responsável pelo projeto. O aplicativo apresentou inicialização praticamente imediata após o toque, com exibição rápida da tela de login e melhora significativa em relação à versão anterior. As métricas quantitativas permanecem pendentes de instrumentação formal.
+
+### Comportamento Observado
+
+- O aplicativo inicia praticamente imediatamente após o toque no ícone.
+- A tela de login aparece sem atraso perceptível.
+- Houve melhora significativa em comparação com o comportamento anterior à otimização.
+- Nenhuma tela branca prolongada foi observada antes da exibição do login.
+
+### Status da Otimização
+
+- A otimização de inicialização está **aprovada funcionalmente** no dispositivo testado.
+- Não há ainda uma medição técnica formal em milissegundos disponível.
+- A melhora foi confirmada por teste direto em smartphone físico pelo responsável pelo projeto.
+
+### Proteção da Infraestrutura PWA
+
+Os arquivos de infraestrutura PWA congelados **permanecem inalterados** e devem continuar sem modificações:
+
+- `public/manifest.json` ✓
+- `public/sw.js` ✓
+- `public/2ARural192x192.png` ✓
+- `public/2ARural512x512.png` ✓
+- `public/favicon.ico` ✓
+- `index.html` ✓
+
+> A infraestrutura PWA congelada deve continuar sem alterações. Nenhuma modificação nestes arquivos é permitida.
