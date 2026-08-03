@@ -24,7 +24,14 @@ export default function Login() {
   )
 
   if (authLoading || isAuthenticated) {
-    return <div className="fixed inset-0 bg-[#002C45]" />
+    return (
+      <div
+        className="fixed inset-0 flex items-center justify-center"
+        style={{ backgroundColor: '#002C45' }}
+      >
+        <Loader2 className="w-8 h-8 animate-spin text-[#A8914E]" />
+      </div>
+    )
   }
 
   const handleCancel = () => {

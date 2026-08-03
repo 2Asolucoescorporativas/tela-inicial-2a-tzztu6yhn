@@ -22,7 +22,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(pb.authStore.isValid ? pb.authStore.record : null)
   const [isAuthenticated, setIsAuthenticated] = useState(pb.authStore.isValid)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(pb.authStore.isValid)
 
   useEffect(() => {
     const unsubscribe = pb.authStore.onChange((_token, record) => {
