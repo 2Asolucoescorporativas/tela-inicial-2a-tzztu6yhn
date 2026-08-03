@@ -16,7 +16,13 @@ interface AppHeaderProps {
   acaoVoltar?: () => void
 }
 
-export function AppHeader({ nomeUsuario, nomePropriedade, exibirPropriedade }: AppHeaderProps) {
+export function AppHeader({
+  nomeUsuario,
+  nomePropriedade,
+  exibirPropriedade,
+  exibirCadPro,
+  cadPro,
+}: AppHeaderProps) {
   const { user } = useAuth()
   const { activeProperty } = useSession()
 
@@ -24,6 +30,8 @@ export function AppHeader({ nomeUsuario, nomePropriedade, exibirPropriedade }: A
   const userCpf = maskCpf(user?.cpf || '00000000000')
   const propertyName = nomePropriedade ?? activeProperty?.nome ?? ''
   const showPropertyLine = exibirPropriedade !== false && propertyName.length > 0
+  const cadProValue = cadPro || activeProperty?.inscricao_estadual || ''
+  const showCadProLine = exibirCadPro && cadProValue.length > 0
 
   return (
     <header className="app-header safe-area-pt">
@@ -41,6 +49,12 @@ export function AppHeader({ nomeUsuario, nomePropriedade, exibirPropriedade }: A
             <p className="app-header__line">
               <span className="app-header__label">PROPRIEDADE:</span>
               <span className="app-header__value">{propertyName}</span>
+            </p>
+          )}
+          {showCadProLine && (
+            <p className="app-header__line">
+              <span className="app-header__label">CAD/PRO:</span>
+              <span className="app-header__value">{cadProValue}</span>
             </p>
           )}
         </div>

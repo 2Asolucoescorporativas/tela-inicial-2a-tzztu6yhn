@@ -27,6 +27,7 @@ const EmitirNF = lazy(() => import('./pages/EmitirNF'))
 const SelectClient = lazy(() => import('./pages/SelectClient'))
 const EmitirLeite = lazy(() => import('./pages/EmitirLeite'))
 const EmitirGado = lazy(() => import('./pages/EmitirGado'))
+const EmitirGadoNext = lazy(() => import('./pages/EmitirGadoNext'))
 const EmitirLeiteNext = lazy(() => import('./pages/EmitirLeiteNext'))
 const ConsultarNF = lazy(() => import('./pages/ConsultarNF'))
 const InvoiceDetail = lazy(() => import('./pages/InvoiceDetail'))
@@ -184,6 +185,14 @@ const App = () => (
                     element={
                       <RequireProperty>
                         <EmitirGado />
+                      </RequireProperty>
+                    }
+                  />
+                  <Route
+                    path="/emitir-gado/next"
+                    element={
+                      <RequireProperty>
+                        <EmitirGadoNext />
                       </RequireProperty>
                     }
                   />
